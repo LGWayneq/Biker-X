@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Biker X</string>
+    <string name="app_name">BIKER-X</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
@@ -14,4 +14,16 @@
     <string name="login_failed">"Login failed"</string>
     <string name="sign_out">Sign Out</string>
     <string name="title_activity_main2">MainActivity2</string>
+    <string name="title_map">Map</string>
+    <string name="title_history">History</string>
+    <string name="title_chat">Chat</string>
+    <string name="title_settings">Settings</string>
+    <string name="home_title_text_line_1">Find Your</string>
+    <string name="home_title_text_line_2">Preferred Cycling Route</string>
+    <string name="view_map_button">View Map</string>
+    <string name="view_goals_button">View Goals</string>
+    <string name="google_login_button">Continue with Google</string>
+    <string name="own_route_button">Cycling on my own route today!</string>
+    <string name="recommended_routes_text">Recommended Routes</string>
+    <string name="see_all">See all</string>
 </resources>

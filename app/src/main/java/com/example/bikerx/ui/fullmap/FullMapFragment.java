@@ -1,4 +1,4 @@
-package com.example.bikerx.ui.dashboard;
+package com.example.bikerx.ui.fullmap;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,24 +12,23 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.bikerx.R;
-import com.example.bikerx.databinding.FragmentDashboardBinding;
+import com.example.bikerx.databinding.FragmentFullMapBinding;
 
-public class DashboardFragment extends Fragment {
+public class FullMapFragment extends Fragment {
 
-    private DashboardViewModel dashboardViewModel;
-    private FragmentDashboardBinding binding;
+    private FullMapViewModel fullMapViewModel;
+    private FragmentFullMapBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        dashboardViewModel =
-                new ViewModelProvider(this).get(DashboardViewModel.class);
+        fullMapViewModel =
+                new ViewModelProvider(this).get(FullMapViewModel.class);
 
-        binding = FragmentDashboardBinding.inflate(inflater, container, false);
+        binding = FragmentFullMapBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         final TextView textView = binding.textDashboard;
-        dashboardViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        fullMapViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);

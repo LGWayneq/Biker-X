@@ -8,15 +8,35 @@
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.example.bikerx.ui.home.HomeFragment"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_navigation_home_to_recommendationsFragment"
+            app:destination="@id/recommendationsFragment" />
+        <action
+            android:id="@+id/action_navigation_home_to_startCyclingFragment"
+            app:destination="@id/startCyclingFragment" />
+    </fragment>
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.example.bikerx.ui.dashboard.DashboardFragment"
-        tools:layout="@layout/fragment_dashboard" />
+        android:id="@+id/navigation_map"
+        android:name="com.example.bikerx.ui.fullmap.FullMapFragment"
+        tools:layout="@layout/fragment_full_map" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.example.bikerx.ui.notifications.NotificationsFragment"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/navigation_history"
+        android:name="com.example.bikerx.ui.history.HistoryFragment"
+        tools:layout="@layout/fragment_history" />
+
+    <fragment
+        android:id="@+id/navigation_chat"
+        android:name="com.example.bikerx.ui.chat.ChatFragment"
+        tools:layout="@layout/chat_fragment" />
+    <fragment
+        android:id="@+id/recommendationsFragment"
+        android:name="com.example.bikerx.ui.home.RecommendationsFragment"
+        tools:layout="@layout/recommendations_fragment" />
+    <fragment
+        android:id="@+id/startCyclingFragment"
+        android:name="com.example.bikerx.ui.session.StartCyclingFragment"
+        tools:layout="@layout/start_cycling_fragment" />
 </navigation>

@@ -13,6 +13,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 
 import com.example.bikerx.LoginActivity;
 import com.example.bikerx.MainActivity;
@@ -40,6 +42,8 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        bindButtons();
+        setWeather();
     }
 
     @Override
@@ -48,4 +52,23 @@ public class HomeFragment extends Fragment {
         mBinding = null;
     }
 
+    private void setWeather() {
+        //to be implemented
+    }
+
+    private void bindButtons() {
+        mBinding.recommendedRouteSeeAll.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                NavDirections action = HomeFragmentDirections.actionNavigationHomeToRecommendationsFragment();
+                Navigation.findNavController(v).navigate(action);
+            }
+        });
+        mBinding.ownRouteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavDirections action = HomeFragmentDirections.actionNavigationHomeToStartCyclingFragment();
+                Navigation.findNavController(v).navigate(action);
+            }
+        });
+    }
 }

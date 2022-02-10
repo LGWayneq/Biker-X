@@ -33,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
 
     private HomeViewModel homeViewModel;
 
+    private NavController navController;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,15 +57,19 @@ public class MainActivity extends AppCompatActivity {
         mSignInClient = GoogleSignIn.getClient(this, gso);
 
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
+                R.id.navigation_home, R.id.navigation_map, R.id.navigation_history, R.id.navigation_chat)
                 .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(mBinding.navView, navController);
 
         getSupportActionBar().setTitle("Hello, "+ getUserName() + "!");
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        return navController.navigateUp() || super.onSupportNavigateUp();
+    }
 
     public void signOut() {
         mFirebaseAuth.signOut();

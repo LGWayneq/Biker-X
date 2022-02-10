@@ -1,32 +1,28 @@
-package com.example.bikerx.ui.notifications;
+package com.example.bikerx.ui.history;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.bikerx.MainActivity;
-import com.example.bikerx.R;
-import com.example.bikerx.databinding.FragmentNotificationsBinding;
+import com.example.bikerx.databinding.FragmentHistoryBinding;
 
-public class NotificationsFragment extends Fragment {
+public class HistoryFragment extends Fragment {
 
-    private NotificationsViewModel notificationsViewModel;
-    private FragmentNotificationsBinding mBinding;
+    private HistoryViewModel historyViewModel;
+    private FragmentHistoryBinding mBinding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        notificationsViewModel =
-                new ViewModelProvider(this).get(NotificationsViewModel.class);
+        historyViewModel =
+                new ViewModelProvider(this).get(HistoryViewModel.class);
 
-        mBinding = FragmentNotificationsBinding.inflate(inflater, container, false);
+        mBinding = FragmentHistoryBinding.inflate(inflater, container, false);
         View root = mBinding.getRoot();
 
         mBinding.signOut.setOnClickListener(v -> ((MainActivity) getActivity()).signOut());
