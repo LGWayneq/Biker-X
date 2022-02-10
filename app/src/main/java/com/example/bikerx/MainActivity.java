@@ -3,12 +3,15 @@ package com.example.bikerx;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.bikerx.ui.home.HomeFragment;
+import com.example.bikerx.ui.home.HomeViewModel;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -28,20 +31,14 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mFirebaseAuth;
 
+    private HomeViewModel homeViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
 
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(mBinding.navView, navController);
-
-        mBinding.signOut.setOnClickListener(v -> signOut());
         // Initialize Firebase Auth and check if the user is signed in
         mFirebaseAuth = FirebaseAuth.getInstance();
         if (mFirebaseAuth.getCurrentUser() == null) {
@@ -56,27 +53,31 @@ public class MainActivity extends AppCompatActivity {
                 .requestEmail()
                 .build();
         mSignInClient = GoogleSignIn.getClient(this, gso);
-        setProfile();
 
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
+                .build();
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        NavigationUI.setupWithNavController(mBinding.navView, navController);
+
+        getSupportActionBar().setTitle("Hello, "+ getUserName() + "!");
     }
 
-    private void setProfile() {
-        mBinding.profileName.setText(getUserName());
-    }
 
-    private void signOut() {
+    public void signOut() {
         mFirebaseAuth.signOut();
         mSignInClient.signOut();
         startActivity(new Intent(this, LoginActivity.class));
         finish();
     }
 
-    private String getUserName() {
+    public String getUserName() {
         FirebaseUser user = mFirebaseAuth.getCurrentUser();
         if (user != null) {
             return user.getDisplayName();
         }
 
-        return ANONYMOUS;
+        return "Anonymous";
     }
 }
