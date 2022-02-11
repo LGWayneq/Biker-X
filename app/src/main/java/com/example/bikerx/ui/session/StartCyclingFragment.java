@@ -1,5 +1,6 @@
 package com.example.bikerx.ui.session;
 
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
@@ -13,19 +14,26 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.bikerx.R;
+import com.example.bikerx.databinding.StartCyclingFragmentBinding;
+import com.example.bikerx.map.MapFragment;
+
 
 public class StartCyclingFragment extends Fragment {
 
     private StartCyclingViewModel mViewModel;
-
-    public static StartCyclingFragment newInstance() {
-        return new StartCyclingFragment();
-    }
+    private StartCyclingFragmentBinding mBinding;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.start_cycling_fragment, container, false);
+        mBinding = StartCyclingFragmentBinding.inflate(inflater, container, false);
+        return mBinding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
     }
 
     @Override
@@ -34,5 +42,6 @@ public class StartCyclingFragment extends Fragment {
         mViewModel = new ViewModelProvider(this).get(StartCyclingViewModel.class);
         // TODO: Use the ViewModel
     }
+
 
 }
