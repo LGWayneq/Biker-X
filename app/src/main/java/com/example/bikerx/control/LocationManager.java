@@ -26,8 +26,12 @@ import java.util.Map;
 public class LocationManager {
     private FragmentActivity activity;
     private FusedLocationProviderClient fusedLocationProviderClient;
+    private Context context;
     public LocationManager(FragmentActivity activity){
         this.activity = activity;
+    }
+    public LocationManager(Context context){
+        this.context = context;
     }
     public void getLocationPermission() {
         ActivityResultLauncher<String[]> locationPermissionRequest =
@@ -49,7 +53,7 @@ public class LocationManager {
 
         // Before you perform the actual permission request, check whether your app
         // already has the permissions, and whether your app needs to show a permission
-        // rationale dialog. For more details, see Request permissions.
+        // rationale dialog.
         locationPermissionRequest.launch(new String[] {
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION
@@ -57,15 +61,13 @@ public class LocationManager {
     }
 
     public Task<Location> getLastLocation() {
-        this.fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(activity);
+        this.fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
         if (checkLocationPermission()) return fusedLocationProviderClient.getLastLocation();
         return null;
     }
 
     public boolean checkLocationPermission() {
-        Log.d("test", "getting permission");
-        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            Log.d("test", "fine permission granted");
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             return true;
         }
         return false;

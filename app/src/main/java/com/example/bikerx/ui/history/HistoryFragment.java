@@ -25,7 +25,6 @@ public class HistoryFragment extends Fragment {
         mBinding = FragmentHistoryBinding.inflate(inflater, container, false);
         View root = mBinding.getRoot();
 
-        mBinding.signOut.setOnClickListener(v -> ((MainActivity) getActivity()).signOut());
         return root;
     }
 

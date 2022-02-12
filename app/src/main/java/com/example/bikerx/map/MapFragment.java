@@ -1,7 +1,10 @@
 package com.example.bikerx.map;
 
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 
@@ -12,13 +15,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
+import com.example.bikerx.MainActivity;
 import com.example.bikerx.control.LocationManager;
 import com.example.bikerx.databinding.FragmentMapBinding;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -30,7 +38,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private LocationManager locationManager;
     private boolean locationPermissionGranted = false;
     private GoogleMap map;
-    private Location lastKnownLocation = null;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,14 +49,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mBinding = FragmentMapBinding.inflate(inflater, container, false);
-        locationManager = new LocationManager(requireActivity());
+
         return mBinding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        locationManager = new LocationManager(requireContext());
         locationPermissionGranted = locationManager.checkLocationPermission();
         if (locationPermissionGranted){
             mBinding.mapView.getMapAsync(this);
@@ -59,46 +66,48 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
-        this.map = map;
+        this.map = googleMap;
         updateLocationUI();
-        //getDeviceLocation();
+        getDeviceLocation();
     }
 
     private void updateLocationUI() {
         if (map == null) {
             return;
         }
-        try {
-            if (locationPermissionGranted) {
-                map.setMyLocationEnabled(true);
-                map.getUiSettings().setMyLocationButtonEnabled(true);
-            } else {
-                map.setMyLocationEnabled(false);
-                map.getUiSettings().setMyLocationButtonEnabled(false);
-                //lastKnownLocation = null;
-                locationManager.getLocationPermission();
-            }
-        } catch (SecurityException e)  {
-            Log.e("Exception: %s", e.getMessage());
+       locationPermissionGranted = locationManager.checkLocationPermission();
+        map.setMyLocationEnabled(true);
+        map.getUiSettings().setMyLocationButtonEnabled(true);
+        if (locationPermissionGranted) {
+            map.setMyLocationEnabled(true);
+            map.getUiSettings().setMyLocationButtonEnabled(true);
+
+            //move my location button to bottom right;
+            View locationButton = ((View) mBinding.mapView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)
+                    locationButton.getLayoutParams();
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+            layoutParams.setMargins(0, 0, 30, 30);
+        } else {
+            map.setMyLocationEnabled(false);
+            map.getUiSettings().setMyLocationButtonEnabled(false);
+            locationManager.getLocationPermission();
         }
     }
 
     private void getDeviceLocation() {
-        float DEFAULT_ZOOM = 10.0F;
+        float DEFAULT_ZOOM = 15.0F;
         try {
             if (locationPermissionGranted) {
                 Task<Location> locationResult = locationManager.getLastLocation();
-                locationResult.addOnCompleteListener( new OnCompleteListener<Location>() {
+                locationResult.addOnSuccessListener(new OnSuccessListener<Location>() {
                     @Override
-                    public void onComplete(@NonNull Task<Location> task) {
-                        if (task.isSuccessful()) {
-                            // Set the map's camera position to the current location of the device.
-                            lastKnownLocation = task.getResult();
-                            if (lastKnownLocation != null) {
-                                map.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                        new LatLng(lastKnownLocation.getLatitude(),
-                                                lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
-                            }
+                    public void onSuccess(Location location) {
+                        if (location != null) {
+                            map.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                    new LatLng(location.getLatitude(),
+                                            location.getLongitude()), DEFAULT_ZOOM));
                         } else {
                             map.moveCamera(CameraUpdateFactory
                                     .newLatLngZoom(new LatLng(0,0), DEFAULT_ZOOM));

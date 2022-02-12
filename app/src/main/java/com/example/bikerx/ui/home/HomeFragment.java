@@ -63,6 +63,17 @@ public class HomeFragment extends Fragment {
                 Navigation.findNavController(v).navigate(action);
             }
         });
+        mBinding.viewMapButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Navigation.findNavController(v).navigate(R.id.navigation_map);
+            }
+        });
+        mBinding.viewGoalsButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                NavDirections action = HomeFragmentDirections.actionNavigationHomeToGoalsFragment();
+                Navigation.findNavController(v).navigate(action);
+            }
+        });
         mBinding.ownRouteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
