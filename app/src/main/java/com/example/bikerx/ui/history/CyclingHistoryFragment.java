@@ -9,18 +9,17 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.bikerx.MainActivity;
 import com.example.bikerx.databinding.FragmentHistoryBinding;
 
-public class HistoryFragment extends Fragment {
+public class CyclingHistoryFragment extends Fragment {
 
-    private HistoryViewModel historyViewModel;
+    private CyclingHistoryViewModel cyclingHistoryViewModel;
     private FragmentHistoryBinding mBinding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        historyViewModel =
-                new ViewModelProvider(this).get(HistoryViewModel.class);
+        cyclingHistoryViewModel =
+                new ViewModelProvider(this).get(CyclingHistoryViewModel.class);
 
         mBinding = FragmentHistoryBinding.inflate(inflater, container, false);
         View root = mBinding.getRoot();
