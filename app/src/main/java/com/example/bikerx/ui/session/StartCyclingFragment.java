@@ -27,7 +27,7 @@ import com.example.bikerx.ui.home.HomeFragmentDirections;
 
 
 public class StartCyclingFragment extends Fragment {
-    enum State {
+    enum SessionState {
         PRE_START,
         STARTED,
         PAUSED,
@@ -36,7 +36,7 @@ public class StartCyclingFragment extends Fragment {
     private StartCyclingFragmentBinding mBinding;
     private Chronometer chronometer;
     private long pausedTime;
-    private State state;
+    private SessionState state;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -54,13 +54,13 @@ public class StartCyclingFragment extends Fragment {
 
     private void bindButtons() {
         chronometer = mBinding.chronometer;
-        state = State.PRE_START;
+        state = SessionState.PRE_START;
         mBinding.startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 chronometer.setBase(SystemClock.elapsedRealtime());
                 chronometer.start();
-                state = State.STARTED;
+                state = SessionState.STARTED;
                 mBinding.startButton.setVisibility(View.GONE);
                 mBinding.pauseButton.setVisibility(View.VISIBLE);
                 mBinding.stopButton.setVisibility(View.VISIBLE);
@@ -70,7 +70,7 @@ public class StartCyclingFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 chronometer.stop();
-                state = State.PAUSED;
+                state = SessionState.PAUSED;
                 pausedTime = chronometer.getBase() - SystemClock.elapsedRealtime();
                 mBinding.pauseButton.setVisibility(View.GONE);
                 mBinding.resumeButton.setVisibility(View.VISIBLE);
@@ -81,7 +81,7 @@ public class StartCyclingFragment extends Fragment {
             public void onClick(View v) {
                 chronometer.setBase(pausedTime + SystemClock.elapsedRealtime());
                 chronometer.start();
-                state = State.STARTED;
+                state = SessionState.STARTED;
                 mBinding.pauseButton.setVisibility(View.VISIBLE);
                 mBinding.resumeButton.setVisibility(View.GONE);
             }
@@ -89,7 +89,7 @@ public class StartCyclingFragment extends Fragment {
         mBinding.stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (state == State.PAUSED) {
+                if (state == SessionState.PAUSED) {
                     chronometer.setBase(pausedTime + SystemClock.elapsedRealtime());
                 }
                 long timeElapsed = chronometer.getBase();
