@@ -50,8 +50,11 @@ public class LoginActivity extends AppCompatActivity {
                 .requestEmail()
                 .build();
         mSignInClient = GoogleSignIn.getClient(this, gso);
-
         mFirebaseAuth = FirebaseAuth.getInstance();
+        checkIfSignedIn();
+    }
+
+    private void checkIfSignedIn() {
         FirebaseUser user = mFirebaseAuth.getCurrentUser();
         if (user != null) {
             startActivity(new Intent(LoginActivity.this, MainActivity.class));

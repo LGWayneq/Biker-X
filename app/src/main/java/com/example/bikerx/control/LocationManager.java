@@ -73,7 +73,7 @@ public class LocationManager {
         return false;
     }
 
-    public <K, V> V getOrDefault(@NonNull Map<K, V> map, K key, V defaultValue) {
+    private <K, V> V getOrDefault(@NonNull Map<K, V> map, K key, V defaultValue) {
         V v;
         return (((v = map.get(key)) != null) || map.containsKey(key))
                 ? v
