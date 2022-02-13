@@ -43,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
         mBinding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
 
-        mBinding.signInButton.setOnClickListener(view -> signIn());
+        mBinding.signInButton.setOnClickListener(view -> signInGoogle());
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -61,9 +61,13 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void signIn() {
+    private void signInGoogle() {
         Intent signInIntent = mSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    private void signInEmail() {
+
     }
 
     @Override

@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class StartCyclingViewModel extends ViewModel {
+public class CyclingSessionViewModel extends ViewModel {
     private MutableLiveData<Float> distance;
 
     private void initialiseSession() {

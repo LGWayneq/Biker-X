@@ -58,6 +58,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState);
         locationManager = new LocationManager(requireContext());
         locationPermissionGranted = locationManager.checkLocationPermission();
+
+        displayMap(savedInstanceState);
+    }
+
+    public void displayMap(@Nullable Bundle savedInstanceState) {
         if (locationPermissionGranted){
             mBinding.mapView.getMapAsync(this);
             mBinding.mapView.onCreate(savedInstanceState);

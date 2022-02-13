@@ -1,7 +1,5 @@
 package com.example.bikerx.ui.session;
 
-import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
@@ -10,7 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavDirections;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.os.SystemClock;
@@ -20,19 +17,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Chronometer;
 
-import com.example.bikerx.R;
 import com.example.bikerx.databinding.StartCyclingFragmentBinding;
-import com.example.bikerx.map.MapFragment;
-import com.example.bikerx.ui.home.HomeFragmentDirections;
 
 
-public class StartCyclingFragment extends Fragment {
+public class CyclingSessionFragment extends Fragment {
     enum SessionState {
         PRE_START,
         STARTED,
         PAUSED,
     }
-    private StartCyclingViewModel mViewModel;
+    private CyclingSessionViewModel mViewModel;
     private StartCyclingFragmentBinding mBinding;
     private Chronometer chronometer;
     private long pausedTime;
@@ -58,51 +52,67 @@ public class StartCyclingFragment extends Fragment {
         mBinding.startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chronometer.setBase(SystemClock.elapsedRealtime());
-                chronometer.start();
-                state = SessionState.STARTED;
-                mBinding.startButton.setVisibility(View.GONE);
-                mBinding.pauseButton.setVisibility(View.VISIBLE);
-                mBinding.stopButton.setVisibility(View.VISIBLE);
+                startSession();
             }
         });
         mBinding.pauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chronometer.stop();
-                state = SessionState.PAUSED;
-                pausedTime = chronometer.getBase() - SystemClock.elapsedRealtime();
-                mBinding.pauseButton.setVisibility(View.GONE);
-                mBinding.resumeButton.setVisibility(View.VISIBLE);
+                pauseSession();
             }
         });
         mBinding.resumeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chronometer.setBase(pausedTime + SystemClock.elapsedRealtime());
-                chronometer.start();
-                state = SessionState.STARTED;
-                mBinding.pauseButton.setVisibility(View.VISIBLE);
-                mBinding.resumeButton.setVisibility(View.GONE);
+                resumeSession();
             }
         });
         mBinding.stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (state == SessionState.PAUSED) {
-                    chronometer.setBase(pausedTime + SystemClock.elapsedRealtime());
-                }
-                long timeElapsed = chronometer.getBase();
-                NavDirections action = StartCyclingFragmentDirections.actionStartCyclingFragmentToSessionSummaryFragment(timeElapsed);
-                Navigation.findNavController(v).navigate(action);
+                stopSession();
             }
         });
+    }
+
+    private void startSession() {
+        chronometer.setBase(SystemClock.elapsedRealtime());
+        chronometer.start();
+        state = SessionState.STARTED;
+        mBinding.startButton.setVisibility(View.GONE);
+        mBinding.pauseButton.setVisibility(View.VISIBLE);
+        mBinding.stopButton.setVisibility(View.VISIBLE);
+    }
+
+    private void pauseSession() {
+        chronometer.stop();
+        state = SessionState.PAUSED;
+        pausedTime = chronometer.getBase() - SystemClock.elapsedRealtime();
+        mBinding.pauseButton.setVisibility(View.GONE);
+        mBinding.resumeButton.setVisibility(View.VISIBLE);
+    }
+
+    private void resumeSession() {
+        chronometer.setBase(pausedTime + SystemClock.elapsedRealtime());
+        chronometer.start();
+        state = SessionState.STARTED;
+        mBinding.pauseButton.setVisibility(View.VISIBLE);
+        mBinding.resumeButton.setVisibility(View.GONE);
+    }
+
+    private void stopSession() {
+        if (state == SessionState.PAUSED) {
+            chronometer.setBase(pausedTime + SystemClock.elapsedRealtime());
+        }
+        long timeElapsed = chronometer.getBase();
+        NavDirections action = CyclingSessionFragmentDirections.actionStartCyclingFragmentToSessionSummaryFragment(timeElapsed);
+        NavHostFragment.findNavController(this).navigate(action);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(StartCyclingViewModel.class);
+        mViewModel = new ViewModelProvider(this).get(CyclingSessionViewModel.class);
         // TODO: Use the ViewModel
     }
 
@@ -114,8 +124,6 @@ public class StartCyclingFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        NavHostFragment.findNavController(this).navigateUp();
-
-        Log.d("test","destreoyed");
+        //NavHostFragment.findNavController(this).navigateUp();
     }
 }
