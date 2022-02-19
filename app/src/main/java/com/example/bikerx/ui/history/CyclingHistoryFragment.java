@@ -6,8 +6,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.bikerx.databinding.FragmentHistoryBinding;
 
@@ -25,6 +30,18 @@ public class CyclingHistoryFragment extends Fragment {
         View root = mBinding.getRoot();
 
         return root;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mBinding.editGoal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavDirections action = CyclingHistoryFragmentDirections.actionNavigationHistoryToGoalsFragment();
+                Navigation.findNavController(v).navigate(action);
+            }
+        });
     }
 
     @Override
