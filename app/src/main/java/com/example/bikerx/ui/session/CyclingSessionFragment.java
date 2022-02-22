@@ -26,7 +26,7 @@ public class CyclingSessionFragment extends Fragment {
         STARTED,
         PAUSED,
     }
-    private CyclingSessionViewModel mViewModel;
+    private CyclingSessionViewModel viewModel;
     private StartCyclingFragmentBinding mBinding;
     private Chronometer chronometer;
     private long pausedTime;
@@ -76,6 +76,7 @@ public class CyclingSessionFragment extends Fragment {
     }
 
     private void startSession() {
+        viewModel.initialiseSession(requireContext());
         chronometer.setBase(SystemClock.elapsedRealtime());
         chronometer.start();
         state = SessionState.STARTED;
@@ -109,11 +110,14 @@ public class CyclingSessionFragment extends Fragment {
         NavHostFragment.findNavController(this).navigate(action);
     }
 
+    private float calculateCalories(float distance, float duration) {
+        return 0;
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(CyclingSessionViewModel.class);
-        // TODO: Use the ViewModel
+        viewModel = new ViewModelProvider(this).get(CyclingSessionViewModel.class);
     }
 
     @Override

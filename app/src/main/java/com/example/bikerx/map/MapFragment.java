@@ -10,6 +10,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,14 +32,18 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
 import java.util.concurrent.Executor;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private FragmentMapBinding mBinding;
+    private MutableLiveData<LatLng> liveLocation;
+    private ArrayList<LatLng> locations;
     private LocationManager locationManager;
     private boolean locationPermissionGranted = false;
     private GoogleMap map;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,8 +78,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         this.map = googleMap;
+        locations = new ArrayList<LatLng>();
+        liveLocation = new MutableLiveData<LatLng>();
         updateLocationUI();
         getDeviceLocation();
+        moveCamera();
     }
 
     private void updateLocationUI() {
@@ -102,29 +111,31 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void getDeviceLocation() {
-        float DEFAULT_ZOOM = 15.0F;
-        try {
-            if (locationPermissionGranted) {
-                Task<Location> locationResult = locationManager.getLastLocation();
-                locationResult.addOnSuccessListener(new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        if (location != null) {
-                            map.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                    new LatLng(location.getLatitude(),
-                                            location.getLongitude()), DEFAULT_ZOOM));
-                        } else {
-                            map.moveCamera(CameraUpdateFactory
-                                    .newLatLngZoom(new LatLng(0,0), DEFAULT_ZOOM));
-                            map.getUiSettings().setMyLocationButtonEnabled(false);
-                        }
-                    }
-                });
-            }
-        } catch (SecurityException e)  {
-            Log.e("Exception: %s", e.getMessage(), e);
+        if (locationPermissionGranted) {
+            locationManager.getLastLocation();
+            final Observer<LatLng> latLngObserver = new Observer<LatLng>() {
+                @Override
+                public void onChanged(LatLng latLng) {
+                    locations.add(latLng);
+                    liveLocation.setValue(latLng);
+                }
+            };
+            locationManager.liveLocation.observe(this, latLngObserver);
         }
     }
+
+    private void moveCamera() {
+        float DEFAULT_ZOOM = 15.0F;
+        final Observer<LatLng> locationObserver = new Observer<LatLng>() {
+            @Override
+            public void onChanged(LatLng latLng) {
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
+            }
+        };
+        liveLocation.observe(this, locationObserver);
+    }
+
+
 
     @Override
     public void onStart() {
