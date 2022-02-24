@@ -17,6 +17,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
 import com.example.bikerx.MainActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -34,17 +35,17 @@ import java.util.List;
 import java.util.Map;
 
 public class LocationManager {
-    private FragmentActivity activity;
+    private AppCompatActivity activity;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private Context context;
     public MutableLiveData<LatLng> liveLocation = new MutableLiveData<LatLng>();
-    private MutableLiveData<List<LatLng>> liveLocations;
+    public MutableLiveData<List<LatLng>> liveLocations = new MutableLiveData<List<LatLng>>();
+    public MutableLiveData<Integer> liveDistance = new MutableLiveData<Integer>();
     private ArrayList<LatLng> locations = new ArrayList<LatLng>();
     private Integer distance = 0;
-    private MutableLiveData<Integer> liveDistance = new MutableLiveData<Integer>();
     private locationCallback callback = new locationCallback();
 
-    public LocationManager(FragmentActivity activity) {
+    public LocationManager(AppCompatActivity activity) {
         this.activity = activity;
 
     }
@@ -67,6 +68,7 @@ public class LocationManager {
             }
 
             locations.add(latLng);
+            liveLocation.setValue(latLng);
             liveLocations.setValue(locations);
         }
     }
@@ -77,6 +79,7 @@ public class LocationManager {
         locationRequest.setInterval(5000);
 
         checkLocationPermission();
+        if (fusedLocationProviderClient == null) fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
         fusedLocationProviderClient.requestLocationUpdates(locationRequest, callback, Looper.getMainLooper());
     }
 
@@ -127,7 +130,7 @@ public class LocationManager {
                         latLng = new LatLng(0, 0);
                     }
                     locations.add(latLng);
-                    liveLocation.postValue(latLng);
+                    liveLocation.setValue(latLng);
                 }
             });
         }
@@ -138,6 +141,12 @@ public class LocationManager {
             return true;
         }
         return false;
+    }
+
+    public void getDeviceLocation(boolean locationPermissionGranted) {
+        if (locationPermissionGranted) {
+            getLastLocation();
+        }
     }
 
     private <K, V> V getOrDefault(@NonNull Map<K, V> map, K key, V defaultValue) {
