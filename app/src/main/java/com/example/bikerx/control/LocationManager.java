@@ -40,7 +40,7 @@ public class LocationManager {
     private FusedLocationProviderClient fusedLocationProviderClient;
     private Context context;
     private MutableLiveData<LatLng> liveLocation = new MutableLiveData<LatLng>();
-    private MutableLiveData<List<LatLng>> liveLocations = new MutableLiveData<List<LatLng>>();
+    private MutableLiveData<ArrayList<LatLng>> liveLocations = new MutableLiveData<ArrayList<LatLng>>();
     private MutableLiveData<Double> liveDistance = new MutableLiveData<Double>();
     private ArrayList<LatLng> locations = new ArrayList<LatLng>();
     private Double distance = 0.0;
@@ -99,7 +99,7 @@ public class LocationManager {
     }
 
     private void resetData() {
-        liveLocations = new MutableLiveData<List<LatLng>>();
+        liveLocations = new MutableLiveData<ArrayList<LatLng>>();
         liveDistance = new MutableLiveData<Double>();
         locations.clear();
         distance = 0.0;
@@ -169,7 +169,7 @@ public class LocationManager {
         return liveLocation;
     }
 
-    public MutableLiveData<List<LatLng>> getLiveLocations() {
+    public MutableLiveData<ArrayList<LatLng>> getLiveLocations() {
         return liveLocations;
     }
 

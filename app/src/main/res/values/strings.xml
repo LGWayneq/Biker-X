@@ -48,4 +48,5 @@
     <string name="rate_route">Rate this route!</string>
     <string name="bicycle_rack">Nearest Bicycle Racks</string>
     <string name="edit_goals">Edit Goal</string>
+    <string name="time_details_text">min</string>
 </resources>

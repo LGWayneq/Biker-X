@@ -22,21 +22,25 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.example.bikerx.MainActivity;
+import com.example.bikerx.R;
 import com.example.bikerx.control.LocationManager;
 import com.example.bikerx.databinding.FragmentMapBinding;
 import com.example.bikerx.ui.session.CyclingSessionViewModel;
 import com.example.bikerx.ui.session.CyclingSessionViewModelFactory;
+import com.example.bikerx.ui.session.Session;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executor;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
@@ -79,7 +83,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         updateLocationUI();
         viewModel.getLocationManager().getDeviceLocation(viewModel.getLocationPermissionGranted());
         moveCamera();
-
+        viewModel.getSession().observe(this, new Observer<Session>() {
+            @Override
+            public void onChanged(Session session) {
+                drawRoute(session.getUserPath());
+            }
+        });
     }
 
     @SuppressLint("MissingPermission")
@@ -120,9 +129,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         };
         viewModel.getLocationManager().getLiveLocation().observe(this, locationObserver);
-
     }
 
+    public void drawRoute(List<LatLng> locations) {
+        PolylineOptions polylineOptions = new PolylineOptions().color(getResources().getColor(R.color.teal_700));
+        map.clear();
+        List<LatLng> points = polylineOptions.getPoints();
+        points.addAll(locations);
+        map.addPolyline(polylineOptions);
+    }
+
+    public GoogleMap getMap() {
+        return map;
+    }
 
     @Override
     public void onStart() {

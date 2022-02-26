@@ -35,9 +35,9 @@ public class CyclingSessionViewModel extends ViewModel {
     public void initialiseSession(AppCompatActivity activity) {
         startTracking();
         if (locationPermissionGranted){
-            locationManager.getLiveLocations().observe(activity, new Observer<List<LatLng>>() {
+            locationManager.getLiveLocations().observe(activity, new Observer<ArrayList<LatLng>>() {
                 @Override
-                public void onChanged(List<LatLng> locations) {
+                public void onChanged(ArrayList<LatLng> locations) {
                     Session current = session.getValue();
                     if (current != null) {
                         current.setUserPath(locations);

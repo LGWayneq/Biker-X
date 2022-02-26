@@ -124,7 +124,7 @@
                     android:id="@+id/time_details_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/distance_km"
+                    android:text="@string/time_details_text"
                     android:textColor="@color/white"
                     android:textSize="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
