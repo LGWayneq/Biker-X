@@ -77,8 +77,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(@NonNull GoogleMap googleMap) {
         this.map = googleMap;
         updateLocationUI();
-        viewModel.locationManager.getDeviceLocation(viewModel.getLocationPermissionGranted());
-        //viewModel.locationManager.trackUser();
+        viewModel.getLocationManager().getDeviceLocation(viewModel.getLocationPermissionGranted());
         moveCamera();
 
     }
@@ -105,7 +104,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         } else {
             map.setMyLocationEnabled(false);
             map.getUiSettings().setMyLocationButtonEnabled(false);
-            viewModel.locationManager.getLocationPermission();
+            viewModel.getLocationManager().getLocationPermission();
         }
     }
 
@@ -120,7 +119,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
             }
         };
-        viewModel.locationManager.liveLocation.observe(this, locationObserver);
+        viewModel.getLocationManager().getLiveLocation().observe(this, locationObserver);
 
     }
 

@@ -1,6 +1,7 @@
 package com.example.bikerx.control;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -38,16 +39,16 @@ public class LocationManager {
     private AppCompatActivity activity;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private Context context;
-    public MutableLiveData<LatLng> liveLocation = new MutableLiveData<LatLng>();
-    public MutableLiveData<List<LatLng>> liveLocations = new MutableLiveData<List<LatLng>>();
-    public MutableLiveData<Integer> liveDistance = new MutableLiveData<Integer>();
+    private MutableLiveData<LatLng> liveLocation = new MutableLiveData<LatLng>();
+    private MutableLiveData<List<LatLng>> liveLocations = new MutableLiveData<List<LatLng>>();
+    private MutableLiveData<Double> liveDistance = new MutableLiveData<Double>();
     private ArrayList<LatLng> locations = new ArrayList<LatLng>();
-    private Integer distance = 0;
+    private Double distance = 0.0;
     private locationCallback callback = new locationCallback();
+    private LocationRequest locationRequest;
 
     public LocationManager(AppCompatActivity activity) {
         this.activity = activity;
-
     }
 
     public LocationManager(Context context) {
@@ -63,10 +64,9 @@ public class LocationManager {
             LatLng lastLocation = locations.size() > 0 ? locations.get(locations.size() - 1) : null;
 
             if (lastLocation != null) {
-                distance += (int) Math.round(SphericalUtil.computeDistanceBetween(lastLocation, latLng));
+                distance += SphericalUtil.computeDistanceBetween(lastLocation, latLng)/1000;
                 liveDistance.setValue(distance);
             }
-
             locations.add(latLng);
             liveLocation.setValue(latLng);
             liveLocations.setValue(locations);
@@ -74,19 +74,35 @@ public class LocationManager {
     }
 
     public void trackUser() {
-        LocationRequest locationRequest = LocationRequest.create();
+        locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         locationRequest.setInterval(5000);
 
-        checkLocationPermission();
-        if (fusedLocationProviderClient == null) fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
+        resetData();
+        getDeviceLocation(checkLocationPermission());
+
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest, callback, Looper.getMainLooper());
+    }
+
+    public void pauseTracking() {
+        fusedLocationProviderClient.removeLocationUpdates(callback);
+    }
+
+    @SuppressLint("MissingPermission")
+    public void resumeTracking() {
         fusedLocationProviderClient.requestLocationUpdates(locationRequest, callback, Looper.getMainLooper());
     }
 
     public void stopTracking() {
         fusedLocationProviderClient.removeLocationUpdates(callback);
+        resetData();
+    }
+
+    private void resetData() {
+        liveLocations = new MutableLiveData<List<LatLng>>();
+        liveDistance = new MutableLiveData<Double>();
         locations.clear();
-        distance = 0;
+        distance = 0.0;
     }
 
     public void getLocationPermission() {
@@ -147,6 +163,18 @@ public class LocationManager {
         if (locationPermissionGranted) {
             getLastLocation();
         }
+    }
+
+    public MutableLiveData<LatLng> getLiveLocation() {
+        return liveLocation;
+    }
+
+    public MutableLiveData<List<LatLng>> getLiveLocations() {
+        return liveLocations;
+    }
+
+    public MutableLiveData<Double> getLiveDistance() {
+        return liveDistance;
     }
 
     private <K, V> V getOrDefault(@NonNull Map<K, V> map, K key, V defaultValue) {
