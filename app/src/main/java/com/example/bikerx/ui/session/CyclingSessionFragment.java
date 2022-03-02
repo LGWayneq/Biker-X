@@ -59,7 +59,7 @@ public class CyclingSessionFragment extends Fragment {
             public void onChanged(Session session) {
                 float distance = Float.parseFloat(session.getFormattedDistance());
                 float timeElapsed = (SystemClock.elapsedRealtime() - chronometer.getBase())/1000;
-                float speed = timeElapsed == 0 ? 0 : distance/timeElapsed;
+                float speed = timeElapsed == 0 ? 0 : 60*distance/timeElapsed;
                 String formattedSpeed = String.format("%.2f", speed);
                 mBinding.distanceDetailsFloat.setText(session.getFormattedDistance());
                 if (state != SessionState.PAUSED) mBinding.avgSpeedFloat.setText(formattedSpeed);
@@ -131,7 +131,9 @@ public class CyclingSessionFragment extends Fragment {
         String formattedDistance = viewModel.getSession().getValue().getFormattedDistance();
         long timeElapsed = SystemClock.elapsedRealtime() - chronometer.getBase();
         viewModel.stopTracking();
-        NavDirections action = CyclingSessionFragmentDirections.actionStartCyclingFragmentToSessionSummaryFragment(formattedDistance, timeElapsed);
+        NavDirections action = CyclingSessionFragmentDirections
+                .actionStartCyclingFragmentToSessionSummaryFragment(formattedDistance, timeElapsed, "NlYqwYPR5GHIJqROvXpp");
+        //ROUTEID CURRENTLY HARDCODED RMB TO CHANGE
         NavHostFragment.findNavController(this).navigate(action);
     }
 

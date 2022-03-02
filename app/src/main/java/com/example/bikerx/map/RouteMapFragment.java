@@ -9,32 +9,25 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.Observer;
 
 import com.example.bikerx.R;
 import com.example.bikerx.control.ApiManager;
-import com.example.bikerx.control.DBManager;
-import com.example.bikerx.ui.fullmap.FullMapFragment;
-import com.example.bikerx.ui.session.CyclingSessionViewModel;
-import com.example.bikerx.ui.session.CyclingSessionViewModelFactory;
-import com.example.bikerx.ui.session.SessionSummaryFragment;
+import com.example.bikerx.ui.session.Session;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.data.geojson.GeoJsonLayer;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.util.List;
 
-public class AmenitiesMapFragment extends MapFragment {
-    private ApiManager apiManager;
-
+public class RouteMapFragment extends MapFragment{
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -49,17 +42,23 @@ public class AmenitiesMapFragment extends MapFragment {
     @Override
     public void onMapReady(@NonNull GoogleMap map) {
         super.onMapReady(map);
-        this.apiManager = new ApiManager();
-        if (getParentFragment() instanceof SessionSummaryFragment) displayBicycleRacks();
-        if (getParentFragment() instanceof FullMapFragment) displayAmenities();
+
+        super.getViewModel().getSession().observe(this, new Observer<Session>() {
+            @Override
+            public void onChanged(Session session) {
+                drawRoute(session);
+            }
+        });
     }
 
-    private void displayBicycleRacks() {
-        apiManager.getBicycleRacks(super.getMap());
-    }
 
-    private void displayAmenities() {
-        apiManager.getAmenities(super.getMap());
+    public void drawRoute(Session session) {
+        List<LatLng> locations = session.getUserPath();
+        PolylineOptions polylineOptions = new PolylineOptions().color(getResources().getColor(R.color.teal_700));
+        super.getMap().clear();
+        List<LatLng> points = polylineOptions.getPoints();
+        points.addAll(locations);
+        super.getMap().addPolyline(polylineOptions);
     }
 
 }

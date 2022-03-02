@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private GoogleSignInClient mSignInClient;
     private ActivityMainBinding mBinding;
     private FirebaseAuth mFirebaseAuth;
+    private String userId;
     private HomeViewModel homeViewModel;
     private NavController navController;
     private LocationManager locationManager = new LocationManager(this);
@@ -160,9 +161,14 @@ public class MainActivity extends AppCompatActivity {
     private String getUserName() {
         FirebaseUser user = mFirebaseAuth.getCurrentUser();
         if (user != null) {
+            userId = mFirebaseAuth.getUid();
             return user.getDisplayName();
         }
 
         return "Anonymous";
     }
+
+    public String getUserId() {
+        return this.userId;
+    };
 }

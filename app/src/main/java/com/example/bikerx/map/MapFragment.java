@@ -33,6 +33,9 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -44,7 +47,7 @@ import java.util.List;
 import java.util.concurrent.Executor;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
-
+    private boolean locationPermissionGranted;
     private FragmentMapBinding mBinding;
     private GoogleMap map;
     private CyclingSessionViewModel viewModel;
@@ -80,15 +83,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         this.map = googleMap;
+        locationPermissionGranted = viewModel.getLocationPermissionGranted();
+        viewModel.getLocationManager().getDeviceLocation(locationPermissionGranted);
         updateLocationUI();
-        viewModel.getLocationManager().getDeviceLocation(viewModel.getLocationPermissionGranted());
         moveCamera();
-        viewModel.getSession().observe(this, new Observer<Session>() {
-            @Override
-            public void onChanged(Session session) {
-                drawRoute(session.getUserPath());
-            }
-        });
     }
 
     @SuppressLint("MissingPermission")
@@ -96,13 +94,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         if (map == null) {
             return;
         }
-
-        map.setMyLocationEnabled(true);
-        map.getUiSettings().setMyLocationButtonEnabled(true);
-        if (viewModel.getLocationPermissionGranted()) {
-            map.setMyLocationEnabled(true);
-            map.getUiSettings().setMyLocationButtonEnabled(true);
-
+        map.setMyLocationEnabled(locationPermissionGranted);
+        map.getUiSettings().setMyLocationButtonEnabled(locationPermissionGranted);
+        if (locationPermissionGranted) {
             //move my location button to bottom right;
             View locationButton = ((View) mBinding.mapView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)
@@ -110,14 +104,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
             layoutParams.setMargins(0, 0, 30, 30);
-        } else {
-            map.setMyLocationEnabled(false);
-            map.getUiSettings().setMyLocationButtonEnabled(false);
-            viewModel.getLocationManager().getLocationPermission();
         }
     }
-
-
 
     private void moveCamera() {
         float DEFAULT_ZOOM = 15.0F;
@@ -131,12 +119,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         viewModel.getLocationManager().getLiveLocation().observe(this, locationObserver);
     }
 
-    public void drawRoute(List<LatLng> locations) {
-        PolylineOptions polylineOptions = new PolylineOptions().color(getResources().getColor(R.color.teal_700));
-        map.clear();
-        List<LatLng> points = polylineOptions.getPoints();
-        points.addAll(locations);
-        map.addPolyline(polylineOptions);
+
+    public CyclingSessionViewModel getViewModel() {
+        return viewModel;
     }
 
     public GoogleMap getMap() {

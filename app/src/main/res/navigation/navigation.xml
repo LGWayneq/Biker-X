@@ -68,5 +68,9 @@
         <argument
             android:name="timeElapsed"
             app:argType="long"/>
+        <argument
+            android:name="routeId"
+            app:nullable="true"
+            app:argType="string"/>
     </fragment>
 </navigation>
