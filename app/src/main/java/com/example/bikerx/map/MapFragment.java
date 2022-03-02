@@ -1,5 +1,6 @@
 package com.example.bikerx.map;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
@@ -63,7 +64,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mBinding = FragmentMapBinding.inflate(inflater, container, false);
-        viewModel = new ViewModelProvider(requireActivity(), new CyclingSessionViewModelFactory(requireContext())).get(CyclingSessionViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity(), new CyclingSessionViewModelFactory(requireContext(), (AppCompatActivity) requireActivity()))
+                .get(CyclingSessionViewModel.class);
         return mBinding.getRoot();
     }
 
