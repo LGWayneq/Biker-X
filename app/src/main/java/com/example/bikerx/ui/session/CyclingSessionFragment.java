@@ -39,7 +39,8 @@ public class CyclingSessionFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         mBinding = CyclingSessionFragmentBinding.inflate(inflater, container, false);
-        viewModel = new ViewModelProvider(requireActivity(), new CyclingSessionViewModelFactory(requireContext())).get(CyclingSessionViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity(), new CyclingSessionViewModelFactory(requireContext(), (AppCompatActivity) requireActivity()))
+                .get(CyclingSessionViewModel.class);
         return mBinding.getRoot();
     }
 
@@ -130,7 +131,7 @@ public class CyclingSessionFragment extends Fragment {
         }
         String formattedDistance = viewModel.getSession().getValue().getFormattedDistance();
         long timeElapsed = SystemClock.elapsedRealtime() - chronometer.getBase();
-        viewModel.stopTracking();
+        viewModel.stopTracking(timeElapsed);
         NavDirections action = CyclingSessionFragmentDirections
                 .actionStartCyclingFragmentToSessionSummaryFragment(formattedDistance, timeElapsed, "NlYqwYPR5GHIJqROvXpp");
         //ROUTEID CURRENTLY HARDCODED RMB TO CHANGE

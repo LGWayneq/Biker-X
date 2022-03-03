@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="ui_background">#4D73A1</color>
     <color name="button_color">#022B5E</color>
+    <color name="history_card">#C8DAF1</color>
 </resources>

@@ -11,13 +11,20 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
+import com.example.bikerx.MainActivity;
 import com.example.bikerx.R;
+import com.example.bikerx.control.DBManager;
 import com.example.bikerx.control.LocationManager;
 import com.google.android.gms.maps.model.LatLng;
 
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 
 public class CyclingSessionViewModel extends ViewModel {
@@ -26,8 +33,11 @@ public class CyclingSessionViewModel extends ViewModel {
     private boolean locationPermissionGranted;
     private final Session EMPTY = new Session("0.00", null, new ArrayList<LatLng>());
     private MutableLiveData<Session> session = new MutableLiveData<Session>(EMPTY);
+    private DBManager dbManager = new DBManager();
+    private AppCompatActivity activity;
 
-    public CyclingSessionViewModel(Context context) {
+    public CyclingSessionViewModel(Context context, AppCompatActivity activity) {
+        this.activity = activity;
         this.locationManager = new LocationManager(context);
         this.locationPermissionGranted = locationManager.checkLocationPermission();
     }
@@ -72,8 +82,13 @@ public class CyclingSessionViewModel extends ViewModel {
     public void startTracking() { locationManager.trackUser(); }
     public void pauseTracking() { locationManager.pauseTracking(); }
     public void resumeTracking() { locationManager.resumeTracking(); }
-    public void stopTracking() {
-        session.setValue(new Session("0.00", null, new ArrayList<LatLng>()));
+    public void stopTracking(long duration) {
+        Session session = this.session.getValue();
+        Date date = Calendar.getInstance(TimeZone.getTimeZone("Asia/Singapore")).getTime();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy - h:mm a", Locale.getDefault());
+        dbManager.addCyclingSession(((MainActivity)activity).getUserId(), dateFormat.format(date), session.getFormattedDistance(), duration);
+
+        this.session.setValue(new Session("0.00", null, new ArrayList<LatLng>()));
         locationManager.stopTracking();
     }
 
