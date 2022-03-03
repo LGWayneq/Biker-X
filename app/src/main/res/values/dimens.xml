@@ -5,5 +5,9 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="fragment_horizontal_margin">16dp</dimen>
     <dimen name="fragment_vertical_margin">16dp</dimen>
-    <dimen name="title_size">22dp</dimen>
+    <dimen name="card_margin">8dp</dimen>
+    <dimen name="title_size">22sp</dimen>
+    <dimen name="subheading_size">18sp</dimen>
+    <dimen name="card_subheading">15sp</dimen>
+    <dimen name="card_float">26sp</dimen>
 </resources>

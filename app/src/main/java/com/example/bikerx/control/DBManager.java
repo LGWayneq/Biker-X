@@ -3,6 +3,7 @@ package com.example.bikerx.control;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.bikerx.ui.history.CyclingHistory;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -16,9 +17,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DBManager {
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public void addRatings(String routeId, String userId, float rating) {
         db.collection("routes").document(routeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -65,13 +67,29 @@ public class DBManager {
         });
     }
 
-    public void getCyclingHistory(String userId) {
+    public MutableLiveData<ArrayList<CyclingHistory>> getCyclingHistory(String userId) {
+        MutableLiveData<ArrayList<CyclingHistory>> history = new MutableLiveData<ArrayList<CyclingHistory>>();
+        history.setValue(new ArrayList<CyclingHistory>());
         db.collection("users").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                Log.d("test"," inside");
+                Map<String, Object> data = task.getResult().getData();
+                if (data == null) {
+                    history.setValue(null);
+                } else {
+                    List<HashMap<String, Object>> historyData = (List<HashMap<String, Object>>) data.get("history");
+                    for (HashMap<String, Object> session: historyData) {
+                        CyclingHistory newHistory = new CyclingHistory(
+                                (String) session.get("date"),
+                                (String) session.get("formattedDistance"),
+                                (long) session.get("duration"));
+                        ArrayList<CyclingHistory> newHistoryArray = history.getValue();
+                        newHistoryArray.add(newHistory);
+                        history.setValue(newHistoryArray);
+                    }
+                }
             }
         });
-        Log.d("test", "outside");
+        return history;
     }
 }
