@@ -1,5 +1,7 @@
 package com.example.bikerx.ui.session;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
@@ -17,25 +19,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Chronometer;
 
-import com.example.bikerx.databinding.StartCyclingFragmentBinding;
+import com.example.bikerx.databinding.CyclingSessionFragmentBinding;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 
 public class CyclingSessionFragment extends Fragment {
-    enum SessionState {
-        PRE_START,
-        STARTED,
-        PAUSED,
-    }
-    private CyclingSessionViewModel mViewModel;
-    private StartCyclingFragmentBinding mBinding;
+    private CyclingSessionViewModel viewModel;
+    private CyclingSessionFragmentBinding mBinding;
     private Chronometer chronometer;
-    private long pausedTime;
+    private long pausedTimeElapsed = 0;
     private SessionState state;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        mBinding = StartCyclingFragmentBinding.inflate(inflater, container, false);
+        mBinding = CyclingSessionFragmentBinding.inflate(inflater, container, false);
+        viewModel = new ViewModelProvider(requireActivity(), new CyclingSessionViewModelFactory(requireContext(), (AppCompatActivity) requireActivity()))
+                .get(CyclingSessionViewModel.class);
         return mBinding.getRoot();
     }
 
@@ -43,7 +48,24 @@ public class CyclingSessionFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         bindButtons();
+        bindData();
+    }
 
+    private void bindData() {
+        Date date = Calendar.getInstance(TimeZone.getTimeZone("Asia/Singapore")).getTime();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy - h:mm a", Locale.getDefault());
+        mBinding.dateTextView.setText(dateFormat.format(date));
+        viewModel.getSession().observe(this, new Observer<Session>() {
+            @Override
+            public void onChanged(Session session) {
+                float distance = Float.parseFloat(session.getFormattedDistance());
+                float timeElapsed = (SystemClock.elapsedRealtime() - chronometer.getBase())/1000;
+                float speed = timeElapsed == 0 ? 0 : 60*distance/timeElapsed;
+                String formattedSpeed = String.format("%.2f", speed);
+                mBinding.distanceDetailsFloat.setText(session.getFormattedDistance());
+                if (state != SessionState.PAUSED) mBinding.avgSpeedFloat.setText(formattedSpeed);
+            }
+        });
     }
 
     private void bindButtons() {
@@ -76,6 +98,7 @@ public class CyclingSessionFragment extends Fragment {
     }
 
     private void startSession() {
+        viewModel.initialiseSession((AppCompatActivity) getActivity());
         chronometer.setBase(SystemClock.elapsedRealtime());
         chronometer.start();
         state = SessionState.STARTED;
@@ -85,15 +108,17 @@ public class CyclingSessionFragment extends Fragment {
     }
 
     private void pauseSession() {
+        viewModel.pauseTracking();
         chronometer.stop();
         state = SessionState.PAUSED;
-        pausedTime = chronometer.getBase() - SystemClock.elapsedRealtime();
+        pausedTimeElapsed = SystemClock.elapsedRealtime() - chronometer.getBase();
         mBinding.pauseButton.setVisibility(View.GONE);
         mBinding.resumeButton.setVisibility(View.VISIBLE);
     }
 
     private void resumeSession() {
-        chronometer.setBase(pausedTime + SystemClock.elapsedRealtime());
+        viewModel.resumeTracking();
+        chronometer.setBase(SystemClock.elapsedRealtime() - pausedTimeElapsed);
         chronometer.start();
         state = SessionState.STARTED;
         mBinding.pauseButton.setVisibility(View.VISIBLE);
@@ -102,19 +127,17 @@ public class CyclingSessionFragment extends Fragment {
 
     private void stopSession() {
         if (state == SessionState.PAUSED) {
-            chronometer.setBase(pausedTime + SystemClock.elapsedRealtime());
+            chronometer.setBase(SystemClock.elapsedRealtime() - pausedTimeElapsed);
         }
-        long timeElapsed = chronometer.getBase();
-        NavDirections action = CyclingSessionFragmentDirections.actionStartCyclingFragmentToSessionSummaryFragment(timeElapsed);
+        String formattedDistance = viewModel.getSession().getValue().getFormattedDistance();
+        long timeElapsed = SystemClock.elapsedRealtime() - chronometer.getBase();
+        viewModel.stopTracking(timeElapsed);
+        NavDirections action = CyclingSessionFragmentDirections
+                .actionStartCyclingFragmentToSessionSummaryFragment(formattedDistance, timeElapsed, "NlYqwYPR5GHIJqROvXpp");
+        //ROUTEID CURRENTLY HARDCODED RMB TO CHANGE
         NavHostFragment.findNavController(this).navigate(action);
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(CyclingSessionViewModel.class);
-        // TODO: Use the ViewModel
-    }
 
     @Override
     public void onPause() {
