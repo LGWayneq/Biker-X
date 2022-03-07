@@ -4,11 +4,13 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.bikerx.control.LocationManager;
 import com.example.bikerx.ui.home.HomeViewModel;
+import com.example.bikerx.ui.session.CyclingSessionFragment;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -35,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding mBinding;
     private FirebaseAuth mFirebaseAuth;
     private String userId;
-    private HomeViewModel homeViewModel;
     private NavController navController;
     private LocationManager locationManager = new LocationManager(this);
     public BottomNavigationView bottomNavigationView;
@@ -171,4 +172,5 @@ public class MainActivity extends AppCompatActivity {
     public String getUserId() {
         return this.userId;
     };
+
 }
