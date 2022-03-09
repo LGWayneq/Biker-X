@@ -45,7 +45,7 @@
     <fragment
         android:id="@+id/startCyclingFragment"
         android:name="com.example.bikerx.ui.session.CyclingSessionFragment"
-        tools:layout="@layout/start_cycling_fragment" >
+        tools:layout="@layout/cycling_session_fragment" >
         <action
             android:id="@+id/action_startCyclingFragment_to_sessionSummaryFragment"
             app:destination="@id/sessionSummaryFragment" />
@@ -63,7 +63,14 @@
         android:name="com.example.bikerx.ui.session.SessionSummaryFragment"
         tools:layout="@layout/session_summary_fragment" >
         <argument
+            android:name="distanceTravelled"
+            app:argType="string"/>
+        <argument
             android:name="timeElapsed"
             app:argType="long"/>
+        <argument
+            android:name="routeId"
+            app:nullable="true"
+            app:argType="string"/>
     </fragment>
 </navigation>
