@@ -63,7 +63,7 @@ public class CyclingHistoryFragment extends Fragment {
             @Override
             public void onChanged(HashMap<String, Object> hashMap) {
                 Double monthDistance = (Double)hashMap.get("monthDistance");
-                mBinding.distanceDetailsFloat.setText(Double.toString(monthDistance));
+                mBinding.distanceDetailsFloat.setText(String.format("%.2f", monthDistance));
                 mBinding.distanceProgressBar.setProgress(monthDistance.intValue());
 
                 long monthDuration = (Long) hashMap.get("monthDuration");

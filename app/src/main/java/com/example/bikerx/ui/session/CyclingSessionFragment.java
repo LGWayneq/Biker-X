@@ -148,7 +148,6 @@ public class CyclingSessionFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //NavHostFragment.findNavController(this).navigateUp();
     }
 
 }
