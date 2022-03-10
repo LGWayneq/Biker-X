@@ -19,7 +19,7 @@ Go to Git -> Branches -> Under "Local Branches", click "Rename" -> Input your ow
 
 ### For pushing changes to GitHub
 <p> Go to Git -> Commit -> Type your message at the bottom left screen -> Commit and Push </p>
-<p><strong> For subsequent pushes, PLEASE MAKE SURE you see <i>"your_name -> origin: your_name"</i> BEFORE U PRESS "PUSH" in the confirmation page </strong></p>
+<p><strong> For all pushes, PLEASE MAKE SURE you see <i>"your_name -> origin: your_name"</i> BEFORE U PRESS "PUSH" in the confirmation page </strong></p>
 
 ### For merging of branches
 <p><strong><mark> DO NOT DO ANYTHING ON GITHUB! Wayne will kindly handle them :D </mark></strong></p>
