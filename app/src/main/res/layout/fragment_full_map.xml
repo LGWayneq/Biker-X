@@ -7,13 +7,58 @@
     tools:context=".ui.fullmap.FullMapFragment">
 
     <fragment
-        android:name="com.example.bikerx.map.AmenitiesMapFragment"
         android:id="@+id/map_fragment"
+        android:name="com.example.bikerx.map.AmenitiesMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="80dp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintVertical_bias="0.0" />
+
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/search_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/rounded_search_view"
+        android:backgroundTint="@color/cardview_light_background"
+        app:iconifiedByDefault="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:queryHint="Search specific amenities" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="-199dp"
+        tools:layout_editor_absoluteY="-121dp">
+
+        <!-- need to add constraints for below-->
+        <ImageView
+            android:id="@+id/imageButton2"
+            android:layout_width="48dp"
+            android:layout_height="49dp"
+            android:src="@drawable/filter_icon"
+            tools:layout_editor_absoluteX="347dp"
+            tools:layout_editor_absoluteY="69dp" />
+
+        <ListView
+            android:id="@+id/amenitiesListView"
+            android:layout_width="219dp"
+            android:layout_height="292dp"
+            tools:layout_editor_absoluteX="176dp"
+            tools:layout_editor_absoluteY="132dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+

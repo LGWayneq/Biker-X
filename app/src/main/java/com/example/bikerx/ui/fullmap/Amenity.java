@@ -1,4 +1,4 @@
-package com.example.bikerx.map;
+package com.example.bikerx.ui.fullmap;
 
 enum AmenityType {
     SHELTER,
@@ -12,6 +12,7 @@ enum AmenityType {
     TOILET,
     WATER_COOLER
 }
+
 public class Amenity {
     private String name;
     private String type;

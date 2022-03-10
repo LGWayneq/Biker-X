@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    android:background="@color/cardview_light_background"
+    tools:context=".ui.fullmap.FullMapFragment">
+
+    <TextView
+        android:id="@+id/filterAmenityName"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:hint="Select Amenity"
+        android:padding="12dp"
+        android:textColor="@color/common_google_signin_btn_text_dark" />
+
+
+</RelativeLayout>
+

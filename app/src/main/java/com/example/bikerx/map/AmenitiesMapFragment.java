@@ -54,6 +54,12 @@ public class AmenitiesMapFragment extends MapFragment {
         if (getParentFragment() instanceof FullMapFragment) displayAmenities();
     }
 
+    public void getAmenities(){
+
+    }
+
+    public void getSearchedAmenity(String amenityName){}
+
     private void displayBicycleRacks() {
         apiManager.getBicycleRacks(super.getMap());
     }
@@ -61,5 +67,11 @@ public class AmenitiesMapFragment extends MapFragment {
     private void displayAmenities() {
         apiManager.getAmenities(super.getMap());
     }
+
+   // private void displayFilteredAmenities(ArrayList<String>){ }
+
+    private void displaySearchedAmenity(String amenityName){}
+
+
 
 }

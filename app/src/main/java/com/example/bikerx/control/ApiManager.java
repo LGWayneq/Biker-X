@@ -1,11 +1,9 @@
 package com.example.bikerx.control;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.bikerx.map.Amenity;
+import com.example.bikerx.ui.fullmap.Amenity;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -17,12 +15,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Map;
 
 public class ApiManager {
@@ -46,6 +41,29 @@ public class ApiManager {
                         }
                     }
                 });
+    }
+
+    public void loadAmenities(AppCompatActivity activity) {
+        String json = null;
+        try {
+            InputStream is = activity.getAssets().open("park-facilities.geojson");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+
+            JSONObject obj = new JSONObject(json);
+            JSONArray jsonArray = obj.getJSONArray("features");
+            for (int i = 0; i<jsonArray.length(); i++){
+                JSONArray coords = jsonArray.getJSONObject(i).getJSONObject("geometry").getJSONArray("coordinates");
+                String name = jsonArray.getJSONObject(i).getJSONObject("properties").getString("Name");
+                String type = jsonArray.getJSONObject(i).getJSONObject("properties").getString("Description");
+                db.collection("amenities").add(new Amenity(name, type, coords.getDouble(0), coords.getDouble(1)));
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
 
