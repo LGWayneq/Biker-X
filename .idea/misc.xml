@@ -24,10 +24,13 @@
         <entry key="..\:/Users/G Wayne/Desktop/CZ2006 Software Engineering/BikerX/app/src/main/res/menu/action_bar_menu.xml" value="0.19427083333333334" />
         <entry key="..\:/Users/G Wayne/Desktop/CZ2006 Software Engineering/BikerX/app/src/main/res/menu/bottom_nav_menu.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/lee_x/AndroidStudioProjects/Biker-X/app/src/main/res/drawable/ic_chat.xml" value="0.161" />
+        <entry key="..\:/Users/lee_x/AndroidStudioProjects/Biker-X/app/src/main/res/drawable/ic_chat_bubble.xml" value="0.2505" />
+        <entry key="..\:/Users/lee_x/AndroidStudioProjects/Biker-X/app/src/main/res/drawable/ic_forum_highlighted.xml" value="0.2505" />
         <entry key="..\:/Users/lee_x/AndroidStudioProjects/Biker-X/app/src/main/res/drawable/ic_history.xml" value="0.161" />
         <entry key="..\:/Users/lee_x/AndroidStudioProjects/Biker-X/app/src/main/res/drawable/ic_logout.xml" value="0.161" />
         <entry key="..\:/Users/lee_x/AndroidStudioProjects/Biker-X/app/src/main/res/drawable/ic_map.xml" value="0.161" />
         <entry key="..\:/Users/lee_x/AndroidStudioProjects/Biker-X/app/src/main/res/drawable/ic_menu.xml" value="0.161" />
+        <entry key="..\:/Users/lee_x/AndroidStudioProjects/Biker-X/app/src/main/res/drawable/ic_right_arrow.xml" value="0.2505" />
         <entry key="..\:/Users/lee_x/AndroidStudioProjects/Biker-X/app/src/main/res/layout/activity_login.xml" value="0.20989583333333334" />
         <entry key="..\:/Users/lee_x/AndroidStudioProjects/Biker-X/app/src/main/res/layout/activity_main.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/lee_x/AndroidStudioProjects/Biker-X/app/src/main/res/layout/chat_fragment.xml" value="0.264" />
@@ -41,6 +44,10 @@
         <entry key="..\:/Users/lee_x/AndroidStudioProjects/Biker-X/app/src/main/res/layout/fragment_map.xml" value="0.20989583333333334" />
         <entry key="..\:/Users/lee_x/AndroidStudioProjects/Biker-X/app/src/main/res/layout/goals_fragment.xml" value="0.20989583333333334" />
         <entry key="..\:/Users/lee_x/AndroidStudioProjects/Biker-X/app/src/main/res/layout/recommendations_fragment.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/lee_x/AndroidStudioProjects/Biker-X/app/src/main/res/layout/recycler_view_forum.xml" value="0.20885416666666667" />
+        <entry key="..\:/Users/lee_x/AndroidStudioProjects/Biker-X/app/src/main/res/layout/recycler_view_forum_row_item.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/lee_x/AndroidStudioProjects/Biker-X/app/src/main/res/layout/recycler_view_message.xml" value="0.20885416666666667" />
+        <entry key="..\:/Users/lee_x/AndroidStudioProjects/Biker-X/app/src/main/res/layout/recycler_view_message_row_item.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/lee_x/AndroidStudioProjects/Biker-X/app/src/main/res/menu/action_bar_menu.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/lee_x/AndroidStudioProjects/Biker-X/app/src/main/res/menu/bottom_nav_menu.xml" value="0.20989583333333334" />
         <entry key="..\:/Users/lee_x/AndroidStudioProjects/Biker-X/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2265" />

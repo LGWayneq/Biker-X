@@ -31,14 +31,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/forumHeading"
         app:layout_constraintVertical_bias="1.0"
-        tools:listitem="@layout/recycler_view_item">
-
-        <Button
-            android:id="@+id/enterButton"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text=">"
-            app:icon="@drawable/ic_logout" />
-    </androidx.recyclerview.widget.RecyclerView>
+        tools:listitem="@layout/recycler_view_item"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
