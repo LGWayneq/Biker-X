@@ -18,8 +18,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.bikerx.R;
-import com.example.bikerx.databinding.CyclingSessionFragmentBinding;
-import com.example.bikerx.databinding.RecommendationsFragmentBinding;
 import com.example.bikerx.ui.session.ModelClass;
 
 import java.util.ArrayList;
@@ -41,16 +39,16 @@ public class RecommendationsFragment extends Fragment {
 
 
         routeList = new ArrayList<>();
-        routeList.add(new ModelClass(R.drawable.sgroundislandloop, "Round Island", "5.0"));
-        routeList.add(new ModelClass(R.drawable.mandailoop, "Mandai Loop", "5.0"));
-        routeList.add(new ModelClass(R.drawable.selatarloop, "Seletar Loop", "3.0"));
-        routeList.add(new ModelClass(R.drawable.sentosabiketrail, "Sentosa Bike Trail", "4.0"));
+        routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Round Island", "5.0"));
+        routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Mandai Loop", "5.0"));
+        routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Seletar Loop", "3.0"));
+        routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Sentosa Bike Trail", "4.0"));
 
         View view = inflater.inflate(R.layout.recommendations_fragment, container, false);
         recyclerView = view.findViewById(R.id.recommendationsRecyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        recyclerView.setAdapter(new Adapter(routeList));
+        recyclerView.setAdapter(new RecommendationsAdapter(routeList));
 
         /*FirebaseRecyclerOptions.Builder<ModelClass> options =
                 new FirebaseRecyclerOptions,Bu
@@ -68,7 +66,7 @@ public class RecommendationsFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NavDirections action = HomeFragmentDirections.actionNavigationHomeToStartCyclingFragment();
+                NavDirections action = RecommendationsFragmentDirections.actionRecommendationsFragmentToStartCyclingFragment();
                 Navigation.findNavController(view).navigate(action);
             }
         });

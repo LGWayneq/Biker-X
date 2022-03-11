@@ -14,18 +14,18 @@ import com.example.bikerx.ui.session.ModelClass;
 
 import java.util.List;
 
-public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder>{
+public class RecommendationsAdapter extends RecyclerView.Adapter<RecommendationsAdapter.ViewHolder>{
 
     private List<ModelClass> routeList;
 
-    public Adapter(List<ModelClass> routeList) {
+    public RecommendationsAdapter(List<ModelClass> routeList) {
         this.routeList = routeList;
     }
 
     @NonNull
     @Override
     //inflating the view
-    public Adapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RecommendationsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recommendations_row, parent, false);
         return new ViewHolder(view);
     }
