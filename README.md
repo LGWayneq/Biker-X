@@ -21,4 +21,4 @@ Go to Git -> Branches -> Under "Local Branches", click "Rename" -> Input your ow
 Go to Git -> Commit -> Type your message at the bottom left screen -> Commit and Push
 
 ### For merging of branches
-<p><strong><mark> DO NOT DO ANYTHING ON GITHUB! Wayne will kindly handle them :D </mark></strong></p>
+<p><strong><mark> DO NOT DO ANYTHING ON GITHUB! Wayne will kindly handle them :DD </mark></strong></p>
