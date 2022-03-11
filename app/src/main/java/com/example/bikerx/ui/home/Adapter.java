@@ -1,4 +1,4 @@
-package com.example.bikerx.ui.session;
+package com.example.bikerx.ui.home;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,8 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bikerx.R;
+import com.example.bikerx.ui.session.ModelClass;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder>{
@@ -24,6 +24,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder>{
 
     @NonNull
     @Override
+    //inflating the view
     public Adapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recommendations_row, parent, false);
         return new ViewHolder(view);
@@ -47,9 +48,10 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder>{
         private ImageView imageView;
         private TextView routeName;
         private TextView routeRating;
+
         public ViewHolder(@NonNull View itemView){
             super(itemView);
-            imageView = itemView.findViewById(R.id.imageView);
+            imageView = itemView.findViewById(R.id.routeImg);
             routeName = itemView.findViewById(R.id.routeName);
             routeRating = itemView.findViewById(R.id.routeRating);
 
