@@ -62,7 +62,7 @@ public class CyclingHistoryFragment extends Fragment {
         viewModel.calculateMonthlyData(this).observe(this, new Observer<HashMap<String, Object>>() {
             @Override
             public void onChanged(HashMap<String, Object> hashMap) {
-                Double monthDistance = (Double)hashMap.get("monthDistance");
+                Double monthDistance = (Double)hashMap.get("monthDistance"); 
                 mBinding.distanceDetailsFloat.setText(String.format("%.2f", monthDistance));
                 mBinding.distanceProgressBar.setProgress(monthDistance.intValue());
 

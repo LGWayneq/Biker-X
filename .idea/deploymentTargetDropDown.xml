@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="deploymentTargetDropDown">
+    <targetSelectedWithDropDown>
+      <Target>
+        <type value="QUICK_BOOT_TARGET" />
+        <deviceKey>
+          <Key>
+            <type value="VIRTUAL_DEVICE_PATH" />
+            <value value="C:\Users\josep\.android\avd\Pixel_4_API_30.avd" />
+          </Key>
+        </deviceKey>
+      </Target>
+    </targetSelectedWithDropDown>
+<<<<<<< Updated upstream
+    <timeTargetWasSelectedWithDropDown value="2022-03-05T16:39:08.874818400Z" />
+=======
+    <timeTargetWasSelectedWithDropDown value="2022-03-11T01:21:10.139559400Z" />
+>>>>>>> Stashed changes
+  </component>
+</project>
