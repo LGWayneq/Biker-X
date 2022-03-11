@@ -7,9 +7,9 @@
     android:layout_height="@dimen/recycler_view_forum_row_item_height">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/forumRow"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/recycler_view_forum_row_item_forumThreadRowItemFrame_color_odd">
+        android:layout_height="@dimen/recycler_view_forum_row_item_height">
 
         <TextView
             android:id="@+id/forumThreadName"
@@ -38,7 +38,7 @@
 
         <Button
             android:id="@+id/forumThreadButton"
-            android:layout_width="40dp"
+            android:layout_width="60dp"
             android:layout_height="0dp"
             android:background="@android:color/transparent"
             android:drawableEnd="@drawable/ic_right_arrow"
@@ -46,5 +46,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="SpeakableTextPresentCheck" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
