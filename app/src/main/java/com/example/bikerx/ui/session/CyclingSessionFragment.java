@@ -47,6 +47,7 @@ public class CyclingSessionFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         bindButtons();
         bindData();
     }
@@ -60,7 +61,7 @@ public class CyclingSessionFragment extends Fragment {
             public void onChanged(Session session) {
                 float distance = Float.parseFloat(session.getFormattedDistance());
                 float timeElapsed = (SystemClock.elapsedRealtime() - chronometer.getBase())/1000;
-                float speed = timeElapsed == 0 ? 0 : 60*distance/timeElapsed;
+                float speed = timeElapsed == 0 ? 0 : 60*60*distance/timeElapsed;
                 String formattedSpeed = String.format("%.2f", speed);
                 mBinding.distanceDetailsFloat.setText(session.getFormattedDistance());
                 if (state != SessionState.PAUSED) mBinding.avgSpeedFloat.setText(formattedSpeed);
@@ -147,6 +148,6 @@ public class CyclingSessionFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //NavHostFragment.findNavController(this).navigateUp();
     }
+
 }
