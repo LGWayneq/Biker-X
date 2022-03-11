@@ -46,6 +46,7 @@ public class ForumThreadAdapter extends RecyclerView.Adapter<ForumThreadAdapter.
         private TextView forumThreadName;
         private TextView forumThreadDescription;
         private FrameLayout forumRow;
+
         public ViewHolder(@NonNull View itemView){
             super(itemView);
             forumThreadName = itemView.findViewById(R.id.forumThreadName);

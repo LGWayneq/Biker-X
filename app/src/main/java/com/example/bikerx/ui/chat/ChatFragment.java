@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.bikerx.R;
+import com.example.bikerx.control.DBManager;
 import com.example.bikerx.databinding.FragmentHomeBinding;
 
 import java.util.ArrayList;
@@ -27,6 +28,8 @@ public class ChatFragment extends Fragment {
 
     private RecyclerView cRecyclerView;
     private List<ForumThread> forumThreadList;
+
+    DBManager dbManager = new DBManager();
 
     public static ChatFragment newInstance() {
         return new ChatFragment();
@@ -44,19 +47,21 @@ public class ChatFragment extends Fragment {
 
 //        Hardcoded Data to Test Recycler View
         forumThreadList = new ArrayList<>();
-        Message m1 = new Message("filler1", "Liau G Wayne", "123456", "January 28, 2022 at 10:45:00 AM UTC+8", "The marathon is coming up, anyone in?");
-        Message m2 = new Message("filler2", "Lek Jie Kai", "123457", "January 28, 2022 at 10:55:00 AM UTC+8", "I’m in! Shall we start prepping?");
-        ArrayList<Message> mArray1 = new ArrayList<>();
-        mArray1.add(m1);
-        mArray1.add(m2);
-        ArrayList<Message> mArray2 = new ArrayList<>();
-        mArray2.add(m1);
-        ArrayList<Message> mArray3 = new ArrayList<>();
-        mArray3.add(m2);
-        forumThreadList.add(new ForumThread("fsMgD4ddjRdK1bXLr0Dp", "Cycling Marathon", mArray1));
-        forumThreadList.add(new ForumThread("nnaj7Wr9nd1f4y4RiPSo", "Biking along East Coast", mArray2));
-        forumThreadList.add(new ForumThread("123", "Mandai Loop on 28 Jan", mArray3));
-        forumThreadList.add(new ForumThread("123456", "Best Biking Trail in Singapore", mArray1));
+//        Message m1 = new Message("filler1", "Liau G Wayne", "123456", "January 28, 2022 at 10:45:00 AM UTC+8", "The marathon is coming up, anyone in?");
+//        Message m2 = new Message("filler2", "Lek Jie Kai", "123457", "January 28, 2022 at 10:55:00 AM UTC+8", "I’m in! Shall we start prepping?");
+//        ArrayList<Message> mArray1 = new ArrayList<>();
+//        mArray1.add(m1);
+//        mArray1.add(m2);
+//        ArrayList<Message> mArray2 = new ArrayList<>();
+//        mArray2.add(m1);
+//        ArrayList<Message> mArray3 = new ArrayList<>();
+//        mArray3.add(m2);
+//        forumThreadList.add(new ForumThread("fsMgD4ddjRdK1bXLr0Dp", "Cycling Marathon", mArray1));
+//        forumThreadList.add(new ForumThread("nnaj7Wr9nd1f4y4RiPSo", "Biking along East Coast", mArray2));
+//        forumThreadList.add(new ForumThread("123", "Mandai Loop on 28 Jan", mArray3));
+//        forumThreadList.add(new ForumThread("123456", "Best Biking Trail in Singapore", mArray1));
+
+        forumThreadList = dbManager.getForumThread(getActivity());
 
         View view = inflater.inflate(R.layout.chat_fragment, container, false);
         cRecyclerView = view.findViewById(R.id.forumThreadRecycleView);
