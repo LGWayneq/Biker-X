@@ -15,25 +15,43 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bikerx.LoginActivity;
 import com.example.bikerx.MainActivity;
 import com.example.bikerx.R;
 import com.example.bikerx.databinding.FragmentHomeBinding;
+import com.example.bikerx.ui.session.ModelClass;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class HomeFragment extends Fragment {
     private String TAG = "HOME_FRAGMENT";
     private HomeViewModel homeViewModel;
     private FragmentHomeBinding mBinding;
+    private List<ModelClass> routeList;
+
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+
         homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
 
         mBinding = FragmentHomeBinding.inflate(inflater, container, false);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(mBinding.getRoot().getContext());
+        mBinding.HomeRecyclerView.setLayoutManager(layoutManager);
+        routeList = new ArrayList<>();
+        routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Round Island", "5.0"));
+        routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Mandai Loop", "5.0"));
+        routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Seletar Loop", "3.0"));
+        routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Sentosa Bike Trail", "4.0"));
+        mBinding.HomeRecyclerView.setAdapter(new HomeRecommendationsAdapter(routeList));
         View root = mBinding.getRoot();
 
         return root;
@@ -82,4 +100,5 @@ public class HomeFragment extends Fragment {
             }
         });
     }
+
 }
