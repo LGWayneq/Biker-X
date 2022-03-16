@@ -29,7 +29,7 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements HomeRecommendationsAdapter.MyViewHolder.HomeRouteListener{
     private String TAG = "HOME_FRAGMENT";
     private HomeViewModel homeViewModel;
     private FragmentHomeBinding mBinding;
@@ -51,7 +51,7 @@ public class HomeFragment extends Fragment {
         routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Mandai Loop", "5.0"));
         routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Seletar Loop", "3.0"));
         routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Sentosa Bike Trail", "4.0"));
-        mBinding.HomeRecyclerView.setAdapter(new HomeRecommendationsAdapter(routeList));
+        mBinding.HomeRecyclerView.setAdapter(new HomeRecommendationsAdapter(routeList, this));
         View root = mBinding.getRoot();
 
         return root;
@@ -99,6 +99,21 @@ public class HomeFragment extends Fragment {
                 Navigation.findNavController(v).navigate(action);
             }
         });
+
+        mBinding.HomeRecyclerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavDirections action = HomeFragmentDirections.actionNavigationHomeToStartCyclingFragment();
+                Navigation.findNavController(v).navigate(action);
+            }
+        });
     }
 
+    @Override
+    public void homeRouteClick(int position) {
+        int p = position;
+        Log.i("routeName", "routeName: " + routeList.get(p).getRouteName());
+        NavDirections action = HomeFragmentDirections.actionNavigationHomeToStartCyclingFragment();
+        Navigation.findNavController(this.getView()).navigate(action);
+    }
 }

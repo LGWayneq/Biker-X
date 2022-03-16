@@ -19,26 +19,39 @@ import java.util.List;
 public class HomeRecommendationsAdapter extends RecyclerView.Adapter<HomeRecommendationsAdapter.MyViewHolder>{
 
     private List<ModelClass> routeList;
+    private MyViewHolder.HomeRouteListener mHomeRouteListener;
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
+    public static class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         RecommendationsRowBinding binding;
+        HomeRouteListener homeRouteListener;
 
-        public MyViewHolder(RecommendationsRowBinding b){
+        public MyViewHolder(RecommendationsRowBinding b, HomeRouteListener homeRouteListener){
             super(b.getRoot());
             binding = b;
+            this.homeRouteListener = homeRouteListener;
+            itemView.setOnClickListener(this);
         }
 
+        @Override
+        public void onClick(View view) {
+            homeRouteListener.homeRouteClick(getBindingAdapterPosition());
+        }
+
+        public interface HomeRouteListener{
+            void homeRouteClick(int position);
+        }
     }
 
-    public HomeRecommendationsAdapter(List<ModelClass> routeList) {
+    public HomeRecommendationsAdapter(List<ModelClass> routeList, MyViewHolder.HomeRouteListener homeRouteListener) {
         this.routeList = routeList;
+        this.mHomeRouteListener = homeRouteListener;
     }
 
     @NonNull
     @Override
     //inflating the view
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new MyViewHolder(RecommendationsRowBinding.inflate(LayoutInflater.from(parent.getContext())));
+        return new MyViewHolder(RecommendationsRowBinding.inflate(LayoutInflater.from(parent.getContext())), mHomeRouteListener);
     }
 
     @Override

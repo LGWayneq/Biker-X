@@ -12,6 +12,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +24,7 @@ import com.example.bikerx.ui.session.ModelClass;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecommendationsFragment extends Fragment {
+public class RecommendationsFragment extends Fragment implements RecommendationsAdapter.ViewHolder.OnRouteListener {
     private RecyclerView recyclerView;
     private List<ModelClass> routeList;
     private RecommendationsViewModel mViewModel;
@@ -48,7 +49,7 @@ public class RecommendationsFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recommendationsRecyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        recyclerView.setAdapter(new RecommendationsAdapter(routeList));
+        recyclerView.setAdapter(new RecommendationsAdapter(routeList, this));
 
         /*FirebaseRecyclerOptions.Builder<ModelClass> options =
                 new FirebaseRecyclerOptions,Bu
@@ -80,5 +81,13 @@ public class RecommendationsFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(RecommendationsViewModel.class);
         // TODO: Use the ViewModel
+    }
+
+    @Override
+    public void onRouteClick(int position) {
+        int p = position;
+        Log.i("routeName", "routeName: " + routeList.get(p).getRouteName());
+        NavDirections action = RecommendationsFragmentDirections.actionRecommendationsFragmentToStartCyclingFragment();
+        Navigation.findNavController(this.getView()).navigate(action);
     }
 }

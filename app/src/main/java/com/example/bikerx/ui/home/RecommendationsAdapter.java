@@ -17,9 +17,11 @@ import java.util.List;
 public class RecommendationsAdapter extends RecyclerView.Adapter<RecommendationsAdapter.ViewHolder>{
 
     private List<ModelClass> routeList;
+    private ViewHolder.OnRouteListener mOnRouteListener;
 
-    public RecommendationsAdapter(List<ModelClass> routeList) {
+    public RecommendationsAdapter(List<ModelClass> routeList, ViewHolder.OnRouteListener onRouteListener) {
         this.routeList = routeList;
+        this.mOnRouteListener = onRouteListener;
     }
 
     @NonNull
@@ -27,7 +29,7 @@ public class RecommendationsAdapter extends RecyclerView.Adapter<Recommendations
     //inflating the view
     public RecommendationsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recommendations_row, parent, false);
-        return new ViewHolder(view);
+        return new ViewHolder(view, mOnRouteListener);
     }
 
     @Override
@@ -44,16 +46,20 @@ public class RecommendationsAdapter extends RecyclerView.Adapter<Recommendations
         return routeList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ImageView imageView;
         private TextView routeName;
         private TextView routeRating;
+        OnRouteListener onRouteListener;
 
-        public ViewHolder(@NonNull View itemView){
+        public ViewHolder(@NonNull View itemView, OnRouteListener onRouteListener){
             super(itemView);
             imageView = itemView.findViewById(R.id.routeImg);
             routeName = itemView.findViewById(R.id.routeName);
             routeRating = itemView.findViewById(R.id.routeRating);
+            this.onRouteListener = onRouteListener;
+
+            itemView.setOnClickListener(this);
 
 
         }
@@ -64,6 +70,15 @@ public class RecommendationsAdapter extends RecyclerView.Adapter<Recommendations
             routeRating.setText(routeRate);
 
 
+        }
+
+        @Override
+        public void onClick(View view) {
+            onRouteListener.onRouteClick(getBindingAdapterPosition());
+        }
+
+        public interface OnRouteListener{
+            void onRouteClick(int position);
         }
     }
 }
