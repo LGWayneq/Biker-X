@@ -51,5 +51,19 @@
             app:layout_constraintTop_toBottomOf="@+id/login_title">
         </Button>
 
+        <Button
+            android:id="@+id/email_sign_in_button"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/rounded_corner"
+            android:text="@string/continue_with_email"
+            android:theme="@style/Button.Blue"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sign_in_button">
+        </Button>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
