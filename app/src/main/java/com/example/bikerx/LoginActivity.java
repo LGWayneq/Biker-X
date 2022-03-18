@@ -1,31 +1,23 @@
 package com.example.bikerx;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Window;
 import android.widget.Toast;
 
 import com.example.bikerx.databinding.ActivityLoginBinding;
-import com.example.bikerx.ui.home.HomeFragment;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -49,6 +41,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(mBinding.getRoot());
 
         mBinding.signInButton.setOnClickListener(view -> signInGoogle());
+        mBinding.emailSignInButton.setOnClickListener(view -> signInEmail());
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -72,7 +65,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void signInEmail() {
-
+        //once click emailSignInButton,lead user to EmailLogin Activity
+        startActivity(new Intent(this, EmailLoginActivity.class));
     }
 
     @Override
