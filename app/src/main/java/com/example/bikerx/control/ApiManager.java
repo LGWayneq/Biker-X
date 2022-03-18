@@ -5,7 +5,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.bikerx.map.Amenity;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -17,10 +16,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Map;
@@ -108,5 +105,65 @@ public class ApiManager {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    public void loadRoutes (AppCompatActivity activity){
+        String json = null;
+        try{
+            InputStream is = activity.getAssets().open("Biker-X-Routes.geojson");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+
+            class Route {
+                String name;
+                JSONArray coordinates;
+                double rating;
+
+                public Route(String name, JSONArray coordinates) {
+                    this.name = name;
+                    this.coordinates = coordinates;
+                    this.rating = 5.0;
+                }
+
+                public String getName() {
+                    return name;
+                }
+
+                public void setName(String name) {
+                    this.name = name;
+                }
+
+                public JSONArray getCoordinates() {
+                    return coordinates;
+                }
+
+                public void setCoordinates(JSONArray coordinates) {
+                    this.coordinates = coordinates;
+                }
+
+                public double getRating() {
+                    return rating;
+                }
+
+                public void setRating(double rating) {
+                    this.rating = rating;
+                }
+            }
+            JSONObject obj = new JSONObject(json);
+            JSONArray jsonArray = obj.getJSONArray("features");
+            for (int i = 0; i<jsonArray.length(); i++){
+                    JSONArray coords = jsonArray.getJSONObject(i).getJSONObject("geometry").getJSONArray("coordinates");
+                    String name = jsonArray.getJSONObject(i).getJSONObject("properties").getString("Name");
+                    Route r = new Route(name, coords);
+                    db.collection("PCN").add(r);
+                    Log.d("Route", "Route" + r);
+                }
+        } catch (Exception ex) {
+                ex.printStackTrace();
+        }
+
     }
 }

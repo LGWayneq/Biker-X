@@ -175,14 +175,15 @@
         android:id="@+id/map_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <fragment
-            android:name="com.example.bikerx.map.RouteMapFragment"
             android:id="@+id/map_fragment"
+            android:name="com.example.bikerx.map.RouteMapFragment"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_marginTop="16dp"
             app:layout_heightPercent="40%"
-            app:layout_marginTopPercent="38%"/>
+            app:layout_marginTopPercent="38%" />
 
         <Button
             android:id="@+id/start_button"
