@@ -2,6 +2,7 @@ package com.example.bikerx.ui.history;
 
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bikerx.MainActivity;
 import com.example.bikerx.databinding.FragmentHistoryBinding;
+import com.example.bikerx.ui.goals.Goal;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,6 +35,7 @@ public class CyclingHistoryFragment extends Fragment {
     private FragmentHistoryBinding mBinding;
     private RecyclerView.LayoutManager layoutManager;
     private CyclingHistoryAdapter adapter;
+    private String userId;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -45,30 +48,45 @@ public class CyclingHistoryFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        userId = ((MainActivity)getActivity()).getUserId();
+        displayGoalsData();
         displayCyclingHistory();
-
+        displayMonthlyData();
         bindButtons();
     }
 
     private void displayGoalsData() {//temp
-        mBinding.distanceProgressBar.setMax(100);
-        mBinding.timeProgressBar.setMax(10000000);
+        mBinding.goalsChronometer.setText(getChronometerDisplay(0L));
+        viewModel.fetchGoals(userId);
+        viewModel.getGoals().observe(this, new Observer<Goal>() {
+            @Override
+            public void onChanged(Goal goal) {
+                if (goal != null) {
+                    mBinding.distanceGoalsFloat.setText(String.format("%.2f", goal.getDistance()));
+                    mBinding.distanceProgressBar.setMax((int) goal.getDistance());
 
-        mBinding.goalsChronometer.setText("0h 00m");
+                    mBinding.goalsChronometer.setText(getChronometerDisplay(goal.getDuration()));
+                    mBinding.timeProgressBar.setMax((int) goal.getDuration());
+                }
+            }
+        });
+
     }
 
     private void displayMonthlyData() {
         viewModel.calculateMonthlyData(this).observe(this, new Observer<HashMap<String, Object>>() {
             @Override
             public void onChanged(HashMap<String, Object> hashMap) {
-                Double monthDistance = (Double)hashMap.get("monthDistance"); 
-                mBinding.distanceDetailsFloat.setText(String.format("%.2f", monthDistance));
-                mBinding.distanceProgressBar.setProgress(monthDistance.intValue());
+                if (hashMap != null) {
+                    Double monthDistance = (Double)hashMap.get("monthDistance");
+                    mBinding.distanceDetailsFloat.setText(String.format("%.2f", monthDistance));
+                    mBinding.distanceProgressBar.setProgress(monthDistance.intValue());
 
-                long monthDuration = (Long) hashMap.get("monthDuration");
-                mBinding.chronometer.setText(getChronometerDisplay(monthDuration));
-                mBinding.timeProgressBar.setProgress((int) monthDuration);
+                    long monthDuration = (Long) hashMap.get("monthDuration");
+                    mBinding.chronometer.setText(getChronometerDisplay(monthDuration));
+                    mBinding.timeProgressBar.setProgress((int) monthDuration);
+                }
+
             }
         });
     }
@@ -82,18 +100,20 @@ public class CyclingHistoryFragment extends Fragment {
     }
 
     private void displayCyclingHistory() {
-        viewModel.fetchCyclingHistory(((MainActivity)getActivity()).getUserId());
+        viewModel.fetchCyclingHistory(userId);
         viewModel.getCyclingHistory().observe(this, new Observer<ArrayList<CyclingHistory>>() {
             @Override
             public void onChanged(ArrayList<CyclingHistory> cyclingHistory) {
-                adapter = new CyclingHistoryAdapter(cyclingHistory);
-                layoutManager = new LinearLayoutManager(getActivity());
-                mBinding.recyclerView.setLayoutManager(layoutManager);
-                mBinding.recyclerView.setAdapter(adapter);
+                if (cyclingHistory != null) {
+                    adapter = new CyclingHistoryAdapter(cyclingHistory);
+                    layoutManager = new LinearLayoutManager(getActivity());
+                    mBinding.recyclerView.setLayoutManager(layoutManager);
+                    mBinding.recyclerView.setAdapter(adapter);
+                } else {
+                    mBinding.noHistoryAlert.setVisibility(View.VISIBLE);
+                }
             }
         });
-        displayMonthlyData();
-        displayGoalsData();
     }
 
     public void bindButtons() {

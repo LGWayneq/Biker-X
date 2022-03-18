@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.bikerx.ui.chat.ForumThread;
 import com.example.bikerx.ui.chat.Message;
+import com.example.bikerx.ui.goals.Goal;
 import com.example.bikerx.ui.history.CyclingHistory;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -208,5 +209,26 @@ public class DBManager {
             }
         });
         return history;
+    }
+
+    public MutableLiveData<Goal> getGoal(String userId) {
+        MutableLiveData<Goal> goal = new MutableLiveData<Goal>();
+        db.collection("users").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                Map<String, Object> data = task.getResult().getData();
+                if (data == null) {
+                    goal.setValue(null);
+                } else {
+                    HashMap<String, Object> goalData = (HashMap<String, Object>) data.get("goals");
+                    Goal newGoal = new Goal(
+                            (double) ((long) goalData.get("distance")),
+                            (long) goalData.get("duration")
+                    );
+                    goal.setValue(newGoal);
+                    }
+                }
+            });
+        return goal;
     }
 }
