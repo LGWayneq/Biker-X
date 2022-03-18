@@ -67,6 +67,8 @@ public class DBManager {
         });
     }
 
+
+
     public MutableLiveData<ArrayList<CyclingHistory>> getCyclingHistory(String userId) {
         MutableLiveData<ArrayList<CyclingHistory>> history = new MutableLiveData<ArrayList<CyclingHistory>>();
         history.setValue(new ArrayList<CyclingHistory>());

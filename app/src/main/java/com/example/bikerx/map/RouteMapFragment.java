@@ -43,6 +43,7 @@ public class RouteMapFragment extends MapFragment{
     public void onMapReady(@NonNull GoogleMap map) {
         super.onMapReady(map);
 
+
         super.getViewModel().getSession().observe(this, new Observer<Session>() {
             @Override
             public void onChanged(Session session) {
