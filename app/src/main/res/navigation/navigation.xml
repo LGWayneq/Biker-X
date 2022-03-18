@@ -41,7 +41,11 @@
     <fragment
         android:id="@+id/recommendationsFragment"
         android:name="com.example.bikerx.ui.home.RecommendationsFragment"
-        tools:layout="@layout/recommendations_fragment" />
+        tools:layout="@layout/recommendations_fragment" >
+        <action
+            android:id="@+id/action_recommendationsFragment_to_startCyclingFragment"
+            app:destination="@id/startCyclingFragment" />
+    </fragment>
     <fragment
         android:id="@+id/startCyclingFragment"
         android:name="com.example.bikerx.ui.session.CyclingSessionFragment"

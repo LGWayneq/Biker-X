@@ -12,20 +12,19 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.bikerx.R;
-import com.example.bikerx.databinding.CyclingSessionFragmentBinding;
-import com.example.bikerx.databinding.RecommendationsFragmentBinding;
 import com.example.bikerx.ui.session.ModelClass;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecommendationsFragment extends Fragment {
+public class RecommendationsFragment extends Fragment implements RecommendationsAdapter.ViewHolder.OnRouteListener {
     private RecyclerView recyclerView;
     private List<ModelClass> routeList;
     private RecommendationsViewModel mViewModel;
@@ -41,16 +40,16 @@ public class RecommendationsFragment extends Fragment {
 
 
         routeList = new ArrayList<>();
-        routeList.add(new ModelClass(R.drawable.sgroundislandloop, "Round Island", "5.0"));
-        routeList.add(new ModelClass(R.drawable.mandailoop, "Mandai Loop", "5.0"));
-        routeList.add(new ModelClass(R.drawable.selatarloop, "Seletar Loop", "3.0"));
-        routeList.add(new ModelClass(R.drawable.sentosabiketrail, "Sentosa Bike Trail", "4.0"));
+        routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Round Island", "5.0"));
+        routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Mandai Loop", "5.0"));
+        routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Seletar Loop", "3.0"));
+        routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Sentosa Bike Trail", "4.0"));
 
         View view = inflater.inflate(R.layout.recommendations_fragment, container, false);
         recyclerView = view.findViewById(R.id.recommendationsRecyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        recyclerView.setAdapter(new Adapter(routeList));
+        recyclerView.setAdapter(new RecommendationsAdapter(routeList, this));
 
         /*FirebaseRecyclerOptions.Builder<ModelClass> options =
                 new FirebaseRecyclerOptions,Bu
@@ -68,7 +67,7 @@ public class RecommendationsFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NavDirections action = HomeFragmentDirections.actionNavigationHomeToStartCyclingFragment();
+                NavDirections action = RecommendationsFragmentDirections.actionRecommendationsFragmentToStartCyclingFragment();
                 Navigation.findNavController(view).navigate(action);
             }
         });
@@ -82,5 +81,13 @@ public class RecommendationsFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(RecommendationsViewModel.class);
         // TODO: Use the ViewModel
+    }
+
+    @Override
+    public void onRouteClick(int position) {
+        int p = position;
+        Log.i("routeName", "routeName: " + routeList.get(p).getRouteName());
+        NavDirections action = RecommendationsFragmentDirections.actionRecommendationsFragmentToStartCyclingFragment();
+        Navigation.findNavController(this.getView()).navigate(action);
     }
 }
