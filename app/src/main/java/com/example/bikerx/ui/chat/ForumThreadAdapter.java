@@ -12,14 +12,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.bikerx.R;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ForumThreadAdapter extends RecyclerView.Adapter<ForumThreadAdapter.ViewHolder>{
+    private static final String TAG = "ForumThreadAdapter";
+    private ArrayList<ForumThread> forumThreadMutableList;
 
-    private List<ForumThread> forumThreadList;
-
-    public ForumThreadAdapter(List<ForumThread> forumThreadList) {
-        this.forumThreadList = forumThreadList;
+    public ForumThreadAdapter(ArrayList<ForumThread> forumThreadMutableList) {
+        this.forumThreadMutableList = forumThreadMutableList;
     }
 
     @NonNull
@@ -31,16 +30,14 @@ public class ForumThreadAdapter extends RecyclerView.Adapter<ForumThreadAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String threadName = forumThreadList.get(position).getThreadName();
-        ArrayList<Message> messageArrayList = forumThreadList.get(position).getMessageArrayList();
+        String threadName = forumThreadMutableList.get(position).getThreadName();
+        ArrayList<Message> messageArrayList = forumThreadMutableList.get(position).getMessageArrayList();
 
         holder.setData(position, threadName, messageArrayList);
     }
 
     @Override
-    public int getItemCount() {
-        return forumThreadList.size();
-    }
+    public int getItemCount() {return forumThreadMutableList.size();}
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         private TextView forumThreadName;
@@ -56,7 +53,7 @@ public class ForumThreadAdapter extends RecyclerView.Adapter<ForumThreadAdapter.
 
         public void setData(int position, String threadName, ArrayList<Message> messageArrayList){
             forumThreadName.setText(threadName);
-            forumThreadDescription.setText(messageArrayList.get(messageArrayList.size()-1).getMessageContent());
+            forumThreadDescription.setText(messageArrayList.get(0).getMessageContent());
             if(position%2==0) {
                 forumRow.setBackgroundResource(R.color.recycler_view_forum_row_item_forumThreadRowItemFrame_color_odd);
             } else {

@@ -9,12 +9,15 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.bikerx.ui.chat.ForumThread;
 import com.example.bikerx.ui.chat.Message;
+import com.example.bikerx.ui.chat.MessageViewModel;
 import com.example.bikerx.ui.history.CyclingHistory;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.type.DateTime;
 
@@ -27,6 +30,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DBManager {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    public static final String TAG = "DBManager";
 
     public void addRatings(String routeId, String userId, float rating) {
         db.collection("routes").document(routeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -73,64 +77,79 @@ public class DBManager {
         });
     }
 
-    public ArrayList<ForumThread> getForumThread(Activity activity){
-        ArrayList<ForumThread> forumThreadArrayList = new ArrayList<>();
-
-//        May or may not be efficient since we pull ALL forum data? Inefficient if forum data is
-//        excessive, efficient since it "pre-loads" the data
-        db.collection("forum-threads").get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot documentSnapshots) {
-                        if (documentSnapshots.isEmpty()) {
-                            return;
-                        } else {
-                            // Convert the whole Query Snapshot to a list of objects directly!
-                            // No need to fetch each document.
-                            //List<ForumThread> types = documentSnapshots.getDocuments().get()
-                                    //.toObjects(ForumThread.class);
-
-                            // Add all to your list
-                            //forumThreadArrayList.addAll(types);
-                        }
+    public MutableLiveData<ArrayList<CyclingHistory>> getCyclingHistory(String userId) {
+        MutableLiveData<ArrayList<CyclingHistory>> history = new MutableLiveData<ArrayList<CyclingHistory>>();
+        history.setValue(new ArrayList<CyclingHistory>());
+        db.collection("users").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                Map<String, Object> data = task.getResult().getData();
+                if (data == null) {
+                    history.setValue(null);
+                } else {
+                    List<HashMap<String, Object>> historyData = (List<HashMap<String, Object>>) data.get("history");
+                    for (HashMap<String, Object> session: historyData) {
+                        CyclingHistory newHistory = new CyclingHistory(
+                                (String) session.get("date"),
+                                (String) session.get("formattedDistance"),
+                                (long) session.get("duration"));
+                        ArrayList<CyclingHistory> newHistoryArray = history.getValue();
+                        newHistoryArray.add(newHistory);
+                        history.setValue(newHistoryArray);
                     }
-                });
-//            .addOnFailureListener(new OnFailureListener() {
-//                @Override
-//                public void onFailure(@NonNull Exception e) {
-//                    Toast.makeText(activity.getApplicationContext(), "Error getting data!!!", Toast.LENGTH_LONG).show();
-//                }
-//            });
+                }
+            }
+        });
+        return history;
+    }
+
+    public MutableLiveData<ArrayList<ForumThread>> getForumThread(Activity activity){
+        MutableLiveData<ArrayList<ForumThread>> forumThreadArrayList = new MutableLiveData<ArrayList<ForumThread>>();
+        forumThreadArrayList.setValue(new ArrayList<ForumThread>());
+
+        db.collection("forum-threads").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        Log.d(TAG, document.getId() + " => " + document.getData());
+                        Log.d(TAG, "onComplete: threadID "+document.getData().get("threadId").toString());
+                        Log.d(TAG, "onComplete: threadName "+document.getData().get("threadName").toString());
+                        Log.d(TAG, "onComplete: threadMessages "+document.getData().get("messages").toString());
+
+                        String threadId = document.getData().get("threadId").toString();
+                        String threadName = document.getData().get("threadName").toString();
+                        List<HashMap<String, Object>> messageList = (List<HashMap<String, Object>>) document.getData().get("messages");
+                        ArrayList<Message> newMessageArray = new ArrayList<>();
+                        HashMap<String, Object> messageIndividual = messageList.get(messageList.size()-1);
+                        Message newMessage = new Message(
+                                (String) messageIndividual.get("userId"),
+                                (String) messageIndividual.get("userName"),
+                                (String) messageIndividual.get("messageID"),
+                                (String) messageIndividual.get("time").toString(),
+                                (String) messageIndividual.get("messageContent"));
+                        newMessageArray.add(newMessage);
+
+                        ForumThread newForumThread = new ForumThread(
+                                threadId,
+                                threadName,
+                                newMessageArray
+                        );
+                        ArrayList<ForumThread> newForumThreadArray = forumThreadArrayList.getValue();
+                        newForumThreadArray.add(newForumThread);
+                        forumThreadArrayList.setValue(newForumThreadArray);
+                    }
+                } else {
+                    Log.d(TAG, "Error getting documents: ", task.getException());
+                    Toast.makeText(activity.getApplicationContext(), "Error Getting Data", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
 
         return forumThreadArrayList;
-//        MutableLiveData<ArrayList<ForumThread>> history = new MutableLiveData<ArrayList<ForumThread>>();
-//        history.setValue(new ArrayList<ForumThread>());
-//        db.collection("forum-threads").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                Map<String, Object> data = task.getResult();
-//                if (data == null) {
-//                    history.setValue(null);
-//                } else {
-//                    List<HashMap<String, Object>> historyData = (List<HashMap<String, Object>>) data.get("history");
-//                    for (HashMap<String, Object> session: historyData) {
-//                        CyclingHistory newHistory = new CyclingHistory(
-//                                (String) session.get("date"),
-//                                (String) session.get("formattedDistance"),
-//                                (long) session.get("duration"));
-//                        ArrayList<CyclingHistory> newHistoryArray = history.getValue();
-//                        newHistoryArray.add(newHistory);
-//                        history.setValue(newHistoryArray);
-//                    }
-//                }
-//            }
-//        });
-//        return history;
-
     }
 
 
-    //    Still not quite sure when to use mutablelivedata vs normal arraylist
     public MutableLiveData<ArrayList<Message>> getForumMessage(Activity activity, String threadId){
 //        For user to refresh the specific forum chat, preferably by swiping down
         MutableLiveData<ArrayList<Message>> forumMessageMutableArray = new MutableLiveData<ArrayList<Message>>();
@@ -150,7 +169,7 @@ public class DBManager {
                                     (String) forumMessage.get("userId"),
                                     (String) forumMessage.get("userName"),
                                     (String) forumMessage.get("messageID"),
-                                    (String) forumMessage.get("time"),
+                                    (String) forumMessage.get("time").toString(),
                                     (String) forumMessage.get("messageContent"));
                             ArrayList<Message> newForumMessageMutableArray = forumMessageMutableArray.getValue();
                             newForumMessageMutableArray.add(message);
@@ -183,30 +202,4 @@ public class DBManager {
         });
     }
 
-
-    public MutableLiveData<ArrayList<CyclingHistory>> getCyclingHistory(String userId) {
-        MutableLiveData<ArrayList<CyclingHistory>> history = new MutableLiveData<ArrayList<CyclingHistory>>();
-        history.setValue(new ArrayList<CyclingHistory>());
-        db.collection("users").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                Map<String, Object> data = task.getResult().getData();
-                if (data == null) {
-                    history.setValue(null);
-                } else {
-                    List<HashMap<String, Object>> historyData = (List<HashMap<String, Object>>) data.get("history");
-                    for (HashMap<String, Object> session: historyData) {
-                        CyclingHistory newHistory = new CyclingHistory(
-                                (String) session.get("date"),
-                                (String) session.get("formattedDistance"),
-                                (long) session.get("duration"));
-                        ArrayList<CyclingHistory> newHistoryArray = history.getValue();
-                        newHistoryArray.add(newHistory);
-                        history.setValue(newHistoryArray);
-                    }
-                }
-            }
-        });
-        return history;
-    }
 }
