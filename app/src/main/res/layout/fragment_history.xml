@@ -56,6 +56,7 @@
             android:id="@+id/cycling_details_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <ProgressBar
                 android:id="@+id/distance_progress_bar"
                 style="?android:attr/progressBarStyleHorizontal"

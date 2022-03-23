@@ -28,6 +28,7 @@ public class LoginActivity extends AppCompatActivity {
     private GoogleSignInClient mSignInClient;
 
     private FirebaseAuth mFirebaseAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +56,9 @@ public class LoginActivity extends AppCompatActivity {
     private void checkIfSignedIn() {
         FirebaseUser user = mFirebaseAuth.getCurrentUser();
         if (user != null) {
-            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            if (user.isEmailVerified()) {
+                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            }
         }
     }
 
