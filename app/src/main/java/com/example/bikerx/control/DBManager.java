@@ -229,7 +229,7 @@ public class DBManager {
 
                     for (DocumentSnapshot document : task.getResult()) {
                         r.add(document.toObject(Route1.class));
-                        Log.d("test", r.get(0).getName());
+                        Log.d("test", String.valueOf(r.size()));
                     }
                 } else {
                     Log.d("getRoute", "Error getting route: ", task.getException());
