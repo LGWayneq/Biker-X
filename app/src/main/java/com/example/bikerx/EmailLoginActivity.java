@@ -111,19 +111,20 @@ public class EmailLoginActivity extends AppCompatActivity implements View.OnClic
                     //if user email is verified, direct them to home fragment
                     if (user.isEmailVerified()) {
                         //direct user to main activity once user logs in successfully with correct email and password
-                        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                         dialog.dismiss();
                         finish();
                         startActivity(new Intent(EmailLoginActivity.this, MainActivity.class));
 
                     } else {
                         //send email verification link to user
+                        dialog.dismiss();
                         user.sendEmailVerification();
                         Toast.makeText(EmailLoginActivity.this, "Check your email to verify your account", Toast.LENGTH_LONG).show();
                     }
 
 
                 } else {
+                    dialog.dismiss();
                     Toast.makeText(EmailLoginActivity.this, "Failed to login. check credentials", Toast.LENGTH_LONG).show();
 
                 }

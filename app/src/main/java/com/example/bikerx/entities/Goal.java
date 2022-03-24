@@ -1,8 +1,13 @@
-package com.example.bikerx.ui.goals;
+package com.example.bikerx.entities;
 
 public class Goal {
     private double distance;
     private long duration;
+
+    public Goal() {
+        this.distance = 0;
+        this.duration = 0;
+    }
 
     public Goal(double distance, long duration) {
         this.distance = distance;
