@@ -64,6 +64,7 @@
                 android:id="@+id/sendMessageTextbox"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:elegantTextHeight="true"
                 android:ems="10"
                 android:gravity="start|top"
                 android:inputType="textMultiLine"

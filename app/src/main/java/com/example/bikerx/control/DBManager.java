@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -185,7 +186,7 @@ public class DBManager {
         return forumMessageMutableArray;
     }
 
-    public void addForumMessage(String threadId, String userId, String userName, String messageID, Timestamp time, String messageContent){
+    public void addForumMessage(String threadId, String userId, String userName, String messageId, Timestamp time, String messageContent){
         db.collection("forum-threads").document(threadId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -194,10 +195,10 @@ public class DBManager {
                 HashMap<String, Object> entry = new HashMap<String, Object>();
                 entry.put("userId", userId );
                 entry.put("userName", userName);
-                entry.put("messageID", messageID );
+                entry.put("messageId", messageId );
                 entry.put("time", time);
                 entry.put("messageContent", messageContent );
-                messages.add(entry);
+                    messages.add(entry);
                 db.collection("forum-threads").document(threadId).update("messages", messages);
             }
         });
