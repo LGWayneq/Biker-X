@@ -118,14 +118,12 @@ public class ApiManager {
             json = new String(buffer, "UTF-8");
 
             class Route {
-                String name;
-                JSONArray coordinates;
-                double rating;
+                public String name;
+                ArrayList<Double> coordinates;
 
-                public Route(String name, JSONArray coordinates) {
+                public Route(ArrayList<Double> coordinates,String name) {
                     this.name = name;
                     this.coordinates = coordinates;
-                    this.rating = 5.0;
                 }
 
                 public String getName() {
@@ -136,34 +134,69 @@ public class ApiManager {
                     this.name = name;
                 }
 
-                public JSONArray getCoordinates() {
+                public ArrayList<Double> getCoordinates() {
                     return coordinates;
                 }
 
-                public void setCoordinates(JSONArray coordinates) {
+                public void setCoordinates(ArrayList<Double> coordinates) {
                     this.coordinates = coordinates;
                 }
 
-                public double getRating() {
-                    return rating;
-                }
-
-                public void setRating(double rating) {
-                    this.rating = rating;
-                }
             }
             JSONObject obj = new JSONObject(json);
             JSONArray jsonArray = obj.getJSONArray("features");
-            for (int i = 0; i<jsonArray.length(); i++){
-                    JSONArray coords = jsonArray.getJSONObject(i).getJSONObject("geometry").getJSONArray("coordinates");
-                    String name = jsonArray.getJSONObject(i).getJSONObject("properties").getString("Name");
-                    Route r = new Route(name, coords);
-                    db.collection("PCN").add(r);
-                    Log.d("Route", "Route" + r);
+            for (int i = 0; i<jsonArray.length(); i++) {
+                String name = jsonArray.getJSONObject(i).getJSONObject("properties").getString("Name");
+                JSONArray outerArray = jsonArray.getJSONObject(i).getJSONObject("geometry").getJSONArray("coordinates");
+                ArrayList<Double> coords = new ArrayList<>();
+                for (int j = 0; j < outerArray.length(); j++) {
+                    JSONArray innerArray = outerArray.getJSONArray(j);
+                    for (int k = 0; k < innerArray.length(); k++) {
+                        coords.add(k, innerArray.getDouble(k));
+                    }
                 }
+                db.collection("PCN").add(new Route(coords, name));
+            }
+
+
         } catch (Exception ex) {
                 ex.printStackTrace();
         }
+    }
+    public void load (AppCompatActivity activity){
+        String json1 = null;
+        try{
+            InputStream is = activity.getAssets().open("Biker-X-Routes.geojson");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json1 = new String(buffer, "UTF-8");
 
+            class Route {
+                public String name;
+
+                public Route(String name) {
+                    this.name = name;
+                }
+
+                public String getName() {
+                    return name;
+                }
+
+                public void setName(String name) {
+                    this.name = name;
+                }
+
+            }
+            JSONObject obj = new JSONObject(json1);
+            JSONArray jsonArray = obj.getJSONArray("features");
+            for (int i = 0; i<jsonArray.length(); i++) {
+                String name = jsonArray.getJSONObject(i).getJSONObject("properties").getString("Name");
+                db.collection("routes1").add(new Route(name));
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }
