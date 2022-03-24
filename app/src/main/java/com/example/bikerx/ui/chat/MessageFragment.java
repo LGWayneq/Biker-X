@@ -34,6 +34,7 @@ public class MessageFragment extends Fragment {
     private MessageViewModel mViewModel;
     private RecyclerView mRecyclerView;
     private View view;
+    MessageAdapter mAdapter;
     private String threadId = "fsMgD4ddjRdK1bXLr0Dp";
     private String forumHeading = "Cycling Marathon";
     private TextView messageTextbox;
@@ -95,7 +96,9 @@ public class MessageFragment extends Fragment {
 //                mLayoutManager.setReverseLayout(true);
                 mLayoutManager.setStackFromEnd(true);
                 mRecyclerView.setLayoutManager(mLayoutManager);
-                mRecyclerView.setAdapter(new MessageAdapter(messageArray));
+
+                mAdapter = new MessageAdapter(messageArray);
+                mRecyclerView.setAdapter(mAdapter);
             }
         });
     }
@@ -106,7 +109,7 @@ public class MessageFragment extends Fragment {
         view.findViewById(R.id.sendMessageButton).setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 String messageContent = messageTextbox.getText().toString();
-                mViewModel.sendMessage(getActivity(), threadId, messageContent);
+                mViewModel.sendMessage(getActivity(), threadId, messageContent, mAdapter);
                 messageTextbox.setText("");
             }
         });

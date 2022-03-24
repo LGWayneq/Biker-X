@@ -5,14 +5,14 @@ import com.google.firebase.Timestamp;
 public class Message {
     private String userId;
     private String userName;
-    private String messageID;
+    private String messageId;
     private Timestamp time;
     private String messageContent;
 
-    public Message(String userId, String userName, String messageID, Timestamp time, String messageContent) {
+    public Message(String userId, String userName, String messageId, Timestamp time, String messageContent) {
         this.userId = userId;
         this.userName = userName;
-        this.messageID = messageID;
+        this.messageId = messageId;
         this.time = time;
         this.messageContent = messageContent;
     }
@@ -23,8 +23,8 @@ public class Message {
     public String getUserName() { return userName; }
     public void setUserName(String userName) { this.userName = userName; }
 
-    public String getMessageID() { return messageID; }
-    public void setMessageID(String messageID) { this.messageID = messageID; }
+    public String getMessageID() { return messageId; }
+    public void setMessageID(String messageID) { this.messageId = messageID; }
 
     public Timestamp getTime() { return time; }
     public void setTimeD(Timestamp time) { this.time = time; }

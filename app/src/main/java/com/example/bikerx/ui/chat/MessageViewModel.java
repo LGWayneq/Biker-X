@@ -23,22 +23,28 @@ import java.util.TimeZone;
 
 public class MessageViewModel extends ViewModel {
     DBManager dbManager = new DBManager();
-    public MutableLiveData<ArrayList<Message>> messageArrayList;
+    public MutableLiveData<ArrayList<Message>> mutableMessageArrayList;
     private String TAG = "MessageViewModel";
 
     public void fetchMessages(FragmentActivity activity, String threadId) {
-        messageArrayList = dbManager.getForumMessage(activity, threadId);
+        mutableMessageArrayList = dbManager.getForumMessage(activity, threadId);
     }
 
     public MutableLiveData<ArrayList<Message>> getMessages(FragmentActivity activity) {
-        return messageArrayList;
+        return mutableMessageArrayList;
     }
 
-    public void sendMessage(FragmentActivity activity, String threadId, String messageContent) {
+    public void sendMessage(FragmentActivity activity, String threadId, String messageContent, MessageAdapter mAdapter) {
         String userName = ((MainActivity) activity).getSupportActionBar().getTitle().toString().replace("Hello, ", "").replace("!","");
-        String messageId = threadId + Integer.toString(messageArrayList.getValue().size());
+        String messageId = threadId + Integer.toString(mutableMessageArrayList.getValue().size());
         Timestamp currentTimestamp = Timestamp.now();
 
         dbManager.addForumMessage(threadId, ((MainActivity)activity).getUserId(), userName, messageId, currentTimestamp, messageContent);
+
+        Message addedMessage = new Message(((MainActivity)activity).getUserId(), userName, messageId, currentTimestamp, messageContent);
+        ArrayList<Message> messageArrayList = mutableMessageArrayList.getValue();
+        messageArrayList.add(addedMessage);
+        mutableMessageArrayList.setValue(messageArrayList);
+        mAdapter.notifyDataSetChanged();
     }
 }
