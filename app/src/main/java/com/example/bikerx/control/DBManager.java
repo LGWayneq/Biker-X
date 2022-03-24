@@ -7,16 +7,25 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.bikerx.entities.GoalsInfo;
+import com.example.bikerx.R;
 import com.example.bikerx.ui.chat.ForumThread;
 import com.example.bikerx.ui.chat.Message;
 import com.example.bikerx.entities.Goal;
 import com.example.bikerx.ui.history.CyclingHistory;
+import com.example.bikerx.ui.home.Route1;
+import com.example.bikerx.ui.session.ModelClass;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.type.DateTime;
+import com.squareup.okhttp.Route;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -207,6 +216,48 @@ public class DBManager {
         });
         return history;
     }
+
+
+
+
+    public Route1 getRoute(String routeName) {
+        ArrayList<Route1> r = new ArrayList<>();
+        db.collection("PCN").whereEqualTo("name", routeName).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+
+                    for (DocumentSnapshot document : task.getResult()) {
+                        r.add(document.toObject(Route1.class));
+                        Log.d("test", String.valueOf(r.size()));
+                    }
+                } else {
+                    Log.d("getRoute", "Error getting route: ", task.getException());
+                }
+            }
+        });
+        return r.get(0);}
+
+    public ArrayList<ModelClass> getRecommendedRoutes() {
+        ArrayList<ModelClass> routeList = new ArrayList<>();
+        db.collection("routes1").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        Map<String, Object> data = document.getData();
+                        ModelClass m = new ModelClass(R.drawable.common_google_signin_btn_icon_dark, (String) data.get("name"), "5.0");
+                        Log.d("db", m.getRouteName());
+                        routeList.add(m);
+                    }
+                }
+            }
+        });
+        Log.d("db", String.valueOf(routeList.size()));
+        return routeList;
+
+    }
+
 
     public MutableLiveData<Goal> getGoal(String userId) {
         MutableLiveData<Goal> goal = new MutableLiveData<Goal>();

@@ -19,6 +19,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.bikerx.R;
+import com.example.bikerx.control.ApiManager;
+import com.example.bikerx.control.DBManager;
 import com.example.bikerx.ui.session.ModelClass;
 
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ public class RecommendationsFragment extends Fragment implements Recommendations
     private List<ModelClass> routeList;
     private RecommendationsViewModel mViewModel;
     private Button button;
+    private DBManager dbManager;
 
     public static RecommendationsFragment newInstance() {
         return new RecommendationsFragment();
@@ -37,13 +40,14 @@ public class RecommendationsFragment extends Fragment implements Recommendations
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-
-
+        this.dbManager = new DBManager();
         routeList = new ArrayList<>();
-        routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Round Island", "5.0"));
+        routeList = dbManager.getRecommendedRoutes();
+
+/*        routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Round Island", "5.0"));
         routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Mandai Loop", "5.0"));
         routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Seletar Loop", "3.0"));
-        routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Sentosa Bike Trail", "4.0"));
+        routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Sentosa Bike Trail", "4.0"));*/
 
         View view = inflater.inflate(R.layout.recommendations_fragment, container, false);
         recyclerView = view.findViewById(R.id.recommendationsRecyclerView);
