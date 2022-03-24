@@ -87,5 +87,8 @@
         <action
             android:id="@+id/action_startMessageFragment_to_navigation_chat"
             app:destination="@id/navigation_chat" />
+        <action
+            android:id="@+id/action_startMessageFragment_self"
+            app:destination="@id/startMessageFragment" />
     </fragment>
 </navigation>

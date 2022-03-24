@@ -153,7 +153,6 @@ public class DBManager {
 
 
     public MutableLiveData<ArrayList<Message>> getForumMessage(Activity activity, String threadId){
-//        For user to refresh the specific forum chat, preferably by swiping down
         MutableLiveData<ArrayList<Message>> forumMessageMutableArray = new MutableLiveData<ArrayList<Message>>();
         forumMessageMutableArray.setValue(new ArrayList<Message>());
 
@@ -186,20 +185,24 @@ public class DBManager {
         return forumMessageMutableArray;
     }
 
-    public void addForumMessage(String threadId, String userId, String userName, String messageId, Timestamp time, String messageContent){
+    public void addForumMessage(Activity activity, String threadId, String userId, String userName, String messageId, Timestamp time, String messageContent){
         db.collection("forum-threads").document(threadId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                Map<String, Object> data = task.getResult().getData();
-                List<HashMap<String, Object>> messages = (List<HashMap<String, Object>>) data.get("messages");
-                HashMap<String, Object> entry = new HashMap<String, Object>();
-                entry.put("userId", userId );
-                entry.put("userName", userName);
-                entry.put("messageId", messageId );
-                entry.put("time", time);
-                entry.put("messageContent", messageContent );
+                if (task.isSuccessful()) {
+                    Map<String, Object> data = task.getResult().getData();
+                    List<HashMap<String, Object>> messages = (List<HashMap<String, Object>>) data.get("messages");
+                    HashMap<String, Object> entry = new HashMap<String, Object>();
+                    entry.put("userId", userId );
+                    entry.put("userName", userName);
+                    entry.put("messageId", messageId );
+                    entry.put("time", time);
+                    entry.put("messageContent", messageContent );
                     messages.add(entry);
-                db.collection("forum-threads").document(threadId).update("messages", messages);
+                    db.collection("forum-threads").document(threadId).update("messages", messages);
+                } else {
+                    Toast.makeText(activity.getApplicationContext(), "Error getting data!!!", Toast.LENGTH_LONG).show();
+                }
             }
         });
     }

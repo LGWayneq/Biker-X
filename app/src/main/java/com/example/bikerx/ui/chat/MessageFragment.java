@@ -1,7 +1,6 @@
 package com.example.bikerx.ui.chat;
 
-import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.MutableLiveData;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -12,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,15 +19,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.bikerx.R;
-import com.example.bikerx.control.DBManager;
-import com.example.bikerx.ui.home.HomeFragmentDirections;
-import com.google.firebase.Timestamp;
 
 import java.util.ArrayList;
+
 
 public class MessageFragment extends Fragment {
     private static final String TAG = "MessageFragment";
@@ -43,11 +40,21 @@ public class MessageFragment extends Fragment {
         return new MessageFragment();
     }
 
+//    @Override
+//    public void onCreate(@Nullable Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        Log.d(TAG, "onCreate: savedInstanceState = " + savedInstanceState);
+//        Log.d(TAG, "onCreate: extracted value = " + savedInstanceState.getString("threadId"));
+//    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         mViewModel = new ViewModelProvider(this).get(MessageViewModel.class);
         View view = inflater.inflate(R.layout.message_fragment, container, false);
+
+//        Log.d(TAG, "onCreateView: savedInstanceState = " + savedInstanceState);
+//        Log.d(TAG, "onCreateView: extracted value = " + savedInstanceState.getString("threadId"));
         return view;
     }
 
@@ -57,27 +64,6 @@ public class MessageFragment extends Fragment {
         setForumTitle(view, forumHeading);
         displayMessageList(view);
         bindButtons(view);
-
-//        cViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
-//        forumThreadList = cViewModel.fetchForumThread();
-
-//        TextView testingView = (TextView) view.findViewById(R.id.forumHeading);
-//        String holder = "";
-//        for (ForumThread forumThread: forumThreadList) {
-//            holder += forumThread.getThreadId() + "\n";
-//            holder += forumThread.getThreadName() + "\n\t\t";
-//            for (Message message: forumThread.getMessageArrayList()){
-//                holder += message.getUserId() + "\n\t\t";
-//                holder += message.getUserName() + "\n\t\t";
-//                holder += message.getMessageID() + "\n\t\t";
-//                holder += message.getTime() + "\n\t\t";
-//                holder += message.getMessageContent() + "\n\t\t";
-//            }
-//            holder += "\n";
-//        }
-//        testingView.setText(holder);
-
-//        bindButtons();
     }
 
     private void setForumTitle(View view, String forumHeading) {
