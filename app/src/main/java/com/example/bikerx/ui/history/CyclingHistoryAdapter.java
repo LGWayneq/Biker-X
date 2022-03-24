@@ -48,6 +48,6 @@ public class CyclingHistoryAdapter extends RecyclerView.Adapter<CyclingHistoryAd
 
     @Override
     public int getItemCount() {
-        return cyclingHistory.size();
+        return cyclingHistory != null ? cyclingHistory.size() : 0;
     }
 }

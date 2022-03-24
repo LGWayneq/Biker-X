@@ -191,7 +191,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
-                    android:text="@string/goals_chronometer_placeholder"
                     android:textSize="20dp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="@+id/chronometer"
@@ -204,9 +203,23 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="310dp"
+        android:layout_height="0dp"
         android:layout_marginTop="@dimen/fragment_vertical_margin"
+        android:paddingBottom="75dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cycling_goals_card" />
+        app:layout_constraintTop_toBottomOf="@+id/cycling_goals_card"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <TextView
+        android:id="@+id/no_history_alert"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="You have not cycled this month!"
+        android:textSize="@dimen/subheading_size"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/recycler_view"
+        app:layout_constraintBottom_toBottomOf="@+id/recycler_view"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

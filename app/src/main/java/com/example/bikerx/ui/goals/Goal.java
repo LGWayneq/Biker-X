@@ -1,0 +1,27 @@
+package com.example.bikerx.ui.goals;
+
+public class Goal {
+    private double distance;
+    private long duration;
+
+    public Goal(double distance, long duration) {
+        this.distance = distance;
+        this.duration = duration;
+    }
+
+    public double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(double distance) {
+        this.distance = distance;
+    }
+
+    public long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
+}
