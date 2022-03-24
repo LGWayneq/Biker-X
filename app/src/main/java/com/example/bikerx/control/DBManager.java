@@ -128,7 +128,7 @@ public class DBManager {
                                 (String) messageIndividual.get("userName"),
                                 (String) messageIndividual.get("messageID"),
                                 (Timestamp) messageIndividual.get("time"),
-                                (String) messageIndividual.get("messageContent"));
+                                ((String) messageIndividual.get("messageContent")).replace("\\n", "\n"));
                         newMessageArray.add(newMessage);
 
                         ForumThread newForumThread = new ForumThread(
@@ -171,7 +171,7 @@ public class DBManager {
                                     (String) forumMessage.get("userName"),
                                     (String) forumMessage.get("messageID"),
                                     (Timestamp) forumMessage.get("time"),
-                                    (String) forumMessage.get("messageContent"));
+                                    ((String) forumMessage.get("messageContent")).replace("\\n", "\n"));
                             ArrayList<Message> newForumMessageMutableArray = forumMessageMutableArray.getValue();
                             newForumMessageMutableArray.add(message);
                             forumMessageMutableArray.setValue(newForumMessageMutableArray);

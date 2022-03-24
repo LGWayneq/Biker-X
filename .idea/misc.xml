@@ -38,7 +38,9 @@
         <entry key="..\:/Users/G Wayne/Desktop/CZ2006 Software Engineering/BikerX/app/src/main/res/layout/start_cycling_session_fragment.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/G Wayne/Desktop/CZ2006 Software Engineering/BikerX/app/src/main/res/menu/action_bar_menu.xml" value="0.19427083333333334" />
         <entry key="..\:/Users/G Wayne/Desktop/CZ2006 Software Engineering/BikerX/app/src/main/res/menu/bottom_nav_menu.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/lee_x/AndroidStudioProjects/Biker-X/app/src/main/res/drawable/circular_button.xml" value="0.2265" />
         <entry key="..\:/Users/lee_x/AndroidStudioProjects/Biker-X/app/src/main/res/drawable/circular_progress_bar.xml" value="0.2265" />
+        <entry key="..\:/Users/lee_x/AndroidStudioProjects/Biker-X/app/src/main/res/drawable/ic_baseline_send_24.xml" value="0.2265" />
         <entry key="..\:/Users/lee_x/AndroidStudioProjects/Biker-X/app/src/main/res/drawable/ic_chat.xml" value="0.2265" />
         <entry key="..\:/Users/lee_x/AndroidStudioProjects/Biker-X/app/src/main/res/drawable/ic_map.xml" value="0.2595" />
         <entry key="..\:/Users/lee_x/AndroidStudioProjects/Biker-X/app/src/main/res/drawable/ic_sunny.xml" value="0.2265" />
@@ -51,7 +53,7 @@
         <entry key="..\:/Users/lee_x/AndroidStudioProjects/Biker-X/app/src/main/res/layout/fragment_full_map.xml" value="0.22826086956521738" />
         <entry key="..\:/Users/lee_x/AndroidStudioProjects/Biker-X/app/src/main/res/layout/fragment_history.xml" value="0.22826086956521738" />
         <entry key="..\:/Users/lee_x/AndroidStudioProjects/Biker-X/app/src/main/res/layout/fragment_map.xml" value="0.22826086956521738" />
-        <entry key="..\:/Users/lee_x/AndroidStudioProjects/Biker-X/app/src/main/res/layout/message_fragment.xml" value="0.22826086956521738" />
+        <entry key="..\:/Users/lee_x/AndroidStudioProjects/Biker-X/app/src/main/res/layout/message_fragment.xml" value="0.2" />
         <entry key="..\:/Users/lee_x/AndroidStudioProjects/Biker-X/app/src/main/res/layout/recycler_view_forum_row_item.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/lee_x/AndroidStudioProjects/Biker-X/app/src/main/res/layout/recycler_view_message.xml" value="0.264" />
         <entry key="..\:/Users/lee_x/AndroidStudioProjects/Biker-X/app/src/main/res/layout/recycler_view_message_row_date.xml" value="0.264" />

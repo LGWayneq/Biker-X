@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder>{
-    private static final String TAG = "MessageAdapter";
     private ArrayList<Message> messageMutableList;
     private Context mContext;
 
@@ -47,14 +46,20 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         String userId = messageMutableList.get(position).getUserId();
         String name = messageMutableList.get(position).getUserName();
         String messageID = messageMutableList.get(position).getMessageID();
+        String content = messageMutableList.get(position).getMessageContent();
+
         Date timestamp = messageMutableList.get(position).getTime().toDate();
         DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(mContext.getApplicationContext());
         DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(mContext.getApplicationContext());
         String time = timeFormat.format(timestamp);
         String date = dateFormat.format(timestamp);
-        String content = messageMutableList.get(position).getMessageContent();
+        String previousDate = null;
+        if (position>=1) {
+            Date previousTimestamp = messageMutableList.get(position-1).getTime().toDate();
+            previousDate = dateFormat.format(previousTimestamp);
+        }
 
-        holder.setData(position, ((MainActivity) mContext).getUserId(), userId, name, messageID, date, time, content);
+        holder.setData(position, ((MainActivity) mContext).getUserId(), userId, name, messageID, date, time, content, previousDate);
     }
 
     @Override
@@ -66,6 +71,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         private TextView messageTime;
         private TextView messageDate;
         private ConstraintLayout messageConstraint;
+        private ConstraintLayout messageDateConstraint;
 
         public ViewHolder(@NonNull View itemView){
             super(itemView);
@@ -74,15 +80,17 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             messageTime = itemView.findViewById(R.id.messageTime);
             messageDate = itemView.findViewById(R.id.messageDate);
             messageConstraint = itemView.findViewById(R.id.messageRow);
+            messageDateConstraint = itemView.findViewById(R.id.messageDateRow);
         }
 
-        public void setData(int position, String currentUserId, String userId, String name, String messageID, String date, String time, String content){
+        public void setData(int position, String currentUserId, String userId, String name, String messageID, String date, String time, String content, String previousDate){
             messageName.setText(name);
             messageContent.setText(content);
             messageTime.setText(time);
             messageDate.setText(date);
-            Log.d(TAG, "setData: userId " + userId);
-            Log.d(TAG, "setData: currentUserId " + currentUserId);
+            if (date.equals(previousDate)) {
+                messageDateConstraint.setVisibility(View.GONE);
+            }
             if(userId.equals(currentUserId)) {
                 final ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) messageConstraint.getLayoutParams();
                 layoutParams.startToStart = ConstraintLayout.LayoutParams.UNSET;

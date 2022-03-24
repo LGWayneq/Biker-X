@@ -21,4 +21,6 @@
     <dimen name="recycler_view_message_row_item_messageContent_textSize">12sp</dimen>
     <dimen name="recycler_view_message_row_item_messageTime_textSize">10sp</dimen>
     <dimen name="recycler_view_message_row_date_textSize">14sp</dimen>
+    <!--    Dimensions for Message Bar-->
+    <dimen name="send_message_bar_textSize">14sp</dimen>
 </resources>
