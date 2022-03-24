@@ -1,5 +1,6 @@
 package com.example.bikerx.ui.chat;
 
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -16,34 +17,34 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.bikerx.MainActivity;
 import com.example.bikerx.R;
 import com.example.bikerx.control.DBManager;
 
 import java.util.ArrayList;
 
-public class ChatFragment extends Fragment {
-    private static final String TAG = "ChatFragment";
-    private ChatViewModel cViewModel;
-    private RecyclerView cRecyclerView;
+public class MessageFragment extends Fragment {
+    private static final String TAG = "MessageFragment";
+    private MessageViewModel mViewModel;
+    private RecyclerView mRecyclerView;
+    private View view;
+    private String threadId = "fsMgD4ddjRdK1bXLr0Dp";
 
-    public static ChatFragment newInstance() {
-        return new ChatFragment();
+    public static MessageFragment newInstance() {
+        return new MessageFragment();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        cViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
-        View view = inflater.inflate(R.layout.chat_fragment, container, false);
+        mViewModel = new ViewModelProvider(this).get(MessageViewModel.class);
+        View view = inflater.inflate(R.layout.message_fragment, container, false);
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        displayForumThread(view);
-//        Log.d(TAG, "onViewCreated: userId " + ((MainActivity)getActivity()).getUserId());
+        displayMessageList(view);
 
 //        cViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
 //        forumThreadList = cViewModel.fetchForumThread();
@@ -67,17 +68,17 @@ public class ChatFragment extends Fragment {
 //        bindButtons();
     }
 
-    private void displayForumThread(View view) {
-        cViewModel.fetchForumThread(getActivity());
-        cViewModel.getForumThread(getActivity()).observe(this, new Observer<ArrayList<ForumThread>>() {
+    private void displayMessageList(View view) {
+        mViewModel.fetchMessages(getActivity(), threadId);
+        mViewModel.getMessages(getActivity()).observe(this, new Observer<ArrayList<Message>>() {
             @Override
-            public void onChanged(ArrayList<ForumThread> forumThreadArray) {
-                cRecyclerView = view.findViewById(R.id.forumThreadRecycleView);
-                cRecyclerView.setHasFixedSize(true);
-                LinearLayoutManager cLayoutManager = new LinearLayoutManager(view.getContext());
-//                cLayoutManager.setReverseLayout(true);
-//                cLayoutManager.setStackFromEnd(true);
-                cRecyclerView.setLayoutManager(cLayoutManager);
+            public void onChanged(ArrayList<Message> messageArray) {
+                mRecyclerView = view.findViewById(R.id.messageRecycleView);
+                mRecyclerView.setHasFixedSize(true);
+                LinearLayoutManager mLayoutManager = new LinearLayoutManager(view.getContext());
+//                mLayoutManager.setReverseLayout(true);
+                mLayoutManager.setStackFromEnd(true);
+                mRecyclerView.setLayoutManager(mLayoutManager);
 
 //                //        Hardcoded Data to Test Recycler View
 //                MutableLiveData<ArrayList<ForumThread>> forumThreadList = new MutableLiveData<ArrayList<ForumThread>>();
@@ -97,8 +98,8 @@ public class ChatFragment extends Fragment {
 //                fArray.add(new ForumThread("123456", "Best Biking Trail in Singapore", mArray1));
 //                forumThreadList.setValue(fArray);
 
-                cRecyclerView.setAdapter(new ForumThreadAdapter(forumThreadArray));
-//                Log.d(TAG, "onChanged: Successfully set adapter");
+                mRecyclerView.setAdapter(new MessageAdapter(messageArray));
+                Log.d(TAG, "onChanged: Successfully set adapter");
             }
         });
     }

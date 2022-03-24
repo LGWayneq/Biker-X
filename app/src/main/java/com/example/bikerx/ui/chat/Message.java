@@ -1,13 +1,15 @@
 package com.example.bikerx.ui.chat;
 
+import com.google.firebase.Timestamp;
+
 public class Message {
     private String userId;
     private String userName;
     private String messageID;
-    private String time;
+    private Timestamp time;
     private String messageContent;
 
-    public Message(String userId, String userName, String messageID, String time, String messageContent) {
+    public Message(String userId, String userName, String messageID, Timestamp time, String messageContent) {
         this.userId = userId;
         this.userName = userName;
         this.messageID = messageID;
@@ -24,8 +26,8 @@ public class Message {
     public String getMessageID() { return messageID; }
     public void setMessageID(String messageID) { this.messageID = messageID; }
 
-    public String getTime() { return time; }
-    public void setTimeD(String time) { this.time = time; }
+    public Timestamp getTime() { return time; }
+    public void setTimeD(Timestamp time) { this.time = time; }
 
     public String getMessageContent() { return messageContent; }
     public void setMessageContent(String messageContent) { this.messageContent = messageContent; }

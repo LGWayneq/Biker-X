@@ -13,6 +13,7 @@
     <!--    Dimensions for ForumThread-->
     <dimen name="recycler_view_forum_row_item_height">100dp</dimen>
     <dimen name="recycler_view_forum_row_item_forumThreadName_textSize">20sp</dimen>
+    <dimen name="recycler_view_forum_row_item_forumThreadDescription_height">18dp</dimen>
     <dimen name="recycler_view_forum_row_item_forumThreadDescription_textSize">12sp</dimen>
     <!--    Dimensions for Message-->
     <dimen name="recycler_view_message_row_item_width">300dp</dimen>

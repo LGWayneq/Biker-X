@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -112,10 +113,10 @@ public class DBManager {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        Log.d(TAG, document.getId() + " => " + document.getData());
-                        Log.d(TAG, "onComplete: threadID "+document.getData().get("threadId").toString());
-                        Log.d(TAG, "onComplete: threadName "+document.getData().get("threadName").toString());
-                        Log.d(TAG, "onComplete: threadMessages "+document.getData().get("messages").toString());
+//                        Log.d(TAG, document.getId() + " => " + document.getData());
+//                        Log.d(TAG, "onComplete: threadID "+document.getData().get("threadId").toString());
+//                        Log.d(TAG, "onComplete: threadName "+document.getData().get("threadName").toString());
+//                        Log.d(TAG, "onComplete: threadMessages "+document.getData().get("messages").toString());
 
                         String threadId = document.getData().get("threadId").toString();
                         String threadName = document.getData().get("threadName").toString();
@@ -126,7 +127,7 @@ public class DBManager {
                                 (String) messageIndividual.get("userId"),
                                 (String) messageIndividual.get("userName"),
                                 (String) messageIndividual.get("messageID"),
-                                (String) messageIndividual.get("time").toString(),
+                                (Timestamp) messageIndividual.get("time"),
                                 (String) messageIndividual.get("messageContent"));
                         newMessageArray.add(newMessage);
 
@@ -140,7 +141,7 @@ public class DBManager {
                         forumThreadArrayList.setValue(newForumThreadArray);
                     }
                 } else {
-                    Log.d(TAG, "Error getting documents: ", task.getException());
+//                    Log.d(TAG, "Error getting documents: ", task.getException());
                     Toast.makeText(activity.getApplicationContext(), "Error Getting Data", Toast.LENGTH_LONG).show();
                 }
             }
@@ -169,7 +170,7 @@ public class DBManager {
                                     (String) forumMessage.get("userId"),
                                     (String) forumMessage.get("userName"),
                                     (String) forumMessage.get("messageID"),
-                                    (String) forumMessage.get("time").toString(),
+                                    (Timestamp) forumMessage.get("time"),
                                     (String) forumMessage.get("messageContent"));
                             ArrayList<Message> newForumMessageMutableArray = forumMessageMutableArray.getValue();
                             newForumMessageMutableArray.add(message);
@@ -184,7 +185,7 @@ public class DBManager {
         return forumMessageMutableArray;
     }
 
-    public void addForumMessage(String threadId, String userId, String userName, String messageID, String time, String messageContent){
+    public void addForumMessage(String threadId, String userId, String userName, String messageID, Timestamp time, String messageContent){
         db.collection("forum-threads").document(threadId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
