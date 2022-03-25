@@ -1,4 +1,4 @@
-package com.example.bikerx;
+package com.example.bikerx.login;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.bikerx.MainActivity;
+import com.example.bikerx.R;
 import com.example.bikerx.databinding.ActivityLoginBinding;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;

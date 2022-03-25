@@ -10,6 +10,10 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavAction;
+import androidx.navigation.NavDirections;
+import androidx.navigation.NavGraph;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.bikerx.R;
+import com.example.bikerx.ui.home.RecommendationsFragmentDirections;
 
 import java.util.ArrayList;
 
@@ -61,15 +66,8 @@ public class ChatFragment extends Fragment {
     FragmentCommunication communication = new FragmentCommunication() {
         @Override
         public void onForumClick(String threadId, String threadName) {
-            view.findViewById(R.id.forumHeading).setVisibility(View.GONE);
-            MessageFragment messageFragment = new MessageFragment();
-            Bundle bundle = new Bundle();
-            bundle.putString("threadId", threadId);
-            bundle.putString("threadName", threadName);
-            messageFragment.setArguments(bundle);
-            FragmentManager manager = getChildFragmentManager();
-            FragmentTransaction transaction = manager.beginTransaction();
-            transaction.replace(R.id.forumLayout, messageFragment).commit();
+            NavDirections action = ChatFragmentDirections.actionNavigationChatToStartMessageFragment(threadId, threadName);
+            Navigation.findNavController(view).navigate(action);
         }
     };
 
