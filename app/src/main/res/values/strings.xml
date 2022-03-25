@@ -59,12 +59,13 @@
     <string name="goals_chronometer_placeholder">0h 0m</string>
 
     <string name="biker_x_community_forum">Biker-X Community Forum</string>
-    <string name="recycler_view_forum_row_item_forumThreadName_text">Biking Along East Cost Park</string>
+    <string name="recycler_view_forum_row_item_forumThreadName_text">Biking Along East Coast</string>
     <string name="recycler_view_forum_row_item_forumThreadDescription_text">Let\'s go makan after that!</string>
     <!-- Strings for Message -->
     <string name="forum_thread_heading">Biking Along East Cost Park</string>
     <string name="recycler_view_message_row_item_messageName_text">Liau G Wayne</string>
     <string name="recycler_view_message_row_item_messageContent_text">The marathon is coming up, anyone in? Spamming more letters to test the UI if it will overflowing and look really bad, otherwise I will just impose a character limit for text messages!</string>
     <string name="recycler_view_message_row_item_messageTime_text">10:45</string>
+    <string name="recycler_view_message_row_date_text">28 January 2022</string>
     <string name="continue_with_email">CONTINUE WITH EMAIL</string>
 </resources>

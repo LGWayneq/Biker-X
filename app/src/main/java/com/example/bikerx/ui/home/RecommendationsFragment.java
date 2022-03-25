@@ -1,5 +1,8 @@
 package com.example.bikerx.ui.home;
 
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
@@ -21,17 +24,34 @@ import android.widget.Button;
 import com.example.bikerx.R;
 import com.example.bikerx.control.ApiManager;
 import com.example.bikerx.control.DBManager;
+import com.example.bikerx.ui.session.CyclingSessionFragment;
 import com.example.bikerx.ui.session.ModelClass;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RecommendationsFragment extends Fragment implements RecommendationsAdapter.ViewHolder.OnRouteListener {
     private RecyclerView recyclerView;
-    private List<ModelClass> routeList;
+    private ArrayList<Routee> rou;
+    private RecommendationsAdapter recommendationsAdapter;
+    private FirebaseFirestore db;
     private RecommendationsViewModel mViewModel;
     private Button button;
     private DBManager dbManager;
+
+
+
 
     public static RecommendationsFragment newInstance() {
         return new RecommendationsFragment();
@@ -40,32 +60,15 @@ public class RecommendationsFragment extends Fragment implements Recommendations
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        this.dbManager = new DBManager();
-        routeList = new ArrayList<>();
-        routeList = dbManager.getRecommendedRoutes();
-
-/*        routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Round Island", "5.0"));
-        routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Mandai Loop", "5.0"));
-        routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Seletar Loop", "3.0"));
-        routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Sentosa Bike Trail", "4.0"));*/
-
+        db = FirebaseFirestore.getInstance();
+        rou = new ArrayList<Routee>();
         View view = inflater.inflate(R.layout.recommendations_fragment, container, false);
         recyclerView = view.findViewById(R.id.recommendationsRecyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        recyclerView.setAdapter(new RecommendationsAdapter(routeList, this));
-
-        /*FirebaseRecyclerOptions.Builder<ModelClass> options =
-                new FirebaseRecyclerOptions,Bu
-        routeList = new ArrayList<>();
-        ModelClass ob1 = new ModelClass(R.drawable.common_full_open_on_phone, "Round Island");
-        routeList.add(ob1);
-        ModelClass ob2 = new ModelClass(R.drawable.rounded_search_view, "Route 2");
-        routeList.add(ob2);
-        ModelClass ob3 = new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Route 3");
-        routeList.add(ob3);
-
-        recyclerView.setAdapter(new Adapter(routeList)); */
+        recommendationsAdapter = new RecommendationsAdapter(rou, this);
+        recyclerView.setAdapter(recommendationsAdapter);
+        getRecommendedRoutes();
 
         button = (Button) view.findViewById(R.id.ownRouteButton2);
         button.setOnClickListener(new View.OnClickListener() {
@@ -90,8 +93,36 @@ public class RecommendationsFragment extends Fragment implements Recommendations
     @Override
     public void onRouteClick(int position) {
         int p = position;
-        Log.i("routeName", "routeName: " + routeList.get(p).getRouteName());
+        Bundle bundle = new Bundle();
+        Log.d("route", rou.get(position).getName());
+//        bundle.putString("routename", rou.get(position).getName());
+//        CyclingSessionFragment fragment = new CyclingSessionFragment();
+//        fragment.setArguments(bundle);
+//        FragmentManager manager = getChildFragmentManager();
+//        FragmentTransaction transaction = manager.beginTransaction();
+//        transaction.replace(R.id., fragment).commit();
         NavDirections action = RecommendationsFragmentDirections.actionRecommendationsFragmentToStartCyclingFragment();
         Navigation.findNavController(this.getView()).navigate(action);
+    }
+
+    private void getRecommendedRoutes(){
+        db.collection("routes1").orderBy("name", Query.Direction.ASCENDING)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        if(error!= null){
+                            Log.e("firestore error", error.getMessage());
+                            return;
+                        }
+
+                        for(DocumentChange dc : value.getDocumentChanges()){
+                            if(dc.getType() == DocumentChange.Type.ADDED){
+                                rou.add(dc.getDocument().toObject(Routee.class));
+
+                            }
+                            recommendationsAdapter.notifyDataSetChanged();
+                        }
+                    }
+                });
     }
 }

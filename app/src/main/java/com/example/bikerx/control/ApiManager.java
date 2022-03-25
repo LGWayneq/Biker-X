@@ -5,9 +5,11 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.bikerx.ui.home.Routee;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -27,6 +29,7 @@ public class ApiManager {
 
 
     public void getAmenities(GoogleMap map) {
+
         db.collection("amenities")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -44,8 +47,29 @@ public class ApiManager {
                     }
                 });
     }
-
-
+    public ArrayList<Marker> getAmenitiesData(GoogleMap map, String type) {
+        map.clear();
+        ArrayList<Marker> amenityMarkerList = new ArrayList<Marker>();
+        db.collection("amenities")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Map<String, Object> data = document.getData();
+                                MarkerOptions marker = new MarkerOptions();
+                                LatLng latLng = new LatLng((Double) data.get("latitude"), (Double) data.get("longitude"));
+                                if ((String) data.get("type") == type) {
+                                    amenityMarkerList.add(map.addMarker(marker.position(latLng).title("%s - %s".format((String) data.get("name"), (String) data.get("type"))).icon(BitmapDescriptorFactory
+                                            .defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))));
+                                }
+                            }
+                        }
+                    }
+                });
+        return amenityMarkerList;
+    }
 
     public void getBicycleRacks(GoogleMap map) {
         db.collection("bicycle-racks")
@@ -193,7 +217,7 @@ public class ApiManager {
             JSONArray jsonArray = obj.getJSONArray("features");
             for (int i = 0; i<jsonArray.length(); i++) {
                 String name = jsonArray.getJSONObject(i).getJSONObject("properties").getString("Name");
-                db.collection("routes1").add(new Route(name));
+                db.collection("routes1").add(new Routee(name, "5.0"));
             }
         } catch (Exception ex) {
             ex.printStackTrace();

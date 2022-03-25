@@ -15,6 +15,7 @@ import com.example.bikerx.MainActivity;
 import com.example.bikerx.R;
 import com.example.bikerx.control.DBManager;
 import com.example.bikerx.control.LocationManager;
+import com.example.bikerx.ui.home.Route1;
 import com.google.android.gms.maps.model.LatLng;
 
 
@@ -103,4 +104,5 @@ public class CyclingSessionViewModel extends ViewModel {
     public boolean getLocationPermissionGranted() {
         return locationPermissionGranted;
     }
+
 }
