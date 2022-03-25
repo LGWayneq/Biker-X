@@ -1,5 +1,7 @@
 package com.example.bikerx.ui.chat;
 
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -22,6 +24,7 @@ import java.util.ArrayList;
 public class ChatFragment extends Fragment {
     private ChatViewModel cViewModel;
     private RecyclerView cRecyclerView;
+    private View view;
 
     public static ChatFragment newInstance() {
         return new ChatFragment();
@@ -31,7 +34,7 @@ public class ChatFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         cViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
-        View view = inflater.inflate(R.layout.chat_fragment, container, false);
+        view = inflater.inflate(R.layout.chat_fragment, container, false);
         return view;
     }
 
@@ -50,10 +53,25 @@ public class ChatFragment extends Fragment {
                 cRecyclerView.setHasFixedSize(true);
                 LinearLayoutManager cLayoutManager = new LinearLayoutManager(view.getContext());
                 cRecyclerView.setLayoutManager(cLayoutManager);
-                cRecyclerView.setAdapter(new ForumThreadAdapter(forumThreadArray));
+                cRecyclerView.setAdapter(new ForumThreadAdapter(forumThreadArray, communication));
             }
         });
     }
+
+    FragmentCommunication communication = new FragmentCommunication() {
+        @Override
+        public void onForumClick(String threadId, String threadName) {
+            view.findViewById(R.id.forumHeading).setVisibility(View.GONE);
+            MessageFragment messageFragment = new MessageFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("threadId", threadId);
+            bundle.putString("threadName", threadName);
+            messageFragment.setArguments(bundle);
+            FragmentManager manager = getChildFragmentManager();
+            FragmentTransaction transaction = manager.beginTransaction();
+            transaction.replace(R.id.forumLayout, messageFragment).commit();
+        }
+    };
 
     @Override
     public void onDestroyView() {

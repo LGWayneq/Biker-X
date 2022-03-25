@@ -1,6 +1,5 @@
 package com.example.bikerx.ui.chat;
 
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -9,13 +8,9 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavDirections;
-import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,34 +22,30 @@ import java.util.ArrayList;
 
 
 public class MessageFragment extends Fragment {
-    private static final String TAG = "MessageFragment";
     private MessageViewModel mViewModel;
     private RecyclerView mRecyclerView;
     private View view;
     MessageAdapter mAdapter;
-    private String threadId = "fsMgD4ddjRdK1bXLr0Dp";
-    private String forumHeading = "Cycling Marathon";
+    private String threadId;
+    private String forumHeading;
     private TextView messageTextbox;
 
     public static MessageFragment newInstance() {
         return new MessageFragment();
     }
 
-//    @Override
-//    public void onCreate(@Nullable Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        Log.d(TAG, "onCreate: savedInstanceState = " + savedInstanceState);
-//        Log.d(TAG, "onCreate: extracted value = " + savedInstanceState.getString("threadId"));
-//    }
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        threadId = getArguments().getString("threadId");
+        forumHeading = getArguments().getString("threadName");
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         mViewModel = new ViewModelProvider(this).get(MessageViewModel.class);
-        View view = inflater.inflate(R.layout.message_fragment, container, false);
-
-//        Log.d(TAG, "onCreateView: savedInstanceState = " + savedInstanceState);
-//        Log.d(TAG, "onCreateView: extracted value = " + savedInstanceState.getString("threadId"));
+        view = inflater.inflate(R.layout.message_fragment, container, false);
         return view;
     }
 
