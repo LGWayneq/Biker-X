@@ -6,7 +6,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.example.bikerx.control.DBManager;
-import com.example.bikerx.ui.goals.Goal;
+import com.example.bikerx.entities.Goal;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

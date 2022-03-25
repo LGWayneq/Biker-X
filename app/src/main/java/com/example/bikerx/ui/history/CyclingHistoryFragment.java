@@ -1,32 +1,25 @@
 package com.example.bikerx.ui.history;
 
 import android.os.Bundle;
-import android.os.SystemClock;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Chronometer;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bikerx.MainActivity;
 import com.example.bikerx.databinding.FragmentHistoryBinding;
-import com.example.bikerx.ui.goals.Goal;
+import com.example.bikerx.entities.Goal;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 
 public class CyclingHistoryFragment extends Fragment {
@@ -58,7 +51,7 @@ public class CyclingHistoryFragment extends Fragment {
     private void displayGoalsData() {//temp
         mBinding.goalsChronometer.setText(getChronometerDisplay(0L));
         viewModel.fetchGoals(userId);
-        viewModel.getGoals().observe(this, new Observer<Goal>() {
+        viewModel.getGoals().observe(getViewLifecycleOwner(), new Observer<Goal>() {
             @Override
             public void onChanged(Goal goal) {
                 if (goal != null) {
@@ -74,7 +67,7 @@ public class CyclingHistoryFragment extends Fragment {
     }
 
     private void displayMonthlyData() {
-        viewModel.calculateMonthlyData(this).observe(this, new Observer<HashMap<String, Object>>() {
+        viewModel.calculateMonthlyData(this).observe(getViewLifecycleOwner(), new Observer<HashMap<String, Object>>() {
             @Override
             public void onChanged(HashMap<String, Object> hashMap) {
                 if (hashMap != null) {
@@ -101,7 +94,7 @@ public class CyclingHistoryFragment extends Fragment {
 
     private void displayCyclingHistory() {
         viewModel.fetchCyclingHistory(userId);
-        viewModel.getCyclingHistory().observe(this, new Observer<ArrayList<CyclingHistory>>() {
+        viewModel.getCyclingHistory().observe(getViewLifecycleOwner(), new Observer<ArrayList<CyclingHistory>>() {
             @Override
             public void onChanged(ArrayList<CyclingHistory> cyclingHistory) {
                 if (cyclingHistory != null) {
