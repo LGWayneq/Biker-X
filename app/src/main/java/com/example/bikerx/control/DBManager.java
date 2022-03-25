@@ -273,11 +273,11 @@ public class DBManager {
                     // User does not exist in Firestore
                     data = new HashMap<String, Object>();
                     HashMap<String, Object> goals = new HashMap<String, Object>();
-                    goals.put("duration", monthlyTimeInHours * 3600);
+                    goals.put("duration", monthlyTimeInHours * 3600 * 1000);
                     data.put("goals", goals);
                 } else {
                     HashMap<String, Object> goals = new HashMap<String, Object>();
-                    goals.put("duration", monthlyTimeInHours * 3600);
+                    goals.put("duration", monthlyTimeInHours * 3600 * 1000);
                     if (data.get("goals") != null) {
                         Map<String, Object> existingGoals = (Map<String, Object>) data.get("goals");
                         if (existingGoals.get("distance") != null) {
