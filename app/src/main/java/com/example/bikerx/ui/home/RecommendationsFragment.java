@@ -101,7 +101,7 @@ public class RecommendationsFragment extends Fragment implements Recommendations
 //        FragmentManager manager = getChildFragmentManager();
 //        FragmentTransaction transaction = manager.beginTransaction();
 //        transaction.replace(R.id., fragment).commit();
-        NavDirections action = RecommendationsFragmentDirections.actionRecommendationsFragmentToStartCyclingFragment();
+        NavDirections action = RecommendationsFragmentDirections.actionRecommendationsFragmentToStartCyclingFragment(rou.get(position).getName());
         Navigation.findNavController(this.getView()).navigate(action);
     }
 
