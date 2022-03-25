@@ -14,20 +14,22 @@ import com.example.bikerx.ui.session.ModelClass;
 
 import java.util.List;
 
-public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder>{
+public class RecommendationsAdapter extends RecyclerView.Adapter<RecommendationsAdapter.ViewHolder>{
 
     private List<ModelClass> routeList;
+    private ViewHolder.OnRouteListener mOnRouteListener;
 
-    public Adapter(List<ModelClass> routeList) {
+    public RecommendationsAdapter(List<ModelClass> routeList, ViewHolder.OnRouteListener onRouteListener) {
         this.routeList = routeList;
+        this.mOnRouteListener = onRouteListener;
     }
 
     @NonNull
     @Override
     //inflating the view
-    public Adapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RecommendationsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recommendations_row, parent, false);
-        return new ViewHolder(view);
+        return new ViewHolder(view, mOnRouteListener);
     }
 
     @Override
@@ -44,16 +46,20 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder>{
         return routeList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ImageView imageView;
         private TextView routeName;
         private TextView routeRating;
+        OnRouteListener onRouteListener;
 
-        public ViewHolder(@NonNull View itemView){
+        public ViewHolder(@NonNull View itemView, OnRouteListener onRouteListener){
             super(itemView);
             imageView = itemView.findViewById(R.id.routeImg);
             routeName = itemView.findViewById(R.id.routeName);
             routeRating = itemView.findViewById(R.id.routeRating);
+            this.onRouteListener = onRouteListener;
+
+            itemView.setOnClickListener(this);
 
 
         }
@@ -64,6 +70,15 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder>{
             routeRating.setText(routeRate);
 
 
+        }
+
+        @Override
+        public void onClick(View view) {
+            onRouteListener.onRouteClick(getBindingAdapterPosition());
+        }
+
+        public interface OnRouteListener{
+            void onRouteClick(int position);
         }
     }
 }

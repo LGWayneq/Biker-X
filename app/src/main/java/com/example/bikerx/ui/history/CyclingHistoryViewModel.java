@@ -1,17 +1,13 @@
 package com.example.bikerx.ui.history;
 
-import android.util.Log;
-
-import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.example.bikerx.control.DBManager;
+import com.example.bikerx.entities.Goal;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -23,6 +19,7 @@ import java.util.TimeZone;
 public class CyclingHistoryViewModel extends ViewModel {
     private DBManager dbManager = new DBManager();
     private MutableLiveData<ArrayList<CyclingHistory>> cyclingHistory;
+    private MutableLiveData<Goal> goals;
 
     public void fetchCyclingHistory(String userId) {
         cyclingHistory = dbManager.getCyclingHistory(userId);
@@ -42,19 +39,29 @@ public class CyclingHistoryViewModel extends ViewModel {
                 long monthDuration = 0;
                 Date date = Calendar.getInstance(TimeZone.getTimeZone("Asia/Singapore")).getTime();
                 SimpleDateFormat dateFormat = new SimpleDateFormat("MMM yyyy", Locale.getDefault());
-                for (CyclingHistory entry: cyclingHistory) {
-                    String targetDate = dateFormat.format(date);
-                    if (targetDate.compareTo(entry.getDate().substring(3,11)) == 0) {
-                        monthDistance += Double.parseDouble(entry.getFormattedDistance());
-                        monthDuration += entry.getDuration();
+                if (cyclingHistory != null) {
+                    for (CyclingHistory entry : cyclingHistory) {
+                        String targetDate = dateFormat.format(date);
+                        if (targetDate.compareTo(entry.getDate().substring(3, 11)) == 0) {
+                            monthDistance += Double.parseDouble(entry.getFormattedDistance());
+                            monthDuration += entry.getDuration();
+                        }
                     }
+                    HashMap<String, Object> hashMap = data.getValue();
+                    hashMap.put("monthDistance", monthDistance);
+                    hashMap.put("monthDuration", monthDuration);
+                    data.setValue(hashMap);
+                } else {
+                    data.setValue(null);
                 }
-                HashMap<String, Object> hashMap = data.getValue();
-                hashMap.put("monthDistance", monthDistance);
-                hashMap.put("monthDuration", monthDuration);
-                data.setValue(hashMap);
             }
         });
         return data;
     }
+
+    public void fetchGoals(String userId) {
+        goals = dbManager.getGoal(userId);
+    }
+
+    public MutableLiveData<Goal> getGoals() { return goals; }
 }

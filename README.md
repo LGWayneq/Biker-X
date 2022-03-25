@@ -5,7 +5,7 @@
 ### Initial Clone Repository
 <p> From a folder you wish, open a terminal. </p>
 <p> git clone https://github.com/LGWayneq/Biker-X.git </p>
-
+//m
 ### Connecting Android Studio to GitHub
 <p> Open project via Android Studio </p>
 To Grant Temporary Access Token to GitHub:

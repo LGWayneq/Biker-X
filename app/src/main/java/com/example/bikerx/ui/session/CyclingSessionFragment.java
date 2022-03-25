@@ -19,7 +19,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Chronometer;
 
+import com.example.bikerx.control.ApiManager;
+import com.example.bikerx.control.DBManager;
 import com.example.bikerx.databinding.CyclingSessionFragmentBinding;
+import com.example.bikerx.ui.home.Route1;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -34,14 +37,18 @@ public class CyclingSessionFragment extends Fragment {
     private Chronometer chronometer;
     private long pausedTimeElapsed = 0;
     private SessionState state;
+    private DBManager db;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+
         mBinding = CyclingSessionFragmentBinding.inflate(inflater, container, false);
         viewModel = new ViewModelProvider(requireActivity(), new CyclingSessionViewModelFactory(requireContext(), (AppCompatActivity) requireActivity()))
                 .get(CyclingSessionViewModel.class);
         return mBinding.getRoot();
+
+
     }
 
     @Override

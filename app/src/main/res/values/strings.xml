@@ -67,4 +67,5 @@
     <string name="recycler_view_message_row_item_messageContent_text">The marathon is coming up, anyone in? Spamming more letters to test the UI if it will overflowing and look really bad, otherwise I will just impose a character limit for text messages!</string>
     <string name="recycler_view_message_row_item_messageTime_text">10:45</string>
     <string name="recycler_view_message_row_date_text">28 January 2022</string>
+    <string name="continue_with_email">CONTINUE WITH EMAIL</string>
 </resources>

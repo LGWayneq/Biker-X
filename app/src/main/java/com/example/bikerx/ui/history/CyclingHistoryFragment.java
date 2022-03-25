@@ -1,30 +1,25 @@
 package com.example.bikerx.ui.history;
 
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Chronometer;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bikerx.MainActivity;
 import com.example.bikerx.databinding.FragmentHistoryBinding;
+import com.example.bikerx.entities.Goal;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 
 public class CyclingHistoryFragment extends Fragment {
@@ -33,6 +28,7 @@ public class CyclingHistoryFragment extends Fragment {
     private FragmentHistoryBinding mBinding;
     private RecyclerView.LayoutManager layoutManager;
     private CyclingHistoryAdapter adapter;
+    private String userId;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -45,30 +41,45 @@ public class CyclingHistoryFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        userId = ((MainActivity)getActivity()).getUserId();
+        displayGoalsData();
         displayCyclingHistory();
-
+        displayMonthlyData();
         bindButtons();
     }
 
     private void displayGoalsData() {//temp
-        mBinding.distanceProgressBar.setMax(100);
-        mBinding.timeProgressBar.setMax(10000000);
+        mBinding.goalsChronometer.setText(getChronometerDisplay(0L));
+        viewModel.fetchGoals(userId);
+        viewModel.getGoals().observe(getViewLifecycleOwner(), new Observer<Goal>() {
+            @Override
+            public void onChanged(Goal goal) {
+                if (goal != null) {
+                    mBinding.distanceGoalsFloat.setText(String.format("%.2f", goal.getDistance()));
+                    mBinding.distanceProgressBar.setMax((int) goal.getDistance());
 
-        mBinding.goalsChronometer.setText("0h 00m");
+                    mBinding.goalsChronometer.setText(getChronometerDisplay(goal.getDuration()));
+                    mBinding.timeProgressBar.setMax((int) goal.getDuration());
+                }
+            }
+        });
+
     }
 
     private void displayMonthlyData() {
-        viewModel.calculateMonthlyData(this).observe(this, new Observer<HashMap<String, Object>>() {
+        viewModel.calculateMonthlyData(this).observe(getViewLifecycleOwner(), new Observer<HashMap<String, Object>>() {
             @Override
             public void onChanged(HashMap<String, Object> hashMap) {
-                Double monthDistance = (Double)hashMap.get("monthDistance"); 
-                mBinding.distanceDetailsFloat.setText(String.format("%.2f", monthDistance));
-                mBinding.distanceProgressBar.setProgress(monthDistance.intValue());
+                if (hashMap != null) {
+                    Double monthDistance = (Double)hashMap.get("monthDistance");
+                    mBinding.distanceDetailsFloat.setText(String.format("%.2f", monthDistance));
+                    mBinding.distanceProgressBar.setProgress(monthDistance.intValue());
 
-                long monthDuration = (Long) hashMap.get("monthDuration");
-                mBinding.chronometer.setText(getChronometerDisplay(monthDuration));
-                mBinding.timeProgressBar.setProgress((int) monthDuration);
+                    long monthDuration = (Long) hashMap.get("monthDuration");
+                    mBinding.chronometer.setText(getChronometerDisplay(monthDuration));
+                    mBinding.timeProgressBar.setProgress((int) monthDuration);
+                }
+
             }
         });
     }
@@ -82,18 +93,20 @@ public class CyclingHistoryFragment extends Fragment {
     }
 
     private void displayCyclingHistory() {
-        viewModel.fetchCyclingHistory(((MainActivity)getActivity()).getUserId());
-        viewModel.getCyclingHistory().observe(this, new Observer<ArrayList<CyclingHistory>>() {
+        viewModel.fetchCyclingHistory(userId);
+        viewModel.getCyclingHistory().observe(getViewLifecycleOwner(), new Observer<ArrayList<CyclingHistory>>() {
             @Override
             public void onChanged(ArrayList<CyclingHistory> cyclingHistory) {
-                adapter = new CyclingHistoryAdapter(cyclingHistory);
-                layoutManager = new LinearLayoutManager(getActivity());
-                mBinding.recyclerView.setLayoutManager(layoutManager);
-                mBinding.recyclerView.setAdapter(adapter);
+                if (cyclingHistory != null) {
+                    adapter = new CyclingHistoryAdapter(cyclingHistory);
+                    layoutManager = new LinearLayoutManager(getActivity());
+                    mBinding.recyclerView.setLayoutManager(layoutManager);
+                    mBinding.recyclerView.setAdapter(adapter);
+                } else {
+                    mBinding.noHistoryAlert.setVisibility(View.VISIBLE);
+                }
             }
         });
-        displayMonthlyData();
-        displayGoalsData();
     }
 
     public void bindButtons() {

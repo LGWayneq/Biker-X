@@ -5,7 +5,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.bikerx.map.Amenity;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -17,10 +16,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Map;
@@ -104,6 +101,99 @@ public class ApiManager {
             for (int i = 0; i<jsonArray.length(); i++){
                 JSONArray coords = jsonArray.getJSONObject(i).getJSONObject("geometry").getJSONArray("coordinates");
                 db.collection("bicycle-racks").add(new BicycleRack(coords.getDouble(0), coords.getDouble(1)));
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void loadRoutes (AppCompatActivity activity){
+        String json = null;
+        try{
+            InputStream is = activity.getAssets().open("Biker-X-Routes.geojson");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+
+            class Route {
+                public String name;
+                ArrayList<Double> coordinates;
+
+                public Route(ArrayList<Double> coordinates,String name) {
+                    this.name = name;
+                    this.coordinates = coordinates;
+                }
+
+                public String getName() {
+                    return name;
+                }
+
+                public void setName(String name) {
+                    this.name = name;
+                }
+
+                public ArrayList<Double> getCoordinates() {
+                    return coordinates;
+                }
+
+                public void setCoordinates(ArrayList<Double> coordinates) {
+                    this.coordinates = coordinates;
+                }
+
+            }
+            JSONObject obj = new JSONObject(json);
+            JSONArray jsonArray = obj.getJSONArray("features");
+            for (int i = 0; i<jsonArray.length(); i++) {
+                String name = jsonArray.getJSONObject(i).getJSONObject("properties").getString("Name");
+                JSONArray outerArray = jsonArray.getJSONObject(i).getJSONObject("geometry").getJSONArray("coordinates");
+                ArrayList<Double> coords = new ArrayList<>();
+                for (int j = 0; j < outerArray.length(); j++) {
+                    JSONArray innerArray = outerArray.getJSONArray(j);
+                    for (int k = 0; k < innerArray.length(); k++) {
+                        coords.add(k, innerArray.getDouble(k));
+                    }
+                }
+                db.collection("PCN").add(new Route(coords, name));
+            }
+
+
+        } catch (Exception ex) {
+                ex.printStackTrace();
+        }
+    }
+    public void load (AppCompatActivity activity){
+        String json1 = null;
+        try{
+            InputStream is = activity.getAssets().open("Biker-X-Routes.geojson");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json1 = new String(buffer, "UTF-8");
+
+            class Route {
+                public String name;
+
+                public Route(String name) {
+                    this.name = name;
+                }
+
+                public String getName() {
+                    return name;
+                }
+
+                public void setName(String name) {
+                    this.name = name;
+                }
+
+            }
+            JSONObject obj = new JSONObject(json1);
+            JSONArray jsonArray = obj.getJSONArray("features");
+            for (int i = 0; i<jsonArray.length(); i++) {
+                String name = jsonArray.getJSONObject(i).getJSONObject("properties").getString("Name");
+                db.collection("routes1").add(new Route(name));
             }
         } catch (Exception ex) {
             ex.printStackTrace();
