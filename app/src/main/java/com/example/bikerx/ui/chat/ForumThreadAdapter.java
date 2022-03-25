@@ -41,12 +41,6 @@ public class ForumThreadAdapter extends RecyclerView.Adapter<ForumThreadAdapter.
         String threadName = forumThreadMutableList.get(position).getThreadName();
         ArrayList<Message> messageArrayList = forumThreadMutableList.get(position).getMessageArrayList();
 
-        MessageFragment messageFragment = new MessageFragment();
-        Bundle bundle=new Bundle();
-        bundle.putString("threadId", forumThreadMutableList.get(position).getThreadId());
-        bundle.putString("threadName", forumThreadMutableList.get(position).getThreadName());
-        messageFragment.setArguments(bundle);
-
         holder.setData(position, threadId, threadName, messageArrayList);
     }
 
