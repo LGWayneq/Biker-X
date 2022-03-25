@@ -2,9 +2,11 @@ package com.example.bikerx.control;
 
 import android.app.Activity;
 import android.util.Log;
+import android.view.Display;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.bikerx.entities.GoalsInfo;
@@ -15,6 +17,7 @@ import com.example.bikerx.ui.chat.MessageViewModel;
 import com.example.bikerx.entities.Goal;
 import com.example.bikerx.ui.history.CyclingHistory;
 import com.example.bikerx.ui.home.Route1;
+import com.example.bikerx.ui.home.Routee;
 import com.example.bikerx.ui.session.ModelClass;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -23,10 +26,19 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.type.DateTime;
@@ -39,6 +51,7 @@ import java.util.Map;
 
 public class DBManager {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private DatabaseReference databaseReference;
     public static final String TAG = "DBManager";
 
     public void addRatings(String routeId, String userId, float rating) {
@@ -214,26 +227,34 @@ public class DBManager {
         });
     }
 
+
+
+
+    public MutableLiveData<ArrayList<Route1>> getRoute(String routeName) {
+        MutableLiveData<ArrayList<Route1>> r = new MutableLiveData<ArrayList<Route1>>();
+    }
     public Route1 getRoute(String routeName) {
         ArrayList<Route1> r = new ArrayList<>();
         db.collection("PCN").whereEqualTo("name", routeName).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-
+                    ArrayList<Route1> inner = new ArrayList<Route1>();
                     for (DocumentSnapshot document : task.getResult()) {
-                        r.add(document.toObject(Route1.class));
-                        Log.d("test", String.valueOf(r.size()));
+                        inner.add(document.toObject(Route1.class));
+                        r.setValue(inner);
                     }
                 } else {
                     Log.d("getRoute", "Error getting route: ", task.getException());
                 }
             }
         });
-        return r.get(0);}
+        return r;
+    }
 
-    public ArrayList<ModelClass> getRecommendedRoutes() {
-        ArrayList<ModelClass> routeList = new ArrayList<>();
+    public MutableLiveData<ArrayList<ModelClass>> getRecommendedRoutes() {
+        MutableLiveData<ArrayList<ModelClass>> routeList = new MutableLiveData<>();
+        routeList.setValue(new ArrayList<ModelClass>());
         db.collection("routes1").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -241,13 +262,14 @@ public class DBManager {
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         Map<String, Object> data = document.getData();
                         ModelClass m = new ModelClass(R.drawable.common_google_signin_btn_icon_dark, (String) data.get("name"), "5.0");
+                        ArrayList<ModelClass> newArray = routeList.getValue();
+                        newArray.add(m);
                         Log.d("db", m.getRouteName());
-                        routeList.add(m);
+                        routeList.setValue(newArray);
                     }
                 }
             }
         });
-        Log.d("db", String.valueOf(routeList.size()));
         return routeList;
 
     }

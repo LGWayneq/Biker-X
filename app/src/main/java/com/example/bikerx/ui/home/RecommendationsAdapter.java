@@ -15,11 +15,11 @@ import com.example.bikerx.ui.session.ModelClass;
 import java.util.List;
 
 public class RecommendationsAdapter extends RecyclerView.Adapter<RecommendationsAdapter.ViewHolder>{
-
-    private List<ModelClass> routeList;
+    //Context context;
+    private List<Routee> routeList;
     private ViewHolder.OnRouteListener mOnRouteListener;
 
-    public RecommendationsAdapter(List<ModelClass> routeList, ViewHolder.OnRouteListener onRouteListener) {
+    public RecommendationsAdapter(List<Routee> routeList, ViewHolder.OnRouteListener onRouteListener) {
         this.routeList = routeList;
         this.mOnRouteListener = onRouteListener;
     }
@@ -34,10 +34,10 @@ public class RecommendationsAdapter extends RecyclerView.Adapter<Recommendations
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        int resource = routeList.get(position).getImageView();
-        String name = routeList.get(position).getRouteName();
-        String routeRate = routeList.get(position).getRouteRating();
-
+        Routee r = routeList.get(position);
+        int resource = R.drawable.common_google_signin_btn_icon_dark;
+        String name = r.getName();
+        String routeRate = r.getRating();
         holder.setData(resource, name, routeRate);
     }
 

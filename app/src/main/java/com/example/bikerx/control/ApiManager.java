@@ -5,7 +5,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-
+import com.example.bikerx.ui.home.Routee;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -217,7 +217,7 @@ public class ApiManager {
             JSONArray jsonArray = obj.getJSONArray("features");
             for (int i = 0; i<jsonArray.length(); i++) {
                 String name = jsonArray.getJSONObject(i).getJSONObject("properties").getString("Name");
-                db.collection("routes1").add(new Route(name));
+                db.collection("routes1").add(new Routee(name, "5.0"));
             }
         } catch (Exception ex) {
             ex.printStackTrace();
