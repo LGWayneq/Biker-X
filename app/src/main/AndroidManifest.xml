@@ -16,13 +16,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BikerX">
         <activity
-            android:name=".ForgotPasswordActivity"
+            android:name=".login.ForgotPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".RegisterUserActivity"
+            android:name=".login.RegisterUserActivity"
             android:exported="true" />
         <activity
-            android:name=".EmailLoginActivity"
+            android:name=".login.EmailLoginActivity"
             android:exported="true"
             android:label="@string/app_name"/>
 
@@ -40,7 +40,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name=".login.LoginActivity"
             android:exported="true" />
     </application>
 
