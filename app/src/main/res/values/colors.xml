@@ -20,9 +20,7 @@
     <color name="recycler_view_message_recyclerview_color">#BED2F0</color>
     <color name="recycler_view_message_sendMessageOuterBox_color">#9ABFF8</color>
     <color name="recycler_view_message_row_item_color">#F9F9F9</color>
-    <color name="recycler_view_message_row_item_user_color">#90DCF8C6</color>
     <color name="recycler_view_message_row_item_messageName_color">#000000</color>
     <color name="recycler_view_message_row_item_messageContent_color">#000000</color>
     <color name="recycler_view_message_row_item_messageTime_color">#000000</color>
-
 </resources>
