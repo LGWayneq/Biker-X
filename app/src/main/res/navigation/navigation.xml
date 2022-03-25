@@ -37,7 +37,14 @@
     <fragment
         android:id="@+id/navigation_chat"
         android:name="com.example.bikerx.ui.chat.ChatFragment"
-        tools:layout="@layout/chat_fragment" />
+        tools:layout="@layout/chat_fragment" >
+        <action
+            android:id="@+id/action_navigation_chat_to_startMessageFragment"
+            app:destination="@id/startMessageFragment" />
+        <argument
+            android:name="threadId"
+            app:argType="string"/>
+    </fragment>
     <fragment
         android:id="@+id/recommendationsFragment"
         android:name="com.example.bikerx.ui.home.RecommendationsFragment"
@@ -76,5 +83,16 @@
             android:name="routeId"
             app:nullable="true"
             app:argType="string"/>
+    </fragment>
+    <fragment
+        android:id="@+id/startMessageFragment"
+        android:name="com.example.bikerx.ui.chat.MessageFragment"
+        tools:layout="@layout/message_fragment" >
+        <action
+            android:id="@+id/action_startMessageFragment_to_navigation_chat"
+            app:destination="@id/navigation_chat" />
+        <action
+            android:id="@+id/action_startMessageFragment_self"
+            app:destination="@id/startMessageFragment" />
     </fragment>
 </navigation>
