@@ -86,7 +86,9 @@ public class MessageFragment extends Fragment {
         view.findViewById(R.id.sendMessageButton).setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 String messageContent = messageTextbox.getText().toString();
-                mViewModel.sendMessage(getActivity(), threadId, messageContent, mAdapter);
+                if (!messageContent.replace(" ","").replace("\n","").equals("")) {
+                    mViewModel.sendMessage(getActivity(), threadId, messageContent, mAdapter);
+                }
                 messageTextbox.setText("");
             }
         });
