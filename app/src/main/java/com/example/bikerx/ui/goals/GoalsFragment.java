@@ -57,7 +57,7 @@ public class GoalsFragment extends Fragment {
                 String monthlyDistanceInKm = mBinding.InputMonthlyDistanceGoal.getText().toString();
 
                 // below line is for checking weather edittext fields are empty or not.
-                Log.d("GoalsFragment", "monthlyDistanceInKm: " + monthlyDistanceInKm);
+
                 if (monthlyDistanceInKm.isEmpty()) {
                     Toast.makeText(getActivity(), "Error: Monthly distance goal not set.", Toast.LENGTH_LONG).show();
                 } else {
@@ -79,7 +79,7 @@ public class GoalsFragment extends Fragment {
                 String monthlyTimeInHours = mBinding.InputMonthlyTimeGoal.getText().toString();
 
                 // below line is for checking weather edittext fields are empty or not.
-                Log.d("GoalsFragment", "monthlyTimeInHours: " + monthlyTimeInHours);
+
                 if (monthlyTimeInHours.isEmpty()) {
                     Toast.makeText(getActivity(), "Error: Monthly time goal not set.", Toast.LENGTH_LONG).show();
                 } else {
@@ -157,9 +157,7 @@ public class GoalsFragment extends Fragment {
     }
 
     private String calPercentage(int progress, int max){
-//        Log.d("progress:", String.valueOf(progress));
-//        Log.d("max:", String.valueOf(max));
-//        Log.d("percentage:", String.valueOf((progress/max)*100));
+
         return Float.toString(Math.round(((float)progress/(float)max)*100));
 
     }
