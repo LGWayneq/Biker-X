@@ -1,54 +1,39 @@
 package com.example.bikerx.ui.home;
 
-import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.VolleyError;
-import com.example.bikerx.IResult;
 import com.example.bikerx.R;
-import com.example.bikerx.VolleyService;
 import com.example.bikerx.databinding.FragmentHomeBinding;
 import com.example.bikerx.ui.session.ModelClass;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment implements HomeRecommendationsAdapter.MyViewHolder.HomeRouteListener{
     private String TAG = "HOME_FRAGMENT";
-    private HomeViewModel homeViewModel;
     private FragmentHomeBinding mBinding;
     private List<ModelClass> routeList;
-
-
-    private TextView weatherText;
-    private VolleyService mVolleyService;
-    private IResult mResultCallback;
+    private HomeViewModel viewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
+        viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
 
         mBinding = FragmentHomeBinding.inflate(inflater, container, false);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(mBinding.getRoot().getContext());
@@ -60,83 +45,6 @@ public class HomeFragment extends Fragment implements HomeRecommendationsAdapter
         routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Sentosa Bike Trail", "4.0"));
         mBinding.HomeRecyclerView.setAdapter(new HomeRecommendationsAdapter(routeList, this));
         View root = mBinding.getRoot();
-        mResultCallback = new IResult() {
-            @SuppressLint("UseCompatLoadingForDrawables")
-            @Override
-            public void notifySuccess(String requestType, JSONObject response) {
-                if (requestType.equals("GET_WEATHER_DATA")) {
-                    Log.d("HomeFragment", response.toString());
-                    try {
-                        String forecast = response.getJSONArray("items").getJSONObject(0).getJSONArray("forecasts").getJSONObject(12).getString("forecast");
-                        Drawable res;
-                        switch (forecast) {
-                            case "Partly Cloudy (Day)":
-                                res = getResources().getDrawable(getResources().getIdentifier(
-                                        "@drawable/cloudy_day",
-                                        null,
-                                        getActivity().getPackageName()
-                                ));
-                                mBinding.imageWeather.setImageDrawable(res);
-                                break;
-                            case "Partly Cloudy (Night)":
-                                res = getResources().getDrawable(getResources().getIdentifier(
-                                        "@drawable/cloudy_night",
-                                        null,
-                                        getActivity().getPackageName()
-                                ));
-                                mBinding.imageWeather.setImageDrawable(res);
-                                break;
-                            case "Cloudy":
-                                res = getResources().getDrawable(getResources().getIdentifier(
-                                        "@drawable/cloudy",
-                                        null,
-                                        getActivity().getPackageName()
-                                ));
-                                mBinding.imageWeather.setImageDrawable(res);
-                                break;
-                            case "Light Showers":
-                            case "Showers":
-                            case "Moderate Rain":
-                                res = getResources().getDrawable(getResources().getIdentifier(
-                                        "@drawable/rain",
-                                        null,
-                                        getActivity().getPackageName()
-                                ));
-                                mBinding.imageWeather.setImageDrawable(res);
-                                break;
-                            case "Thundery Showers":
-                            case "Heavy Thundery Showers with Gusty Winds":
-                                res = getResources().getDrawable(getResources().getIdentifier(
-                                        "@drawable/storm",
-                                        null,
-                                        getActivity().getPackageName()
-                                ));
-                                mBinding.imageWeather.setImageDrawable(res);
-                                break;
-                            default:
-                                res = getResources().getDrawable(getResources().getIdentifier(
-                                        "@drawable/sun",
-                                        null,
-                                        getActivity().getPackageName()
-                                ));
-                                mBinding.imageWeather.setImageDrawable(res);
-                                break;
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-                Log.d(TAG, "Volley requester " + requestType);
-                Log.d(TAG, "Volley JSON post" + response);
-            }
-
-            @Override
-            public void notifyError(String requestType, VolleyError error) {
-                Log.d(TAG, "Volley requester " + requestType);
-                Log.d(TAG, "Volley JSON post" + "That didn't work!");
-            }
-        };
-        mVolleyService = new VolleyService(mResultCallback, getContext());
 
         return root;
     }
@@ -146,8 +54,17 @@ public class HomeFragment extends Fragment implements HomeRecommendationsAdapter
         super.onViewCreated(view, savedInstanceState);
 
         bindButtons();
-        getWeatherData();
-//        displayWeather();
+        displayWeather();
+
+    }
+
+    private void displayWeather() {
+        viewModel.getWeatherData(getContext()).observe(this, new Observer<Drawable>() {
+            @Override
+            public void onChanged(Drawable drawable) {
+                mBinding.imageWeather.setImageDrawable(drawable);
+            }
+        });
 
     }
 
@@ -157,11 +74,7 @@ public class HomeFragment extends Fragment implements HomeRecommendationsAdapter
         mBinding = null;
     }
 
-    private void getWeatherData() {
-        mVolleyService.getDataVolley("GET_WEATHER_DATA", "https://api.data.gov.sg/v1/environment/2-hour-weather-forecast");
 
-
-    }
 
     private void bindButtons() {
         mBinding.recommendedRouteSeeAll.setOnClickListener(new View.OnClickListener() {
