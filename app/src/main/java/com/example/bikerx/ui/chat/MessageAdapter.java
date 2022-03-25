@@ -82,6 +82,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             messageDate.setText(date);
             if (date.equals(previousDate)) {
                 messageDateConstraint.setVisibility(View.GONE);
+            } else {
+                messageDateConstraint.setVisibility(View.VISIBLE);
             }
             if(userId.equals(currentUserId)) {
                 final ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) messageConstraint.getLayoutParams();
@@ -91,6 +93,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 messageConstraint.setLayoutParams(layoutParams);
 
                 messageConstraint.setBackgroundTintList(mContext.getResources().getColorStateList(R.color.recycler_view_message_row_item_user_color));
+            } else {
+                final ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) messageConstraint.getLayoutParams();
+                layoutParams.rightToRight = ConstraintLayout.LayoutParams.UNSET;
+                layoutParams.startToStart = R.id.messageRowItemFrame;
+                layoutParams.setMarginStart(10);
+                messageConstraint.setLayoutParams(layoutParams);
+
+                messageConstraint.setBackgroundTintList(mContext.getResources().getColorStateList(R.color.recycler_view_message_row_item_color));
             }
         }
     }
