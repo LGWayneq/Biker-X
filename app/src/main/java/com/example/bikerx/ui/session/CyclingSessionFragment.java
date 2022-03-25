@@ -42,6 +42,9 @@ public class CyclingSessionFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        Bundle bundle = this.getArguments();
+        String data = bundle.getString("key");
+        Log.d("passing", "rn: " + data);
 
         mBinding = CyclingSessionFragmentBinding.inflate(inflater, container, false);
         viewModel = new ViewModelProvider(requireActivity(), new CyclingSessionViewModelFactory(requireContext(), (AppCompatActivity) requireActivity()))
