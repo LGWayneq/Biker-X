@@ -4,8 +4,11 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
 
 
+import com.example.bikerx.map.Amenity;
+import com.example.bikerx.ui.history.CyclingHistory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -40,31 +43,34 @@ public class ApiManager {
                                 Map<String, Object> data = document.getData();
                                 MarkerOptions marker = new MarkerOptions();
                                 LatLng latLng = new LatLng((Double) data.get("latitude"), (Double) data.get("longitude"));
-                                map.addMarker(marker.position(latLng).title("%s - %s".format((String)data.get("name"), (String)data.get("type"))).icon(BitmapDescriptorFactory
-                                        .defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
+                                map.addMarker(marker.position(latLng).title((String)data.get("type")).snippet((String)data.get("name")).icon(BitmapDescriptorFactory
+                                        .defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
                             }
                         }
                     }
                 });
     }
-    public ArrayList<Marker> getAmenitiesData(GoogleMap map, String type) {
-        map.clear();
-        ArrayList<Marker> amenityMarkerList = new ArrayList<Marker>();
+    public MutableLiveData<ArrayList<Marker>> getAmenitiesData(GoogleMap map, String type) {
+        MutableLiveData<ArrayList<Marker>> amenityMarkerList = new MutableLiveData<>(null);
         db.collection("amenities")
+                .whereEqualTo("type", type)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
+                            ArrayList<Marker> amenityArrayList = new ArrayList<>();
                             for (QueryDocumentSnapshot document : task.getResult()) {
+
                                 Map<String, Object> data = document.getData();
                                 MarkerOptions marker = new MarkerOptions();
                                 LatLng latLng = new LatLng((Double) data.get("latitude"), (Double) data.get("longitude"));
-                                if ((String) data.get("type") == type) {
-                                    amenityMarkerList.add(map.addMarker(marker.position(latLng).title("%s - %s".format((String) data.get("name"), (String) data.get("type"))).icon(BitmapDescriptorFactory
-                                            .defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))));
-                                }
+
+                                amenityArrayList.add(map.addMarker(marker.position(latLng).title((String)data.get("type")).snippet((String)data.get("name")).icon(BitmapDescriptorFactory
+                                        .defaultMarker(BitmapDescriptorFactory.HUE_AZURE))));
+
                             }
+                            amenityMarkerList.setValue(amenityArrayList);
                         }
                     }
                 });
@@ -87,6 +93,28 @@ public class ApiManager {
                         }
                     }
                 });
+    }
+
+    public void loadBicycleRacksIntoAmenities(AppCompatActivity activity) {
+        String json = null;
+        try {
+            Log.d("Begin","");
+            InputStream is = activity.getAssets().open("bicycle-rack.geojson");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+
+            JSONObject obj = new JSONObject(json);
+            JSONArray jsonArray = obj.getJSONArray("features");
+            for (int i = 0; i<jsonArray.length(); i++){
+                JSONArray coords = jsonArray.getJSONObject(i).getJSONObject("geometry").getJSONArray("coordinates");
+                db.collection("amenities").add(new Amenity("", "BICYCLE RACK", coords.getDouble(0), coords.getDouble(1)));
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     public void loadBicycleRacks(AppCompatActivity activity) {
@@ -119,6 +147,7 @@ public class ApiManager {
                 public void setLongitude(Double longitude) {
                     this.longitude = longitude;
                 }
+
             }
             JSONObject obj = new JSONObject(json);
             JSONArray jsonArray = obj.getJSONArray("features");
