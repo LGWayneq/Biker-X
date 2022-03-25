@@ -1,5 +1,7 @@
 package com.example.bikerx.ui.home;
 
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -44,12 +46,10 @@ public class RecommendationsFragment extends Fragment implements Recommendations
     private ArrayList<Routee> rou;
     private RecommendationsAdapter recommendationsAdapter;
     private FirebaseFirestore db;
-    private List<ModelClass> routeList;
     private RecommendationsViewModel mViewModel;
     private Button button;
     private DBManager dbManager;
 
-    private DatabaseReference databaseReference;
 
 
 
@@ -69,32 +69,6 @@ public class RecommendationsFragment extends Fragment implements Recommendations
         recommendationsAdapter = new RecommendationsAdapter(rou, this);
         recyclerView.setAdapter(recommendationsAdapter);
         getRecommendedRoutes();
-
-        //recyclerView.setAdapter(new RecommendationsAdapter(routeList, this));
-
-        this.dbManager = new DBManager();
-        //routeList = new ArrayList<>();
-        //routeList = mod;
-        //Log.d("test", String.valueOf(routeList.size()));
-
-/*        routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Round Island", "5.0"));
-        routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Mandai Loop", "5.0"));
-        routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Seletar Loop", "3.0"));
-        routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Sentosa Bike Trail", "4.0"));*/
-
-
-
-        /*FirebaseRecyclerOptions.Builder<ModelClass> options =
-                new FirebaseRecyclerOptions,Bu
-        routeList = new ArrayList<>();
-        ModelClass ob1 = new ModelClass(R.drawable.common_full_open_on_phone, "Round Island");
-        routeList.add(ob1);
-        ModelClass ob2 = new ModelClass(R.drawable.rounded_search_view, "Route 2");
-        routeList.add(ob2);
-        ModelClass ob3 = new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Route 3");
-        routeList.add(ob3);
-
-        recyclerView.setAdapter(new Adapter(routeList)); */
 
         button = (Button) view.findViewById(R.id.ownRouteButton2);
         button.setOnClickListener(new View.OnClickListener() {
@@ -121,18 +95,14 @@ public class RecommendationsFragment extends Fragment implements Recommendations
         int p = position;
         Bundle bundle = new Bundle();
         Log.d("route", rou.get(position).getName());
-        bundle.putString("routename", rou.get(position).getName());
-        CyclingSessionFragment fragment = new CyclingSessionFragment();
-        fragment.setArguments(bundle);
-        getParentFragmentManager().beginTransaction().add(fragment, "key");
+//        bundle.putString("routename", rou.get(position).getName());
+//        CyclingSessionFragment fragment = new CyclingSessionFragment();
+//        fragment.setArguments(bundle);
+//        FragmentManager manager = getChildFragmentManager();
+//        FragmentTransaction transaction = manager.beginTransaction();
+//        transaction.replace(R.id., fragment).commit();
         NavDirections action = RecommendationsFragmentDirections.actionRecommendationsFragmentToStartCyclingFragment();
         Navigation.findNavController(this.getView()).navigate(action);
-    }
-
-    public ArrayList<ModelClass> routeList(){
-
-        MutableLiveData<ArrayList<ModelClass>> rou = dbManager.getRecommendedRoutes();
-        return rou.getValue();
     }
 
     private void getRecommendedRoutes(){

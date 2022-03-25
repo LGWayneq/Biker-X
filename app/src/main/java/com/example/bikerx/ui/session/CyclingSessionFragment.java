@@ -19,10 +19,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Chronometer;
 
-import com.example.bikerx.control.ApiManager;
 import com.example.bikerx.control.DBManager;
 import com.example.bikerx.databinding.CyclingSessionFragmentBinding;
-import com.example.bikerx.ui.home.Route1;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -42,9 +40,6 @@ public class CyclingSessionFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        Bundle bundle = this.getArguments();
-        String data = bundle.getString("key");
-        Log.d("passing", "rn: " + data);
 
         mBinding = CyclingSessionFragmentBinding.inflate(inflater, container, false);
         viewModel = new ViewModelProvider(requireActivity(), new CyclingSessionViewModelFactory(requireContext(), (AppCompatActivity) requireActivity()))
@@ -57,6 +52,8 @@ public class CyclingSessionFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+//        String data = getArguments().getString("routename");
+//        Log.d("passing", "rn " + data);
 
         bindButtons();
         bindData();
@@ -148,6 +145,7 @@ public class CyclingSessionFragment extends Fragment {
         //ROUTEID CURRENTLY HARDCODED RMB TO CHANGE
         NavHostFragment.findNavController(this).navigate(action);
     }
+
 
 
     @Override
