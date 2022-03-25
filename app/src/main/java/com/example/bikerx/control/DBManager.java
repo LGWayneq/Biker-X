@@ -110,17 +110,22 @@ public class DBManager {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 Map<String, Object> data = task.getResult().getData();
                 if (data == null) {
-                    history.setValue(null);
+
                 } else {
                     List<HashMap<String, Object>> historyData = (List<HashMap<String, Object>>) data.get("history");
-                    for (HashMap<String, Object> session: historyData) {
-                        CyclingHistory newHistory = new CyclingHistory(
-                                (String) session.get("date"),
-                                (String) session.get("formattedDistance"),
-                                (long) session.get("duration"));
-                        ArrayList<CyclingHistory> newHistoryArray = history.getValue();
-                        newHistoryArray.add(newHistory);
-                        history.setValue(newHistoryArray);
+                    if (historyData == null) {
+                        history.setValue(null);
+                    }
+                    else {
+                        for (HashMap<String, Object> session: historyData) {
+                            CyclingHistory newHistory = new CyclingHistory(
+                                    (String) session.get("date"),
+                                    (String) session.get("formattedDistance"),
+                                    (long) session.get("duration"));
+                            ArrayList<CyclingHistory> newHistoryArray = history.getValue();
+                            newHistoryArray.add(newHistory);
+                            history.setValue(newHistoryArray);
+                        }
                     }
                 }
             }
