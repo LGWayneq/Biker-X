@@ -228,12 +228,7 @@ public class DBManager {
     }
 
 
-
-
-    public MutableLiveData<ArrayList<Route1>> getRoute(String routeName) {
-        MutableLiveData<ArrayList<Route1>> r = new MutableLiveData<ArrayList<Route1>>();
-    }
-    public Route1 getRoute(String routeName) {
+    public ArrayList<Route1> getRoute(String routeName) {
         ArrayList<Route1> r = new ArrayList<>();
         db.collection("PCN").whereEqualTo("name", routeName).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -242,7 +237,7 @@ public class DBManager {
                     ArrayList<Route1> inner = new ArrayList<Route1>();
                     for (DocumentSnapshot document : task.getResult()) {
                         inner.add(document.toObject(Route1.class));
-                        r.setValue(inner);
+                        //r.add(inner);
                     }
                 } else {
                     Log.d("getRoute", "Error getting route: ", task.getException());
