@@ -57,7 +57,7 @@ public class ForumThreadAdapter extends RecyclerView.Adapter<ForumThreadAdapter.
         private TextView forumThreadName;
         private TextView forumThreadDescription;
         private FrameLayout forumRow;
-        private Button forumButton;
+        private FrameLayout forumThreadRowFrame;
         private FragmentCommunication cCommunication;
         private String threadId;
         private String threadName;
@@ -67,8 +67,8 @@ public class ForumThreadAdapter extends RecyclerView.Adapter<ForumThreadAdapter.
             forumThreadName = itemView.findViewById(R.id.forumThreadName);
             forumThreadDescription = itemView.findViewById(R.id.forumThreadDescription);
             forumRow = itemView.findViewById(R.id.forumThreadRowItemFrame);
-            forumButton = itemView.findViewById(R.id.forumThreadButton);
-            forumButton.setOnClickListener(this);
+            forumThreadRowFrame = itemView.findViewById(R.id.forumThreadRowItemFrame);
+            forumThreadRowFrame.setOnClickListener(this);
             cCommunication = Communicator;
         }
 
