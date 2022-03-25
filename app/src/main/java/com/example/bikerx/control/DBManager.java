@@ -92,6 +92,9 @@ public class DBManager {
                     db.collection("users").document(userId).set(newUser);
                 } else {
                     List<HashMap<String, Object>> history = (List<HashMap<String, Object>>) data.get("history");
+                    if (history == null) {
+                        history = new ArrayList<HashMap<String, Object>>();
+                    }
                     history.add(entry);
                     db.collection("users").document(userId).update("history", history);
                 }
