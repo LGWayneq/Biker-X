@@ -8,29 +8,11 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 
-import com.example.bikerx.R;
 import com.example.bikerx.control.ApiManager;
-import com.example.bikerx.control.DBManager;
 import com.example.bikerx.ui.fullmap.FullMapFragment;
-import com.example.bikerx.ui.session.CyclingSessionViewModel;
-import com.example.bikerx.ui.session.CyclingSessionViewModelFactory;
 import com.example.bikerx.ui.session.SessionSummaryFragment;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.maps.android.data.geojson.GeoJsonLayer;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 public class AmenitiesMapFragment extends MapFragment {
     private ApiManager apiManager;
