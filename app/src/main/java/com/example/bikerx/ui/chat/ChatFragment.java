@@ -61,7 +61,6 @@ public class ChatFragment extends Fragment {
     FragmentCommunication communication = new FragmentCommunication() {
         @Override
         public void onForumClick(String threadId, String threadName) {
-            view.findViewById(R.id.forumHeading).setVisibility(View.GONE);
             MessageFragment messageFragment = new MessageFragment();
             Bundle bundle = new Bundle();
             bundle.putString("threadId", threadId);
@@ -69,7 +68,8 @@ public class ChatFragment extends Fragment {
             messageFragment.setArguments(bundle);
             FragmentManager manager = getChildFragmentManager();
             FragmentTransaction transaction = manager.beginTransaction();
-            transaction.replace(R.id.forumLayout, messageFragment).commit();
+            transaction.replace(R.id.forumLayout, messageFragment, "previousForumFragment").commit();
+            transaction.addToBackStack("previousForumFragment");
         }
     };
 
