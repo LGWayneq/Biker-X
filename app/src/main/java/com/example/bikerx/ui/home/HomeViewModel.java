@@ -8,11 +8,27 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.android.volley.VolleyError;
+import com.example.bikerx.R;
 import com.example.bikerx.control.DBManager;
+import com.example.bikerx.control.WeatherApiService;
+import com.example.bikerx.control.WeatherResult;
 import com.example.bikerx.ui.history.CyclingHistory;
 
-import java.util.ArrayList;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.util.ArrayList;
+import com.android.volley.VolleyError;
+import com.example.bikerx.R;
+import com.example.bikerx.control.WeatherApiService;
+import com.example.bikerx.control.WeatherResult;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**This ViewModel handles the backend and data for the HomeFragment.
+ */
 public class HomeViewModel extends ViewModel {
     private DBManager dbManager = new DBManager();
     private MutableLiveData<String> userName = new MutableLiveData<String>();
@@ -26,19 +42,6 @@ public class HomeViewModel extends ViewModel {
     public MutableLiveData<ArrayList<Routee>> getHomeRoutes() {
         return homeRoutes;
     }
-
-import com.android.volley.VolleyError;
-import com.example.bikerx.R;
-import com.example.bikerx.control.WeatherApiService;
-import com.example.bikerx.control.WeatherResult;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-/**This ViewModel handles the backend and data for the HomeFragment.
- */
-public class HomeViewModel extends ViewModel {
-
     private WeatherApiService mVolleyService;
     private WeatherResult mResultCallback;
     private MutableLiveData<Drawable> res = new MutableLiveData<Drawable>();
