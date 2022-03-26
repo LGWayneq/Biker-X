@@ -133,7 +133,12 @@ public class DBManager {
         return history;
     }
 
-    public MutableLiveData<ArrayList<ForumThread>> getForumThread(Activity activity){
+    /**
+     * Retrieves the list of forum threads from the database, specifically the thread id, thread name and content of the last message
+     * The content of the last message will be used as the forum description displayed at ChatFragment
+     * @return the mutablelivedata array list of ForumThread queried from database
+     */
+    public MutableLiveData<ArrayList<ForumThread>> getForumThread(){
         MutableLiveData<ArrayList<ForumThread>> forumThreadArrayList = new MutableLiveData<ArrayList<ForumThread>>();
         forumThreadArrayList.setValue(new ArrayList<ForumThread>());
 
@@ -142,11 +147,6 @@ public class DBManager {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
-//                        Log.d(TAG, document.getId() + " => " + document.getData());
-//                        Log.d(TAG, "onComplete: threadID "+document.getData().get("threadId").toString());
-//                        Log.d(TAG, "onComplete: threadName "+document.getData().get("threadName").toString());
-//                        Log.d(TAG, "onComplete: threadMessages "+document.getData().get("messages").toString());
-
                         String threadId = document.getData().get("threadId").toString();
                         String threadName = document.getData().get("threadName").toString();
                         List<HashMap<String, Object>> messageList = (List<HashMap<String, Object>>) document.getData().get("messages");
@@ -169,9 +169,6 @@ public class DBManager {
                         newForumThreadArray.add(newForumThread);
                         forumThreadArrayList.setValue(newForumThreadArray);
                     }
-                } else {
-//                    Log.d(TAG, "Error getting documents: ", task.getException());
-                    Toast.makeText(activity.getApplicationContext(), "Error Getting Data", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -179,8 +176,12 @@ public class DBManager {
         return forumThreadArrayList;
     }
 
-
-    public MutableLiveData<ArrayList<Message>> getForumMessage(Activity activity, String threadId) {
+    /**
+     * Retrieves the specified list of messages from the database
+     * @param threadId the forum id to query the list of messages
+     * @return the mutablelivedata array list of Message queried from database
+     */
+    public MutableLiveData<ArrayList<Message>> getForumMessage(String threadId) {
         MutableLiveData<ArrayList<Message>> forumMessageMutableArray = new MutableLiveData<ArrayList<Message>>();
         forumMessageMutableArray.setValue(new ArrayList<Message>());
 
@@ -205,14 +206,22 @@ public class DBManager {
                             forumMessageMutableArray.setValue(newForumMessageMutableArray);
                         }
                     }
-                } else {
-                    Toast.makeText(activity.getApplicationContext(), "Error getting data!!!", Toast.LENGTH_LONG).show();
                 }
             }
         });
         return forumMessageMutableArray;
     }
 
+    /**
+     * Adds a Message object to the database
+     * @param activity message fragment activity
+     * @param threadId forum id where the message will be added to
+     * @param userId id of user who sent the message
+     * @param userName name of user who sent the message
+     * @param messageId id of Message object
+     * @param time timestamp of Message object
+     * @param messageContent content of Message object
+     */
     public void addForumMessage(Activity activity, String threadId, String userId, String userName, String messageId, Timestamp time, String messageContent){
         db.collection("forum-threads").document(threadId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -229,7 +238,7 @@ public class DBManager {
                     messages.add(entry);
                     db.collection("forum-threads").document(threadId).update("messages", messages);
                 } else {
-                    Toast.makeText(activity.getApplicationContext(), "Error getting data!!!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(activity.getApplicationContext(), "Message was not sent sucessfully", Toast.LENGTH_LONG).show();
                 }
             }
         });
