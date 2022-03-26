@@ -14,11 +14,14 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.bikerx.R;
 import com.example.bikerx.control.ApiManager;
 import com.example.bikerx.databinding.FragmentFullMapBinding;
+import com.example.bikerx.map.AmenitiesMapFragment;
 
 public class FullMapFragment extends Fragment {
 
@@ -62,6 +65,12 @@ public class FullMapFragment extends Fragment {
         CheckBox mCheckToilet = view.findViewById(R.id.checkBox_toilet);
         CheckBox mCheckWaterCooler = view.findViewById(R.id.checkBox_watercooler);
 
+        getMapReady().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean mapReady) {
+                if (mapReady) initialiseMarkers();
+            }
+        });
 
         mToggleButton.setOnClickListener(new View.OnClickListener() {
             boolean visible;
@@ -69,7 +78,7 @@ public class FullMapFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                initialiseMarkers();
+
                 visible = !visible;
                 mVisibleCheckBoxes.setVisibility(visible ? View.VISIBLE: View.GONE);
 
@@ -216,6 +225,11 @@ public class FullMapFragment extends Fragment {
                 }
             }
         });
+    }
+
+    public MutableLiveData<Boolean> getMapReady() {
+        AmenitiesMapFragment amenitiesMapFragment = (AmenitiesMapFragment) getChildFragmentManager().getFragments().get(0);
+        return amenitiesMapFragment.getMapReady();
     }
 
     @Override

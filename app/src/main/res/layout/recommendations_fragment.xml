@@ -42,7 +42,7 @@
         tools:layout_editor_absoluteX="0dp" />
 
     <Button
-        android:id="@+id/ownRouteButton2"
+        android:id="@+id/ownRouteButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="88dp"

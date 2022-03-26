@@ -2,64 +2,53 @@ package com.example.bikerx.control;
 
 import android.app.Activity;
 import android.util.Log;
-import android.view.Display;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.bikerx.entities.GoalsInfo;
-import com.example.bikerx.R;
 import com.example.bikerx.ui.chat.ForumThread;
 import com.example.bikerx.ui.chat.Message;
-import com.example.bikerx.ui.chat.MessageViewModel;
 import com.example.bikerx.entities.Goal;
 import com.example.bikerx.ui.history.CyclingHistory;
-import com.example.bikerx.ui.home.Route1;
-import com.example.bikerx.ui.home.Routee;
-import com.example.bikerx.ui.session.ModelClass;
-import com.google.android.gms.maps.GoogleMap;
+import com.example.bikerx.ui.home.Route;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.type.DateTime;
-import com.squareup.okhttp.Route;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A control class to retrieve and store user data through Firebase.
+ */
 public class DBManager {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private DatabaseReference databaseReference;
     public static final String TAG = "DBManager";
 
+    /**Add/Update the ratings given by a user for a recommended route.
+     * @param routeId The ID of the recommended route,
+     * @param userId The ID of the user giving the rating.
+     * @param rating The rating given by the user for the recommended route.
+     */
     public void addRatings(String routeId, String userId, float rating) {
-        db.collection("routes").document(routeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        db.collection("PCN").document(routeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 Map<String, Object> data = task.getResult().getData();
                 List<HashMap<String, Object>> ratings = (List<HashMap<String, Object>>) data.get("ratings");
+                if (ratings == null) {
+                    ratings = new ArrayList<HashMap<String, Object>>();
+                }
                 for (HashMap<String, Object> user : ratings) {
                     if (user.get("userId").toString().compareTo(userId) == 0) {
                         ratings.remove(user);
@@ -70,11 +59,18 @@ public class DBManager {
                 entry.put("userId", userId);
                 entry.put("rating", rating);
                 ratings.add(entry);
-                db.collection("routes").document(routeId).update("ratings", ratings);
+                Log.d("test", ratings.toString());
+                db.collection("PCN").document(routeId).update("ratings", ratings);
             }
         });
     }
 
+    /**Add a cycling session for a user as cycling history.
+     * @param userId The ID of the user.
+     * @param date The ending date and time of the cycling session. Stored as a String.
+     * @param formattedDistance The distance travelled during the cycling session. Stored as a String.
+     * @param duration The duration of the cycling session.
+     */
     public void addCyclingSession(String userId, String date, String formattedDistance, long duration) {
         db.collection("users").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -102,6 +98,10 @@ public class DBManager {
         });
     }
 
+    /**Retrieve all past cycling sessions of a particular user.
+     * @param userId The ID of the user.
+     * @return A MutableLiveData object, containing an ArrayList of CyclingHistory objects.
+     */
     public MutableLiveData<ArrayList<CyclingHistory>> getCyclingHistory(String userId) {
         MutableLiveData<ArrayList<CyclingHistory>> history = new MutableLiveData<ArrayList<CyclingHistory>>();
         history.setValue(new ArrayList<CyclingHistory>());
@@ -133,7 +133,12 @@ public class DBManager {
         return history;
     }
 
-    public MutableLiveData<ArrayList<ForumThread>> getForumThread(Activity activity){
+    /**
+     * Retrieves the list of forum threads from the database, specifically the thread id, thread name and content of the last message
+     * The content of the last message will be used as the forum description displayed at ChatFragment
+     * @return the mutablelivedata array list of ForumThread queried from database
+     */
+    public MutableLiveData<ArrayList<ForumThread>> getForumThread(){
         MutableLiveData<ArrayList<ForumThread>> forumThreadArrayList = new MutableLiveData<ArrayList<ForumThread>>();
         forumThreadArrayList.setValue(new ArrayList<ForumThread>());
 
@@ -142,11 +147,6 @@ public class DBManager {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
-//                        Log.d(TAG, document.getId() + " => " + document.getData());
-//                        Log.d(TAG, "onComplete: threadID "+document.getData().get("threadId").toString());
-//                        Log.d(TAG, "onComplete: threadName "+document.getData().get("threadName").toString());
-//                        Log.d(TAG, "onComplete: threadMessages "+document.getData().get("messages").toString());
-
                         String threadId = document.getData().get("threadId").toString();
                         String threadName = document.getData().get("threadName").toString();
                         List<HashMap<String, Object>> messageList = (List<HashMap<String, Object>>) document.getData().get("messages");
@@ -169,9 +169,6 @@ public class DBManager {
                         newForumThreadArray.add(newForumThread);
                         forumThreadArrayList.setValue(newForumThreadArray);
                     }
-                } else {
-//                    Log.d(TAG, "Error getting documents: ", task.getException());
-                    Toast.makeText(activity.getApplicationContext(), "Error Getting Data", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -179,8 +176,12 @@ public class DBManager {
         return forumThreadArrayList;
     }
 
-
-    public MutableLiveData<ArrayList<Message>> getForumMessage(Activity activity, String threadId) {
+    /**
+     * Retrieves the specified list of messages from the database
+     * @param threadId the forum id to query the list of messages
+     * @return the mutablelivedata array list of Message queried from database
+     */
+    public MutableLiveData<ArrayList<Message>> getForumMessage(String threadId) {
         MutableLiveData<ArrayList<Message>> forumMessageMutableArray = new MutableLiveData<ArrayList<Message>>();
         forumMessageMutableArray.setValue(new ArrayList<Message>());
 
@@ -205,14 +206,22 @@ public class DBManager {
                             forumMessageMutableArray.setValue(newForumMessageMutableArray);
                         }
                     }
-                } else {
-                    Toast.makeText(activity.getApplicationContext(), "Error getting data!!!", Toast.LENGTH_LONG).show();
                 }
             }
         });
         return forumMessageMutableArray;
     }
 
+    /**
+     * Adds a Message object to the database
+     * @param activity message fragment activity
+     * @param threadId forum id where the message will be added to
+     * @param userId id of user who sent the message
+     * @param userName name of user who sent the message
+     * @param messageId id of Message object
+     * @param time timestamp of Message object
+     * @param messageContent content of Message object
+     */
     public void addForumMessage(Activity activity, String threadId, String userId, String userName, String messageId, Timestamp time, String messageContent){
         db.collection("forum-threads").document(threadId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -229,54 +238,75 @@ public class DBManager {
                     messages.add(entry);
                     db.collection("forum-threads").document(threadId).update("messages", messages);
                 } else {
-                    Toast.makeText(activity.getApplicationContext(), "Error getting data!!!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(activity.getApplicationContext(), "Message was not sent sucessfully", Toast.LENGTH_LONG).show();
                 }
             }
         });
     }
 
-
-    public ArrayList<Route1> getRoute(String routeName) {
-        ArrayList<Route1> r = new ArrayList<>();
-        db.collection("PCN").whereEqualTo("name", routeName).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    ArrayList<Route1> inner = new ArrayList<Route1>();
-                    for (DocumentSnapshot document : task.getResult()) {
-                        inner.add(document.toObject(Route1.class));
-                        //r.add(inner);
-                    }
-                } else {
-                    Log.d("getRoute", "Error getting route: ", task.getException());
-                }
-            }
-        });
-        return r;
-    }
-
-    public MutableLiveData<ArrayList<ModelClass>> getRecommendedRoutes() {
-        MutableLiveData<ArrayList<ModelClass>> routeList = new MutableLiveData<>();
-        routeList.setValue(new ArrayList<ModelClass>());
-        db.collection("routes1").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+    public MutableLiveData<ArrayList<Route>> getHomeRoutes() {
+        MutableLiveData<ArrayList<Route>> routeList = new MutableLiveData<ArrayList<Route>>();
+        routeList.setValue(new ArrayList<Route>());
+        db.collection("PCN").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        Map<String, Object> data = document.getData();
-                        ModelClass m = new ModelClass(R.drawable.common_google_signin_btn_icon_dark, (String) data.get("name"), "5.0");
-                        ArrayList<ModelClass> newArray = routeList.getValue();
-                        newArray.add(m);
-                        Log.d("db", m.getRouteName());
-                        routeList.setValue(newArray);
+                        Route route = parseRouteData(document);
+                        ArrayList<Route> currentRouteArray = routeList.getValue();
+                        currentRouteArray.add(route);
+                        routeList.setValue(currentRouteArray);
                     }
                 }
             }
         });
         return routeList;
-
     }
 
+    public MutableLiveData<Route> getRecommendedRoute(String routeId) {
+        MutableLiveData<Route> route = new MutableLiveData<Route>();
+        db.collection("PCN").document(routeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    Route newRoute = parseRouteData(document);
+
+                    route.setValue(newRoute);
+                }
+            }
+        });
+        return route;
+    }
+
+    private Route parseRouteData(DocumentSnapshot document) {
+        Map<String, Object> data = document.getData();
+        Route route = new Route(null, document.getId(),null, null, null);
+        Object imageIdObj = data.get("imageId");
+
+        if (imageIdObj != null) {
+            route.setImageId((Integer) imageIdObj);
+        }
+
+        String name = data.get("name").toString();
+        route.setRouteName(name);
+
+        ArrayList<Double> coordinates = (ArrayList<Double>) data.get("coordinates");
+        ArrayList<LatLng> latLngs = new ArrayList<>();
+        int i = 0;
+        while (i < coordinates.size()) {
+            LatLng latLng = new LatLng(coordinates.get(i+1), coordinates.get(i));
+            latLngs.add(latLng);
+            i += 2;
+        }
+        route.setCoordinates(latLngs);
+
+        Object ratingsObj = data.get("ratings");
+        if (ratingsObj != null ) {
+            route.setRatings((ArrayList<HashMap<String, Object>>) ratingsObj);
+        }
+        return route;
+    }
 
     public MutableLiveData<Goal> getGoal(String userId) {
         MutableLiveData<Goal> goal = new MutableLiveData<Goal>();
@@ -360,4 +390,5 @@ public class DBManager {
             }
         });
     }
+
 }
