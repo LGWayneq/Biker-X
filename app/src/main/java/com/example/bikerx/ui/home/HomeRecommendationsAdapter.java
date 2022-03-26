@@ -74,7 +74,7 @@ public class HomeRecommendationsAdapter extends RecyclerView.Adapter<HomeRecomme
 
     @Override
     public int getItemCount() {
-        return 3;
+        return routeList.size();
     }
 
 

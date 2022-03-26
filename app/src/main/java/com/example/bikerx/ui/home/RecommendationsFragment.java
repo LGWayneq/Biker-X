@@ -74,7 +74,7 @@ public class RecommendationsFragment extends Fragment implements Recommendations
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NavDirections action = RecommendationsFragmentDirections.actionRecommendationsFragmentToStartCyclingFragment();
+                NavDirections action = RecommendationsFragmentDirections.actionRecommendationsFragmentToStartCyclingFragment("");
                 Navigation.findNavController(view).navigate(action);
             }
         });

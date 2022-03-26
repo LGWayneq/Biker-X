@@ -47,14 +47,9 @@ public class HomeFragment extends Fragment implements HomeRecommendationsAdapter
         viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
 
         mBinding = FragmentHomeBinding.inflate(inflater, container, false);
-//        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(mBinding.getRoot().getContext());
-//        mBinding.HomeRecyclerView.setLayoutManager(layoutManager);
-//        routeList = new ArrayList<>();
-//        routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Round Island", "5.0"));
-//        routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Mandai Loop", "5.0"));
-//        routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Seletar Loop", "3.0"));
-//        routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Sentosa Bike Trail", "4.0"));
-//        mBinding.HomeRecyclerView.setAdapter(new HomeRecommendationsAdapter(routeList, this));
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(mBinding.getRoot().getContext());
+        mBinding.HomeRecyclerView.setLayoutManager(layoutManager);
+        mBinding.HomeRecyclerView.setAdapter(new HomeRecommendationsAdapter(new ArrayList<>(), this));
         View root = mBinding.getRoot();
 
         return root;
@@ -67,7 +62,6 @@ public class HomeFragment extends Fragment implements HomeRecommendationsAdapter
         super.onViewCreated(view, savedInstanceState);
 
         bindButtons();
-        getWeatherData();
         displayHomeRoutes();
         displayWeather();
     }
@@ -109,7 +103,7 @@ public class HomeFragment extends Fragment implements HomeRecommendationsAdapter
         mBinding.ownRouteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NavDirections action = HomeFragmentDirections.actionNavigationHomeToStartCyclingFragment();
+                NavDirections action = HomeFragmentDirections.actionNavigationHomeToStartCyclingFragment("");
                 Navigation.findNavController(v).navigate(action);
             }
         });
@@ -117,7 +111,7 @@ public class HomeFragment extends Fragment implements HomeRecommendationsAdapter
         mBinding.HomeRecyclerView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NavDirections action = HomeFragmentDirections.actionNavigationHomeToStartCyclingFragment();
+                NavDirections action = HomeFragmentDirections.actionNavigationHomeToStartCyclingFragment("");
                 Navigation.findNavController(v).navigate(action);
             }
         });
@@ -133,8 +127,8 @@ public class HomeFragment extends Fragment implements HomeRecommendationsAdapter
 
 
     private void displayHomeRoutes() {
-        homeViewModel.fetchHomeRoutes();
-        homeViewModel.getHomeRoutes().observe(getViewLifecycleOwner(), new Observer<ArrayList<Routee>>() {
+        viewModel.fetchHomeRoutes();
+        viewModel.getHomeRoutes().observe(getViewLifecycleOwner(), new Observer<ArrayList<Routee>>() {
             @Override
             public void onChanged(ArrayList<Routee> homeRoutes) {
                 if (homeRoutes != null) {
