@@ -94,7 +94,7 @@ public class HomeFragment extends Fragment implements HomeRecommendationsAdapter
         mBinding.ownRouteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NavDirections action = HomeFragmentDirections.actionNavigationHomeToRecommendationsFragment();
+                NavDirections action = HomeFragmentDirections.actionNavigationHomeToStartCyclingFragment(null);
                 Navigation.findNavController(v).navigate(action);
             }
         });

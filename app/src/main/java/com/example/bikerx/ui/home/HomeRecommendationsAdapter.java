@@ -1,8 +1,11 @@
 package com.example.bikerx.ui.home;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,9 +17,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class HomeRecommendationsAdapter extends RecyclerView.Adapter<HomeRecommendationsAdapter.MyViewHolder>{
+public class HomeRecommendationsAdapter extends RecyclerView.Adapter<HomeRecommendationsAdapter.MyViewHolder> implements Filterable {
 
     private List<Route> routeList;
+    private List<Route> filteredRouteList;
     private MyViewHolder.HomeRouteListener mHomeRouteListener;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -42,6 +46,7 @@ public class HomeRecommendationsAdapter extends RecyclerView.Adapter<HomeRecomme
 
     public HomeRecommendationsAdapter(List<Route> routeList, MyViewHolder.HomeRouteListener homeRouteListener) {
         this.routeList = routeList;
+        this.filteredRouteList = routeList;
         this.mHomeRouteListener = homeRouteListener;
     }
 
@@ -54,7 +59,7 @@ public class HomeRecommendationsAdapter extends RecyclerView.Adapter<HomeRecomme
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        Route r = routeList.get(position);
+        Route r = filteredRouteList.get(position);
         Double avgRatings = getAverageRating(r.getRatings());
         holder.binding.routeRating.setText(avgRatings.toString());
         holder.binding.routeName.setText(r.getRouteName());
@@ -63,7 +68,7 @@ public class HomeRecommendationsAdapter extends RecyclerView.Adapter<HomeRecomme
 
     @Override
     public int getItemCount() {
-        return routeList.size();
+        return filteredRouteList.size();
     }
 
     private Double getAverageRating(ArrayList<HashMap<String, Object>> ratings) {
@@ -77,5 +82,33 @@ public class HomeRecommendationsAdapter extends RecyclerView.Adapter<HomeRecomme
         return 0.0;
     }
 
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                String charString = constraint.toString();
+                if (charString.isEmpty()) {
+                    filteredRouteList = routeList;
+                } else {
+                    List<Route> filteredList = new ArrayList<>();
+                    for (Route route : routeList) {
+                        if (route.getRouteName().toLowerCase().contains(charString.toLowerCase())) {
+                            filteredList.add(route);
+                        }
+                    }
+                    filteredRouteList = filteredList;
+                }
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = filteredRouteList;
+                return filterResults;
+            }
 
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                filteredRouteList = (ArrayList<Route>) results.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
 }

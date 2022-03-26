@@ -3,6 +3,8 @@ package com.example.bikerx.ui.home;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Context;
+import android.graphics.Rect;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,7 +19,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.SearchView;
 
 import com.example.bikerx.R;
 import com.example.bikerx.control.DBManager;
@@ -40,6 +45,8 @@ public class RecommendationsFragment extends Fragment implements HomeRecommendat
 
     private List<Route> routeList;
 
+    boolean isKeyboardShowing = false;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -53,6 +60,7 @@ public class RecommendationsFragment extends Fragment implements HomeRecommendat
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         bindButton();
+        bindSearchBar();
         displayRoutes();
     }
 
@@ -88,4 +96,46 @@ public class RecommendationsFragment extends Fragment implements HomeRecommendat
         NavDirections action = RecommendationsFragmentDirections.actionRecommendationsFragmentToStartCyclingFragment(routeList.get(position).getRouteId());
         Navigation.findNavController(this.getView()).navigate(action);
     }
+
+    private void bindSearchBar() {
+        binding.searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                adapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+
+        binding.getRoot().getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        Rect r = new Rect();
+                        binding.getRoot().getWindowVisibleDisplayFrame(r);
+                        int screenHeight =  binding.getRoot().getRootView().getHeight();
+
+                        int keypadHeight = screenHeight - r.bottom;
+
+                        if (keypadHeight > screenHeight * 0.15) {
+                            if (!isKeyboardShowing) {
+                                isKeyboardShowing = true;
+                                binding.ownRouteButton.setVisibility(View.GONE);
+                            }
+                        }
+                        else {
+                            if (isKeyboardShowing) {
+                                isKeyboardShowing = false;
+                                binding.ownRouteButton.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    }
+                });
+    }
+
 }

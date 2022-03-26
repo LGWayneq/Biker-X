@@ -58,7 +58,6 @@ public class HomeViewModel extends ViewModel {
                 if (requestType.equals("GET_WEATHER_DATA")) {
                     try {
                         String forecast = response.getJSONArray("items").getJSONObject(0).getJSONArray("forecasts").getJSONObject(12).getString("forecast");
-                        Log.d("test", forecast);
                         switch (forecast) {
                             case "Partly Cloudy (Day)":
                                 res.setValue(context.getResources().getDrawable(R.drawable.cloudy_day));
