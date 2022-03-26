@@ -4,6 +4,11 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
+
+
+import com.example.bikerx.map.Amenity;
+import com.example.bikerx.ui.history.CyclingHistory;
 
 import com.example.bikerx.ui.home.Routee;
 import com.google.android.gms.maps.GoogleMap;
@@ -24,53 +29,47 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Map;
 
+/**
+ * A control class to retrieve and store API-related data through Firebase.
+ */
 public class ApiManager {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-
-    public void getAmenities(GoogleMap map) {
-
+    /**Retrieve amenities from Firebase based on their type (e.g. Toilet, Shelter, Park Connector), and display them as markers on the map.
+     * @param map The map used to display the markers on.
+     * @param type The type of the amenities required.
+     * @return Returns a MutableLiveData object, containing an ArrayList of Markers that are displayed on the map.
+     */
+    public MutableLiveData<ArrayList<Marker>> getAmenitiesData(GoogleMap map, String type) {
+        MutableLiveData<ArrayList<Marker>> amenityMarkerList = new MutableLiveData<>(null);
         db.collection("amenities")
+                .whereEqualTo("type", type)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
+                            ArrayList<Marker> amenityArrayList = new ArrayList<>();
                             for (QueryDocumentSnapshot document : task.getResult()) {
+
                                 Map<String, Object> data = document.getData();
                                 MarkerOptions marker = new MarkerOptions();
                                 LatLng latLng = new LatLng((Double) data.get("latitude"), (Double) data.get("longitude"));
-                                map.addMarker(marker.position(latLng).title("%s - %s".format((String)data.get("name"), (String)data.get("type"))).icon(BitmapDescriptorFactory
-                                        .defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
+
+                                amenityArrayList.add(map.addMarker(marker.position(latLng).title((String)data.get("type")).snippet((String)data.get("name")).icon(BitmapDescriptorFactory
+                                        .defaultMarker(BitmapDescriptorFactory.HUE_AZURE))));
+
                             }
-                        }
-                    }
-                });
-    }
-    public ArrayList<Marker> getAmenitiesData(GoogleMap map, String type) {
-        map.clear();
-        ArrayList<Marker> amenityMarkerList = new ArrayList<Marker>();
-        db.collection("amenities")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Map<String, Object> data = document.getData();
-                                MarkerOptions marker = new MarkerOptions();
-                                LatLng latLng = new LatLng((Double) data.get("latitude"), (Double) data.get("longitude"));
-                                if ((String) data.get("type") == type) {
-                                    amenityMarkerList.add(map.addMarker(marker.position(latLng).title("%s - %s".format((String) data.get("name"), (String) data.get("type"))).icon(BitmapDescriptorFactory
-                                            .defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))));
-                                }
-                            }
+                            amenityMarkerList.setValue(amenityArrayList);
                         }
                     }
                 });
         return amenityMarkerList;
     }
 
+    /**Retrieve bicycle rack locations from Firebase , and display them as markers on the map.
+     * @param map The map used to display the markers on.
+     */
     public void getBicycleRacks(GoogleMap map) {
         db.collection("bicycle-racks")
                 .get()
@@ -89,6 +88,32 @@ public class ApiManager {
                 });
     }
 
+    /**Helper method to load API data onto Firebase.
+     */
+    public void loadBicycleRacksIntoAmenities(AppCompatActivity activity) {
+        String json = null;
+        try {
+            Log.d("Begin","");
+            InputStream is = activity.getAssets().open("bicycle-rack.geojson");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+
+            JSONObject obj = new JSONObject(json);
+            JSONArray jsonArray = obj.getJSONArray("features");
+            for (int i = 0; i<jsonArray.length(); i++){
+                JSONArray coords = jsonArray.getJSONObject(i).getJSONObject("geometry").getJSONArray("coordinates");
+                db.collection("amenities").add(new Amenity("", "BICYCLE RACK", coords.getDouble(0), coords.getDouble(1)));
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**Helper method to load API data onto Firebase.
+     */
     public void loadBicycleRacks(AppCompatActivity activity) {
         String json = null;
         try {
@@ -119,6 +144,7 @@ public class ApiManager {
                 public void setLongitude(Double longitude) {
                     this.longitude = longitude;
                 }
+
             }
             JSONObject obj = new JSONObject(json);
             JSONArray jsonArray = obj.getJSONArray("features");
@@ -131,6 +157,8 @@ public class ApiManager {
         }
     }
 
+    /**Helper method to load API data onto Firebase.
+     */
     public void loadRoutes (AppCompatActivity activity){
         String json = null;
         try{
@@ -187,6 +215,9 @@ public class ApiManager {
                 ex.printStackTrace();
         }
     }
+
+    /**Helper method to load API data onto Firebase.
+     */
     public void load (AppCompatActivity activity){
         String json1 = null;
         try{

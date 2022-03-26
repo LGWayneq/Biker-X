@@ -22,6 +22,9 @@ import com.example.bikerx.entities.Goal;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**Displays past cycling sessions of the user. Also displays user progress towards their goals set in GoalsFragment.
+ *
+ */
 public class CyclingHistoryFragment extends Fragment {
 
     private CyclingHistoryViewModel viewModel;
@@ -30,6 +33,8 @@ public class CyclingHistoryFragment extends Fragment {
     private CyclingHistoryAdapter adapter;
     private String userId;
 
+    /**Initialises CyclingHistoryFragment. The CyclingHistoryViewModel and FragmentHistoryBinding is instantiated here.
+     */
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         viewModel = new ViewModelProvider(this).get(CyclingHistoryViewModel.class);
@@ -38,6 +43,8 @@ public class CyclingHistoryFragment extends Fragment {
         return mBinding.getRoot();
     }
 
+    /**Initiates behaviour required of CyclingHistoryFragment. This method is called after onCreateView.
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -48,6 +55,9 @@ public class CyclingHistoryFragment extends Fragment {
         bindButtons();
     }
 
+    /**
+     * Fetch and display user Goal data from the viewModel.
+     */
     private void displayGoalsData() {//temp
         mBinding.goalsChronometer.setText(getChronometerDisplay(0L));
         viewModel.fetchGoals(userId);
@@ -66,6 +76,9 @@ public class CyclingHistoryFragment extends Fragment {
 
     }
 
+    /**
+     * Fetch and display user monthly history data from the viewModel.
+     */
     private void displayMonthlyData() {
         viewModel.calculateMonthlyData(this).observe(getViewLifecycleOwner(), new Observer<HashMap<String, Object>>() {
             @Override
@@ -84,6 +97,10 @@ public class CyclingHistoryFragment extends Fragment {
         });
     }
 
+    /**Helper function to format time (in milliseconds) to Chronometer display.
+     * @param monthDuration Time to be formatted.
+     * @return Returns a String, representing time formatted as "HHh MMm".
+     */
     private String getChronometerDisplay(Long monthDuration) {
         int h = (int) ((monthDuration / 1000) / 3600);
         int m = (int) (((monthDuration / 1000) / 60) % 60);
@@ -92,6 +109,10 @@ public class CyclingHistoryFragment extends Fragment {
         return String.format("%dh %sm", h, mString);
     }
 
+    /**
+     * Fetches and displays past cycling sessions from the viewModel.
+     * CyclingHistoryAdapter is used to convert ArrayList into a UI element.
+     */
     private void displayCyclingHistory() {
         viewModel.fetchCyclingHistory(userId);
         viewModel.getCyclingHistory().observe(getViewLifecycleOwner(), new Observer<ArrayList<CyclingHistory>>() {
@@ -109,6 +130,9 @@ public class CyclingHistoryFragment extends Fragment {
         });
     }
 
+    /**
+     * This method sets the logic of the buttons in the UI.
+     */
     public void bindButtons() {
         mBinding.editGoal.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,11 +141,5 @@ public class CyclingHistoryFragment extends Fragment {
                 Navigation.findNavController(v).navigate(action);
             }
         });
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        mBinding = null;
     }
 }

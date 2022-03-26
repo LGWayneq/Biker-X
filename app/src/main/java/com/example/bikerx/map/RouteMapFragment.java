@@ -32,18 +32,29 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/** The subclass of MapFragment which is used to track the route for CyclingSessionFragment.
+ * The users path during a cycling session is drawn using the drawRoute method, which is called whenever there is a change in location.
+ */
 public class RouteMapFragment extends MapFragment{
 
+    /**Initialises RouteMapFragment. It makes use of the implementation in the superclass MapFragment.
+     */
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
+    /**Initiates behaviour required of RouteMapFragment. It makes use of the implementation in the superclass MapFragment.
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
     }
 
+    /**Initiates required behaviour when the map param has finished rendering.
+     * The method creates an observer to observe changes in the user's location.
+     * @param map The GoogleMap object which is displayed on the UI.
+     */
     @Override
     public void onMapReady(@NonNull GoogleMap map) {
         super.onMapReady(map);
@@ -56,6 +67,9 @@ public class RouteMapFragment extends MapFragment{
     }
 
 
+    /**This method draws the route that the user has travelled onto the map.
+     * @param session Keeps track of the locations and distance travelled during the current cycling session.
+     */
     public void drawRoute(Session session) {
         List<LatLng> locations = session.getUserPath();
         PolylineOptions polylineOptions = new PolylineOptions().color(getResources().getColor(R.color.teal_700));

@@ -98,5 +98,11 @@
         <action
             android:id="@+id/action_startMessageFragment_self"
             app:destination="@id/startMessageFragment" />
+        <argument
+            android:name="threadId"
+            app:argType="string"/>
+        <argument
+            android:name="threadName"
+            app:argType="string"/>
     </fragment>
 </navigation>

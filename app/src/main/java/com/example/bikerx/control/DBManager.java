@@ -49,11 +49,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A control class to retrieve and store user data through Firebase.
+ */
 public class DBManager {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private DatabaseReference databaseReference;
     public static final String TAG = "DBManager";
 
+    /**Add/Update the ratings given by a user for a recommended route.
+     * @param routeId The ID of the recommended route,
+     * @param userId The ID of the user giving the rating.
+     * @param rating The rating given by the user for the recommended route.
+     */
     public void addRatings(String routeId, String userId, float rating) {
         db.collection("routes").document(routeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -75,6 +82,12 @@ public class DBManager {
         });
     }
 
+    /**Add a cycling session for a user as cycling history.
+     * @param userId The ID of the user.
+     * @param date The ending date and time of the cycling session. Stored as a String.
+     * @param formattedDistance The distance travelled during the cycling session. Stored as a String.
+     * @param duration The duration of the cycling session.
+     */
     public void addCyclingSession(String userId, String date, String formattedDistance, long duration) {
         db.collection("users").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -92,6 +105,9 @@ public class DBManager {
                     db.collection("users").document(userId).set(newUser);
                 } else {
                     List<HashMap<String, Object>> history = (List<HashMap<String, Object>>) data.get("history");
+                    if (history == null) {
+                        history = new ArrayList<HashMap<String, Object>>();
+                    }
                     history.add(entry);
                     db.collection("users").document(userId).update("history", history);
                 }
@@ -99,6 +115,10 @@ public class DBManager {
         });
     }
 
+    /**Retrieve all past cycling sessions of a particular user.
+     * @param userId The ID of the user.
+     * @return A MutableLiveData object, containing an ArrayList of CyclingHistory objects.
+     */
     public MutableLiveData<ArrayList<CyclingHistory>> getCyclingHistory(String userId) {
         MutableLiveData<ArrayList<CyclingHistory>> history = new MutableLiveData<ArrayList<CyclingHistory>>();
         history.setValue(new ArrayList<CyclingHistory>());
@@ -107,17 +127,22 @@ public class DBManager {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 Map<String, Object> data = task.getResult().getData();
                 if (data == null) {
-                    history.setValue(null);
+
                 } else {
                     List<HashMap<String, Object>> historyData = (List<HashMap<String, Object>>) data.get("history");
-                    for (HashMap<String, Object> session: historyData) {
-                        CyclingHistory newHistory = new CyclingHistory(
-                                (String) session.get("date"),
-                                (String) session.get("formattedDistance"),
-                                (long) session.get("duration"));
-                        ArrayList<CyclingHistory> newHistoryArray = history.getValue();
-                        newHistoryArray.add(newHistory);
-                        history.setValue(newHistoryArray);
+                    if (historyData == null) {
+                        history.setValue(null);
+                    }
+                    else {
+                        for (HashMap<String, Object> session: historyData) {
+                            CyclingHistory newHistory = new CyclingHistory(
+                                    (String) session.get("date"),
+                                    (String) session.get("formattedDistance"),
+                                    (long) session.get("duration"));
+                            ArrayList<CyclingHistory> newHistoryArray = history.getValue();
+                            newHistoryArray.add(newHistory);
+                            history.setValue(newHistoryArray);
+                        }
                     }
                 }
             }
@@ -125,7 +150,12 @@ public class DBManager {
         return history;
     }
 
-    public MutableLiveData<ArrayList<ForumThread>> getForumThread(Activity activity){
+    /**
+     * Retrieves the list of forum threads from the database, specifically the thread id, thread name and content of the last message
+     * The content of the last message will be used as the forum description displayed at ChatFragment
+     * @return the mutablelivedata array list of ForumThread queried from database
+     */
+    public MutableLiveData<ArrayList<ForumThread>> getForumThread(){
         MutableLiveData<ArrayList<ForumThread>> forumThreadArrayList = new MutableLiveData<ArrayList<ForumThread>>();
         forumThreadArrayList.setValue(new ArrayList<ForumThread>());
 
@@ -134,11 +164,6 @@ public class DBManager {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
-//                        Log.d(TAG, document.getId() + " => " + document.getData());
-//                        Log.d(TAG, "onComplete: threadID "+document.getData().get("threadId").toString());
-//                        Log.d(TAG, "onComplete: threadName "+document.getData().get("threadName").toString());
-//                        Log.d(TAG, "onComplete: threadMessages "+document.getData().get("messages").toString());
-
                         String threadId = document.getData().get("threadId").toString();
                         String threadName = document.getData().get("threadName").toString();
                         List<HashMap<String, Object>> messageList = (List<HashMap<String, Object>>) document.getData().get("messages");
@@ -161,9 +186,6 @@ public class DBManager {
                         newForumThreadArray.add(newForumThread);
                         forumThreadArrayList.setValue(newForumThreadArray);
                     }
-                } else {
-//                    Log.d(TAG, "Error getting documents: ", task.getException());
-                    Toast.makeText(activity.getApplicationContext(), "Error Getting Data", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -171,8 +193,12 @@ public class DBManager {
         return forumThreadArrayList;
     }
 
-
-    public MutableLiveData<ArrayList<Message>> getForumMessage(Activity activity, String threadId) {
+    /**
+     * Retrieves the specified list of messages from the database
+     * @param threadId the forum id to query the list of messages
+     * @return the mutablelivedata array list of Message queried from database
+     */
+    public MutableLiveData<ArrayList<Message>> getForumMessage(String threadId) {
         MutableLiveData<ArrayList<Message>> forumMessageMutableArray = new MutableLiveData<ArrayList<Message>>();
         forumMessageMutableArray.setValue(new ArrayList<Message>());
 
@@ -197,14 +223,22 @@ public class DBManager {
                             forumMessageMutableArray.setValue(newForumMessageMutableArray);
                         }
                     }
-                } else {
-                    Toast.makeText(activity.getApplicationContext(), "Error getting data!!!", Toast.LENGTH_LONG).show();
                 }
             }
         });
         return forumMessageMutableArray;
     }
 
+    /**
+     * Adds a Message object to the database
+     * @param activity message fragment activity
+     * @param threadId forum id where the message will be added to
+     * @param userId id of user who sent the message
+     * @param userName name of user who sent the message
+     * @param messageId id of Message object
+     * @param time timestamp of Message object
+     * @param messageContent content of Message object
+     */
     public void addForumMessage(Activity activity, String threadId, String userId, String userName, String messageId, Timestamp time, String messageContent){
         db.collection("forum-threads").document(threadId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -221,12 +255,11 @@ public class DBManager {
                     messages.add(entry);
                     db.collection("forum-threads").document(threadId).update("messages", messages);
                 } else {
-                    Toast.makeText(activity.getApplicationContext(), "Error getting data!!!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(activity.getApplicationContext(), "Message was not sent sucessfully", Toast.LENGTH_LONG).show();
                 }
             }
         });
     }
-
 
 
 
@@ -277,6 +310,24 @@ public class DBManager {
 //    return history;
 //}
 //
+    public ArrayList<Route1> getRoute(String routeName) {
+        ArrayList<Route1> r = new ArrayList<>();
+        db.collection("PCN").whereEqualTo("name", routeName).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    ArrayList<Route1> inner = new ArrayList<Route1>();
+                    for (DocumentSnapshot document : task.getResult()) {
+                        inner.add(document.toObject(Route1.class));
+                        //r.add(inner);
+                    }
+                } else {
+                    Log.d("getRoute", "Error getting route: ", task.getException());
+                }
+            }
+        });
+        return r;
+    }
 
     public MutableLiveData<ArrayList<Routee>> getHomeRoutes() {
         MutableLiveData<ArrayList<Routee>> routeList = new MutableLiveData<ArrayList<Routee>>();
@@ -368,11 +419,11 @@ public class DBManager {
                     // User does not exist in Firestore
                     data = new HashMap<String, Object>();
                     HashMap<String, Object> goals = new HashMap<String, Object>();
-                    goals.put("duration", monthlyTimeInHours * 3600);
+                    goals.put("duration", monthlyTimeInHours * 3600 * 1000);
                     data.put("goals", goals);
                 } else {
                     HashMap<String, Object> goals = new HashMap<String, Object>();
-                    goals.put("duration", monthlyTimeInHours * 3600);
+                    goals.put("duration", monthlyTimeInHours * 3600 * 1000);
                     if (data.get("goals") != null) {
                         Map<String, Object> existingGoals = (Map<String, Object>) data.get("goals");
                         if (existingGoals.get("distance") != null) {

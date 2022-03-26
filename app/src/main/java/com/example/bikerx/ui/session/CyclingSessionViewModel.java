@@ -27,22 +27,29 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-
+/**This ViewModel handles the backend and data for the CyclingSessionFragment.
+ */
 public class CyclingSessionViewModel extends ViewModel {
 
     private LocationManager locationManager;
     private boolean locationPermissionGranted;
     private final Session EMPTY = new Session("0.00", null, new ArrayList<LatLng>());
     private MutableLiveData<Session> session = new MutableLiveData<Session>(EMPTY);
-    private DBManager dbManager = new DBManager();
+    private DBManager dbManager;
     private AppCompatActivity activity;
 
     public CyclingSessionViewModel(Context context, AppCompatActivity activity) {
         this.activity = activity;
         this.locationManager = new LocationManager(context);
         this.locationPermissionGranted = locationManager.checkLocationPermission();
+        this.dbManager = new DBManager();
     }
 
+    /**Initialises a cycling session. This method is only called when the user clicks on the start button in CyclingSessionFragment.
+     * LocationManager is prompted to start tracking through the startTracking method.
+     * Observers are set on data stored by LocationManager, to get live location updates.
+     * @param activity Activity acts as the frame of reference for when to stop observing data from LocationManager (data is no longer observed when lifecycle of activity ends).
+     */
     public void initialiseSession(AppCompatActivity activity) {
         startTracking();
         if (locationPermissionGranted){
@@ -80,9 +87,27 @@ public class CyclingSessionViewModel extends ViewModel {
         }
     }
 
+    /**
+     * LocationManager is prompted to start tracking the distance travelled, and the current and past locations of the user.
+     */
     public void startTracking() { locationManager.trackUser(); }
+
+    /**
+     * LocationManager is prompted to pause tracking the distance travelled, and the current and past locations of the user.
+     */
     public void pauseTracking() { locationManager.pauseTracking(); }
+
+    /**
+     * LocationManager is prompted to resume tracking the distance travelled, and the current and past locations of the user.
+     */
     public void resumeTracking() { locationManager.resumeTracking(); }
+
+    /**
+     * Data about the current cycling session is retrieved and sent to Firebase through DBManager.
+     * Cycling Session data is reset.
+     * LocationManager is prompted to stop tracking the distance travelled, and the current and past locations of the user.
+     * @param duration Time elapsed during the cycling session. It is tracked using UI element "Chronometer" in CyclingSessionFragment, and passed here to be stored in Firebase.
+     */
     public void stopTracking(long duration) {
         Session session = this.session.getValue();
         Date date = Calendar.getInstance(TimeZone.getTimeZone("Asia/Singapore")).getTime();
