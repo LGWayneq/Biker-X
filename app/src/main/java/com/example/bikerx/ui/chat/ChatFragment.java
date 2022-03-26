@@ -85,25 +85,24 @@ public class ChatFragment extends Fragment {
 
     /**
      * Calls the fetchForumThread and getForumThread method from the view model, and set up a recycler view for ForumThread objects.
-     * Displays an error message if there is no data fetched
+     * Displays an error message if there is no data fetched (TO-DO)
      * @param view
      */
     private void displayForumThread(View view) {
         cViewModel.fetchForumThread();
-        if (cViewModel.forumThreadArrayList.getValue().isEmpty()) {
-            Toast.makeText(getActivity().getApplicationContext(), "Error Getting Data", Toast.LENGTH_LONG).show();
-        } else {
-            cViewModel.getForumThread().observe(this, new Observer<ArrayList<ForumThread>>() {
-                @Override
-                public void onChanged(ArrayList<ForumThread> forumThreadArray) {
-                    cRecyclerView = view.findViewById(R.id.forumThreadRecycleView);
-                    cRecyclerView.setHasFixedSize(true);
-                    LinearLayoutManager cLayoutManager = new LinearLayoutManager(view.getContext());
-                    cRecyclerView.setLayoutManager(cLayoutManager);
-                    cRecyclerView.setAdapter(new ForumThreadAdapter(forumThreadArray, communication));
-                }
-            });
-        }
+//        if (cViewModel.getForumThread().getValue().isEmpty()) {
+//            Toast.makeText(getActivity().getApplicationContext(), "Error Getting Data", Toast.LENGTH_LONG).show();
+//        }
+        cViewModel.getForumThread().observe(this, new Observer<ArrayList<ForumThread>>() {
+            @Override
+            public void onChanged(ArrayList<ForumThread> forumThreadArray) {
+                cRecyclerView = view.findViewById(R.id.forumThreadRecycleView);
+                cRecyclerView.setHasFixedSize(true);
+                LinearLayoutManager cLayoutManager = new LinearLayoutManager(view.getContext());
+                cRecyclerView.setLayoutManager(cLayoutManager);
+                cRecyclerView.setAdapter(new ForumThreadAdapter(forumThreadArray, communication));
+            }
+        });
     }
 
     /**
