@@ -14,11 +14,10 @@
             app:destination="@id/recommendationsFragment" />
         <action
             android:id="@+id/action_navigation_home_to_startCyclingFragment"
-            app:destination="@id/startCyclingFragment" />
+            app:destination="@id/startCyclingFragment"/>
         <action
             android:id="@+id/action_navigation_home_to_goalsFragment"
             app:destination="@id/goalsFragment" />
-
     </fragment>
 
     <fragment
@@ -52,7 +51,11 @@
         tools:layout="@layout/recommendations_fragment" >
         <action
             android:id="@+id/action_recommendationsFragment_to_startCyclingFragment"
-            app:destination="@id/startCyclingFragment" />
+            app:destination="@id/startCyclingFragment">
+            <argument
+                android:name="routeId"
+                app:argType="string"/>
+        </action>
     </fragment>
     <fragment
         android:id="@+id/startCyclingFragment"
@@ -62,7 +65,7 @@
             android:id="@+id/action_startCyclingFragment_to_sessionSummaryFragment"
             app:destination="@id/sessionSummaryFragment" />
         <argument
-            android:name="routeName"
+            android:name="routeId"
             app:argType="string"/>
     </fragment>
     <fragment

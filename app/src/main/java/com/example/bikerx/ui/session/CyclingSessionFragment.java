@@ -21,10 +21,14 @@ import android.widget.Chronometer;
 
 import com.example.bikerx.control.DBManager;
 import com.example.bikerx.databinding.CyclingSessionFragmentBinding;
+import com.example.bikerx.map.RouteMapFragment;
+import com.example.bikerx.ui.home.Route;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -38,7 +42,7 @@ public class CyclingSessionFragment extends Fragment {
     private Chronometer chronometer;
     private long pausedTimeElapsed = 0;
     private SessionState state;
-    private DBManager db;
+    private String routeId;
 
     /**Initialises CyclingSessionFragment. The CyclingSessionViewModel and CyclingSessionFragmentBinding is instantiated here.
      */
@@ -57,11 +61,26 @@ public class CyclingSessionFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        String data = getArguments().getString("routename");
-//        Log.d("passing", "rn " + data);
-
+        routeId = CyclingSessionFragmentArgs.fromBundle(getArguments()).getRouteId();
+        if (routeId != null) {
+            drawRecommendedRoute(routeId);
+        }
         bindButtons();
         bindData();
+    }
+
+    /**Draws route path on map based on routeId as selected by user in HomeFragment or RecommendationsFragment.
+     * Data for the route is fetched from viewModel.
+     * @param routeId The ID of the desired route.
+     */
+    private void drawRecommendedRoute(String routeId) {
+        viewModel.getRecommendedRoute(routeId).observe(this, new Observer<Route>() {
+            @Override
+            public void onChanged(Route route) {
+                RouteMapFragment routeMapFragment = (RouteMapFragment) getChildFragmentManager().getFragments().get(0);
+                routeMapFragment.drawRoute(route.getCoordinates(), "RECOMMENDED");
+            }
+        });
     }
 
     /**
@@ -172,8 +191,7 @@ public class CyclingSessionFragment extends Fragment {
         long timeElapsed = SystemClock.elapsedRealtime() - chronometer.getBase();
         viewModel.stopTracking(timeElapsed);
         NavDirections action = CyclingSessionFragmentDirections
-                .actionStartCyclingFragmentToSessionSummaryFragment(formattedDistance, timeElapsed, "NlYqwYPR5GHIJqROvXpp");
-        //ROUTEID CURRENTLY HARDCODED RMB TO CHANGE
+                .actionStartCyclingFragmentToSessionSummaryFragment(formattedDistance, timeElapsed, routeId);
         NavHostFragment.findNavController(this).navigate(action);
     }
 }

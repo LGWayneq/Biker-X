@@ -2,48 +2,27 @@ package com.example.bikerx.control;
 
 import android.app.Activity;
 import android.util.Log;
-import android.view.Display;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.bikerx.entities.GoalsInfo;
-import com.example.bikerx.R;
 import com.example.bikerx.ui.chat.ForumThread;
 import com.example.bikerx.ui.chat.Message;
-import com.example.bikerx.ui.chat.MessageViewModel;
 import com.example.bikerx.entities.Goal;
 import com.example.bikerx.ui.history.CyclingHistory;
-import com.example.bikerx.ui.home.Route1;
-import com.example.bikerx.ui.home.Routee;
-import com.example.bikerx.ui.session.ModelClass;
-import com.google.android.gms.maps.GoogleMap;
+import com.example.bikerx.ui.home.Route;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.type.DateTime;
-import com.squareup.okhttp.Route;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -62,11 +41,14 @@ public class DBManager {
      * @param rating The rating given by the user for the recommended route.
      */
     public void addRatings(String routeId, String userId, float rating) {
-        db.collection("routes").document(routeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        db.collection("PCN").document(routeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 Map<String, Object> data = task.getResult().getData();
                 List<HashMap<String, Object>> ratings = (List<HashMap<String, Object>>) data.get("ratings");
+                if (ratings == null) {
+                    ratings = new ArrayList<HashMap<String, Object>>();
+                }
                 for (HashMap<String, Object> user : ratings) {
                     if (user.get("userId").toString().compareTo(userId) == 0) {
                         ratings.remove(user);
@@ -77,7 +59,8 @@ public class DBManager {
                 entry.put("userId", userId);
                 entry.put("rating", rating);
                 ratings.add(entry);
-                db.collection("routes").document(routeId).update("ratings", ratings);
+                Log.d("test", ratings.toString());
+                db.collection("PCN").document(routeId).update("ratings", ratings);
             }
         });
     }
@@ -261,98 +244,69 @@ public class DBManager {
         });
     }
 
-
-
-//    public MutableLiveData<ArrayList<Route1>> getRoute(String routeName) {
-//        MutableLiveData<ArrayList<Route1>> r = new MutableLiveData<ArrayList<Route1>>();
-//    }
-//    public Route1 getRoute(String routeName) {
-//        ArrayList<Route1> r = new ArrayList<>();
-//        db.collection("PCN").whereEqualTo("name", routeName).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    ArrayList<Route1> inner = new ArrayList<Route1>();
-//                    for (DocumentSnapshot document : task.getResult()) {
-//                        inner.add(document.toObject(Route1.class));
-//                        r.setValue(inner);
-//                    }
-//                } else {
-//                    Log.d("getRoute", "Error getting route: ", task.getException());
-//                }
-//            }
-//        });
-//        return r;
-////    }
-//public MutableLiveData<ArrayList<CyclingHistory>> getCyclingHistory(String userId) {
-//    MutableLiveData<ArrayList<CyclingHistory>> history = new MutableLiveData<ArrayList<CyclingHistory>>();
-//    history.setValue(new ArrayList<CyclingHistory>());
-//    db.collection("users").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//        @Override
-//        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//            Map<String, Object> data = task.getResult().getData();
-//            if (data == null) {
-//                history.setValue(null);
-//            } else {
-//                List<HashMap<String, Object>> historyData = (List<HashMap<String, Object>>) data.get("history");
-//                for (HashMap<String, Object> session: historyData) {
-//                    CyclingHistory newHistory = new CyclingHistory(
-//                            (String) session.get("date"),
-//                            (String) session.get("formattedDistance"),
-//                            (long) session.get("duration"));
-//                    ArrayList<CyclingHistory> newHistoryArray = history.getValue();
-//                    newHistoryArray.add(newHistory);
-//                    history.setValue(newHistoryArray);
-//                }
-//            }
-//        }
-//    });
-//    return history;
-//}
-//
-    public ArrayList<Route1> getRoute(String routeName) {
-        ArrayList<Route1> r = new ArrayList<>();
-        db.collection("PCN").whereEqualTo("name", routeName).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    ArrayList<Route1> inner = new ArrayList<Route1>();
-                    for (DocumentSnapshot document : task.getResult()) {
-                        inner.add(document.toObject(Route1.class));
-                        //r.add(inner);
-                    }
-                } else {
-                    Log.d("getRoute", "Error getting route: ", task.getException());
-                }
-            }
-        });
-        return r;
-    }
-
-    public MutableLiveData<ArrayList<Routee>> getHomeRoutes() {
-        MutableLiveData<ArrayList<Routee>> routeList = new MutableLiveData<ArrayList<Routee>>();
-        routeList.setValue(new ArrayList<Routee>());
-        db.collection("routes1").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+    public MutableLiveData<ArrayList<Route>> getHomeRoutes() {
+        MutableLiveData<ArrayList<Route>> routeList = new MutableLiveData<ArrayList<Route>>();
+        routeList.setValue(new ArrayList<Route>());
+        db.collection("PCN").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        String name = document.getData().get("name").toString();
-                        String rating = document.getData().get("rating").toString();
-
-                        Routee r = new Routee(name, rating);
-                        ArrayList<Routee> newRouteeArray = routeList.getValue();
-                        newRouteeArray.add(r);
-                        routeList.setValue(newRouteeArray);
+                        Route route = parseRouteData(document);
+                        ArrayList<Route> currentRouteArray = routeList.getValue();
+                        currentRouteArray.add(route);
+                        routeList.setValue(currentRouteArray);
                     }
-                    Log.d("DBtest", "test: " + routeList.getValue().size());
                 }
             }
         });
-        Log.d("DBtest", "test: " + routeList.getValue().size());
         return routeList;
     }
 
+    public MutableLiveData<Route> getRecommendedRoute(String routeId) {
+        MutableLiveData<Route> route = new MutableLiveData<Route>();
+        db.collection("PCN").document(routeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    Route newRoute = parseRouteData(document);
+
+                    route.setValue(newRoute);
+                }
+            }
+        });
+        return route;
+    }
+
+    private Route parseRouteData(DocumentSnapshot document) {
+        Map<String, Object> data = document.getData();
+        Route route = new Route(null, document.getId(),null, null, null);
+        Object imageIdObj = data.get("imageId");
+
+        if (imageIdObj != null) {
+            route.setImageId((Integer) imageIdObj);
+        }
+
+        String name = data.get("name").toString();
+        route.setRouteName(name);
+
+        ArrayList<Double> coordinates = (ArrayList<Double>) data.get("coordinates");
+        ArrayList<LatLng> latLngs = new ArrayList<>();
+        int i = 0;
+        while (i < coordinates.size()) {
+            LatLng latLng = new LatLng(coordinates.get(i+1), coordinates.get(i));
+            latLngs.add(latLng);
+            i += 2;
+        }
+        route.setCoordinates(latLngs);
+
+        Object ratingsObj = data.get("ratings");
+        if (ratingsObj != null ) {
+            route.setRatings((ArrayList<HashMap<String, Object>>) ratingsObj);
+        }
+        return route;
+    }
 
     public MutableLiveData<Goal> getGoal(String userId) {
         MutableLiveData<Goal> goal = new MutableLiveData<Goal>();
@@ -436,4 +390,5 @@ public class DBManager {
             }
         });
     }
+
 }

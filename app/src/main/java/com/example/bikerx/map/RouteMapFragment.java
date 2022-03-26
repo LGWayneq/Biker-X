@@ -61,21 +61,27 @@ public class RouteMapFragment extends MapFragment{
         super.getViewModel().getSession().observe(this, new Observer<Session>() {
             @Override
             public void onChanged(Session session) {
-                drawRoute(session);
+                drawRoute(session.getUserPath(), "SESSION");
             }
         });
     }
 
 
-    /**This method draws the route that the user has travelled onto the map.
-     * @param session Keeps track of the locations and distance travelled during the current cycling session.
+    /**This method draws a route on the map.
+     * @param path Keeps track of the locations along the route.
+     * @param type Indicates whether the route drawn is from recommended route or from cycling session. Affects the colour of the path drawn.
      */
-    public void drawRoute(Session session) {
-        List<LatLng> locations = session.getUserPath();
-        PolylineOptions polylineOptions = new PolylineOptions().color(getResources().getColor(R.color.teal_700));
-        super.getMap().clear();
+    public void drawRoute(List<LatLng> path, String type) {
+        PolylineOptions polylineOptions;
+        if (type == "SESSION") {
+            polylineOptions = new PolylineOptions().color(getResources().getColor(R.color.teal_700));
+        }
+        else {
+            polylineOptions = new PolylineOptions().color(getResources().getColor(R.color.purple_700));
+        }
+        //super.getMap().clear();
         List<LatLng> points = polylineOptions.getPoints();
-        points.addAll(locations);
+        points.addAll(path);
         super.getMap().addPolyline(polylineOptions);
     }
 

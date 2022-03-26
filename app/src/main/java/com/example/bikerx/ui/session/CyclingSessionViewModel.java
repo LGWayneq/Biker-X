@@ -15,7 +15,7 @@ import com.example.bikerx.MainActivity;
 import com.example.bikerx.R;
 import com.example.bikerx.control.DBManager;
 import com.example.bikerx.control.LocationManager;
-import com.example.bikerx.ui.home.Route1;
+import com.example.bikerx.ui.home.Route;
 import com.google.android.gms.maps.model.LatLng;
 
 
@@ -116,6 +116,10 @@ public class CyclingSessionViewModel extends ViewModel {
 
         this.session.setValue(new Session("0.00", null, new ArrayList<LatLng>()));
         locationManager.stopTracking();
+    }
+
+    public MutableLiveData<Route> getRecommendedRoute(String routeId) {
+        return dbManager.getRecommendedRoute(routeId);
     }
 
     public MutableLiveData<Session> getSession() {

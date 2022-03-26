@@ -2,7 +2,6 @@ package com.example.bikerx.ui.home;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +18,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bikerx.R;
 import com.example.bikerx.databinding.FragmentHomeBinding;
-import com.example.bikerx.ui.history.CyclingHistory;
-import com.example.bikerx.ui.history.CyclingHistoryAdapter;
-import com.example.bikerx.ui.session.ModelClass;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +29,7 @@ import java.util.List;
 public class HomeFragment extends Fragment implements HomeRecommendationsAdapter.MyViewHolder.HomeRouteListener{
     private String TAG = "HOME_FRAGMENT";
     private FragmentHomeBinding mBinding;
-    private List<ModelClass> routeList;
+    private List<Route> routeList;
     private HomeRecommendationsAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
 
@@ -45,14 +41,9 @@ public class HomeFragment extends Fragment implements HomeRecommendationsAdapter
                              ViewGroup container, Bundle savedInstanceState) {
 
         viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
-
         mBinding = FragmentHomeBinding.inflate(inflater, container, false);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(mBinding.getRoot().getContext());
-        mBinding.HomeRecyclerView.setLayoutManager(layoutManager);
-        mBinding.HomeRecyclerView.setAdapter(new HomeRecommendationsAdapter(new ArrayList<>(), this));
-        View root = mBinding.getRoot();
 
-        return root;
+        return mBinding.getRoot();
     }
 
     /**Initiates behaviour required of HomeFragment. This method is called after onCreateView.
@@ -103,15 +94,7 @@ public class HomeFragment extends Fragment implements HomeRecommendationsAdapter
         mBinding.ownRouteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NavDirections action = HomeFragmentDirections.actionNavigationHomeToStartCyclingFragment("");
-                Navigation.findNavController(v).navigate(action);
-            }
-        });
-
-        mBinding.HomeRecyclerView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                NavDirections action = HomeFragmentDirections.actionNavigationHomeToStartCyclingFragment("");
+                NavDirections action = HomeFragmentDirections.actionNavigationHomeToRecommendationsFragment();
                 Navigation.findNavController(v).navigate(action);
             }
         });
@@ -119,25 +102,22 @@ public class HomeFragment extends Fragment implements HomeRecommendationsAdapter
 
     @Override
     public void homeRouteClick(int position) {
-        int p = position;
-        Log.i("routeName", "routeName: " + routeList.get(p).getRouteName());
-        NavDirections action = HomeFragmentDirections.actionNavigationHomeToStartCyclingFragment(routeList.get(p).getRouteName());
+        NavDirections action = HomeFragmentDirections.actionNavigationHomeToStartCyclingFragment(routeList.get(position).getRouteId());
         Navigation.findNavController(this.getView()).navigate(action);
     }
 
 
     private void displayHomeRoutes() {
         viewModel.fetchHomeRoutes();
-        viewModel.getHomeRoutes().observe(getViewLifecycleOwner(), new Observer<ArrayList<Routee>>() {
+        viewModel.getHomeRoutes().observe(this, new Observer<ArrayList<Route>>() {
             @Override
-            public void onChanged(ArrayList<Routee> homeRoutes) {
+            public void onChanged(ArrayList<Route> homeRoutes) {
                 if (homeRoutes != null) {
+                    routeList = homeRoutes;
                     adapter = new HomeRecommendationsAdapter(homeRoutes, HomeFragment.this);
                     layoutManager = new LinearLayoutManager(getActivity());
                     mBinding.HomeRecyclerView.setLayoutManager(layoutManager);
                     mBinding.HomeRecyclerView.setAdapter(adapter);
-                } else {
-//                    mBinding.noHistoryAlert.setVisibility(View.VISIBLE);
                 }
             }
         });

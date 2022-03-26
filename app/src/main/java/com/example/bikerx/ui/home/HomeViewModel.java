@@ -32,14 +32,14 @@ import org.json.JSONObject;
 public class HomeViewModel extends ViewModel {
     private DBManager dbManager = new DBManager();
     private MutableLiveData<String> userName = new MutableLiveData<String>();
-    private MutableLiveData<ArrayList<Routee>> homeRoutes;
+    private MutableLiveData<ArrayList<Route>> homeRoutes;
 
 
     public void fetchHomeRoutes() {
         homeRoutes = dbManager.getHomeRoutes();
     }
 
-    public MutableLiveData<ArrayList<Routee>> getHomeRoutes() {
+    public MutableLiveData<ArrayList<Route>> getHomeRoutes() {
         return homeRoutes;
     }
     private WeatherApiService mVolleyService;

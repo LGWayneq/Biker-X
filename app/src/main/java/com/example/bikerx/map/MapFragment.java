@@ -125,7 +125,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     /**This methods moves the map camera to focus on the user's current location.
      */
     private void moveCamera() {
-        float DEFAULT_ZOOM = 15.0F;
+        float DEFAULT_ZOOM = 14.0F;
         final Observer<LatLng> locationObserver = new Observer<LatLng>() {
             @Override
             public void onChanged(LatLng latLng) {
