@@ -32,26 +32,6 @@ import java.util.Map;
 public class ApiManager {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-
-    public void getAmenities(GoogleMap map) {
-
-        db.collection("amenities")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Map<String, Object> data = document.getData();
-                                MarkerOptions marker = new MarkerOptions();
-                                LatLng latLng = new LatLng((Double) data.get("latitude"), (Double) data.get("longitude"));
-                                map.addMarker(marker.position(latLng).title((String)data.get("type")).snippet((String)data.get("name")).icon(BitmapDescriptorFactory
-                                        .defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-                            }
-                        }
-                    }
-                });
-    }
     public MutableLiveData<ArrayList<Marker>> getAmenitiesData(GoogleMap map, String type) {
         MutableLiveData<ArrayList<Marker>> amenityMarkerList = new MutableLiveData<>(null);
         db.collection("amenities")

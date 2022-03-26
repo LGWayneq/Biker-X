@@ -3,6 +3,7 @@ package com.example.bikerx.ui.fullmap;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
@@ -29,6 +30,7 @@ public class FullMapViewModel extends ViewModel {
     private GoogleMap map;
     private ApiManager apiManager;
    // private AppCompatActivity activity;
+
 
 
     public void initialiseMarkers(FullMapFragment fragment){

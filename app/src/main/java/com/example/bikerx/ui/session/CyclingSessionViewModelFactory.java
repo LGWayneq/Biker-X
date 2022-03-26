@@ -7,6 +7,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+/**
+ * Helper class to initialise CyclingSessionViewModel using desired arguments.
+ */
 public class CyclingSessionViewModelFactory implements ViewModelProvider.Factory {
     private Context context;
     private AppCompatActivity activity;

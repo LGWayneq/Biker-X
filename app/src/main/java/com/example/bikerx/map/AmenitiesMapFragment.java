@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.bikerx.control.ApiManager;
 import com.example.bikerx.ui.fullmap.FullMapFragment;
@@ -16,7 +17,7 @@ import com.google.android.gms.maps.GoogleMap;
 
 public class AmenitiesMapFragment extends MapFragment {
     private ApiManager apiManager;
-
+    private MutableLiveData<Boolean> mapReady = new MutableLiveData<>(false);
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -32,16 +33,15 @@ public class AmenitiesMapFragment extends MapFragment {
     public void onMapReady(@NonNull GoogleMap map) {
         super.onMapReady(map);
         this.apiManager = new ApiManager();
-        if (getParentFragment() instanceof SessionSummaryFragment) displayBicycleRacks();
-        if (getParentFragment() instanceof FullMapFragment) displayAmenities();
+        this.mapReady.setValue(true);
     }
 
-    private void displayBicycleRacks() {
+    public void displayBicycleRacks() {
         apiManager.getBicycleRacks(super.getMap());
     }
 
-    private void displayAmenities() {
-        apiManager.getAmenities(super.getMap());
+    public MutableLiveData<Boolean> getMapReady() {
+        return this.mapReady;
     }
 
 }

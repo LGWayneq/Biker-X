@@ -27,20 +27,22 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-
+/**This ViewModel handles the backend and data for the CyclingSessionViewModel.
+ */
 public class CyclingSessionViewModel extends ViewModel {
 
     private LocationManager locationManager;
     private boolean locationPermissionGranted;
     private final Session EMPTY = new Session("0.00", null, new ArrayList<LatLng>());
     private MutableLiveData<Session> session = new MutableLiveData<Session>(EMPTY);
-    private DBManager dbManager = new DBManager();
+    private DBManager dbManager;
     private AppCompatActivity activity;
 
     public CyclingSessionViewModel(Context context, AppCompatActivity activity) {
         this.activity = activity;
         this.locationManager = new LocationManager(context);
         this.locationPermissionGranted = locationManager.checkLocationPermission();
+        this.dbManager = new DBManager();
     }
 
     public void initialiseSession(AppCompatActivity activity) {
