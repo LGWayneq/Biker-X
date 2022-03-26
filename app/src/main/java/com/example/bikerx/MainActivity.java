@@ -4,17 +4,11 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.example.bikerx.control.ApiManager;
-import com.example.bikerx.control.DBManager;
 import com.example.bikerx.control.LocationManager;
-import com.example.bikerx.ui.home.HomeViewModel;
-import com.example.bikerx.ui.session.CyclingSessionFragment;
-import com.example.bikerx.ui.home.Route1;
+import com.example.bikerx.login.LoginActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -60,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
             finish();
             return;
         }
-        // random shit;
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
