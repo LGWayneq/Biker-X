@@ -49,11 +49,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A control class to retrieve and store user data through Firebase.
+ */
 public class DBManager {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private DatabaseReference databaseReference;
     public static final String TAG = "DBManager";
 
+    /**Add/Update the ratings given by a user for a recommended route.
+     * @param routeId The ID of the recommended route,
+     * @param userId The ID of the user giving the rating.
+     * @param rating The rating given by the user for the recommended route.
+     */
     public void addRatings(String routeId, String userId, float rating) {
         db.collection("routes").document(routeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -75,6 +82,12 @@ public class DBManager {
         });
     }
 
+    /**Add a cycling session for a user as cycling history.
+     * @param userId The ID of the user.
+     * @param date The ending date and time of the cycling session. Stored as a String.
+     * @param formattedDistance The distance travelled during the cycling session. Stored as a String.
+     * @param duration The duration of the cycling session.
+     */
     public void addCyclingSession(String userId, String date, String formattedDistance, long duration) {
         db.collection("users").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -102,6 +115,10 @@ public class DBManager {
         });
     }
 
+    /**Retrieve all past cycling sessions of a particular user.
+     * @param userId The ID of the user.
+     * @return A MutableLiveData object, containing an ArrayList of CyclingHistory objects.
+     */
     public MutableLiveData<ArrayList<CyclingHistory>> getCyclingHistory(String userId) {
         MutableLiveData<ArrayList<CyclingHistory>> history = new MutableLiveData<ArrayList<CyclingHistory>>();
         history.setValue(new ArrayList<CyclingHistory>());

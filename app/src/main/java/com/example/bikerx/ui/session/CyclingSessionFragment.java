@@ -29,6 +29,9 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 
+/**
+ * Displays UI to track current cycling session. Allows user to start, stop, pause, and resume their cycling session.
+ */
 public class CyclingSessionFragment extends Fragment {
     private CyclingSessionViewModel viewModel;
     private CyclingSessionFragmentBinding mBinding;
@@ -37,6 +40,8 @@ public class CyclingSessionFragment extends Fragment {
     private SessionState state;
     private DBManager db;
 
+    /**Initialises CyclingSessionFragment. The CyclingSessionViewModel and CyclingSessionFragmentBinding is instantiated here.
+     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -45,10 +50,10 @@ public class CyclingSessionFragment extends Fragment {
         viewModel = new ViewModelProvider(requireActivity(), new CyclingSessionViewModelFactory(requireContext(), (AppCompatActivity) requireActivity()))
                 .get(CyclingSessionViewModel.class);
         return mBinding.getRoot();
-
-
     }
 
+    /**Initiates behaviour required of CyclingSessionFragment. This method is called after onCreateView.
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -59,6 +64,9 @@ public class CyclingSessionFragment extends Fragment {
         bindData();
     }
 
+    /**
+     * This method fetches and displays required data onto the UI.
+     */
     private void bindData() {
         Date date = Calendar.getInstance(TimeZone.getTimeZone("Asia/Singapore")).getTime();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy - h:mm a", Locale.getDefault());
@@ -76,6 +84,9 @@ public class CyclingSessionFragment extends Fragment {
         });
     }
 
+    /**
+     * This method sets the logic of the buttons in the UI.
+     */
     private void bindButtons() {
         chronometer = mBinding.chronometer;
         state = SessionState.PRE_START;
@@ -105,6 +116,11 @@ public class CyclingSessionFragment extends Fragment {
         });
     }
 
+    /**
+     * Calls the viewModel to start tracking location and distance data of the cycling session.
+     * Starts the chronometer to keep track of time elapsed during the cycling session.
+     * Sets state of the app to STARTED.
+     */
     private void startSession() {
         viewModel.initialiseSession((AppCompatActivity) getActivity());
         chronometer.setBase(SystemClock.elapsedRealtime());
@@ -115,6 +131,11 @@ public class CyclingSessionFragment extends Fragment {
         mBinding.stopButton.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * Calls the viewModel to pause tracking location and distance data of the cycling session.
+     * Pauses the chronometer to pause keeping track of time elapsed during the cycling session.
+     * Sets state of the app to PAUSED.
+     */
     private void pauseSession() {
         viewModel.pauseTracking();
         chronometer.stop();
@@ -124,6 +145,11 @@ public class CyclingSessionFragment extends Fragment {
         mBinding.resumeButton.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * Calls the viewModel to resume tracking location and distance data of the cycling session.
+     * Resumes the chronometer to keep track of time elapsed during the cycling session.
+     * Sets state of the app to STARTED.
+     */
     private void resumeSession() {
         viewModel.resumeTracking();
         chronometer.setBase(SystemClock.elapsedRealtime() - pausedTimeElapsed);
@@ -133,6 +159,11 @@ public class CyclingSessionFragment extends Fragment {
         mBinding.resumeButton.setVisibility(View.GONE);
     }
 
+    /**
+     * Calls the viewModel to stp[ tracking location and distance data of the cycling session.
+     * Gathers data for the cycling session, and passes it to viewModel to be stored in Firebase database.
+     * App will automatically navigate to SessionSummaryFragment.
+     */
     private void stopSession() {
         if (state == SessionState.PAUSED) {
             chronometer.setBase(SystemClock.elapsedRealtime() - pausedTimeElapsed);
@@ -145,17 +176,4 @@ public class CyclingSessionFragment extends Fragment {
         //ROUTEID CURRENTLY HARDCODED RMB TO CHANGE
         NavHostFragment.findNavController(this).navigate(action);
     }
-
-
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
 }

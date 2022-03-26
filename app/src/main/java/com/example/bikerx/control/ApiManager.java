@@ -29,9 +29,17 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Map;
 
+/**
+ * A control class to retrieve and store API-related data through Firebase.
+ */
 public class ApiManager {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+    /**Retrieve amenities from Firebase based on their type (e.g. Toilet, Shelter, Park Connector), and display them as markers on the map.
+     * @param map The map used to display the markers on.
+     * @param type The type of the amenities required.
+     * @return Returns a MutableLiveData object, containing an ArrayList of Markers that are displayed on the map.
+     */
     public MutableLiveData<ArrayList<Marker>> getAmenitiesData(GoogleMap map, String type) {
         MutableLiveData<ArrayList<Marker>> amenityMarkerList = new MutableLiveData<>(null);
         db.collection("amenities")
@@ -59,6 +67,9 @@ public class ApiManager {
         return amenityMarkerList;
     }
 
+    /**Retrieve bicycle rack locations from Firebase , and display them as markers on the map.
+     * @param map The map used to display the markers on.
+     */
     public void getBicycleRacks(GoogleMap map) {
         db.collection("bicycle-racks")
                 .get()
@@ -77,6 +88,8 @@ public class ApiManager {
                 });
     }
 
+    /**Helper method to load API data onto Firebase.
+     */
     public void loadBicycleRacksIntoAmenities(AppCompatActivity activity) {
         String json = null;
         try {
@@ -99,6 +112,8 @@ public class ApiManager {
         }
     }
 
+    /**Helper method to load API data onto Firebase.
+     */
     public void loadBicycleRacks(AppCompatActivity activity) {
         String json = null;
         try {
@@ -142,6 +157,8 @@ public class ApiManager {
         }
     }
 
+    /**Helper method to load API data onto Firebase.
+     */
     public void loadRoutes (AppCompatActivity activity){
         String json = null;
         try{
@@ -198,6 +215,9 @@ public class ApiManager {
                 ex.printStackTrace();
         }
     }
+
+    /**Helper method to load API data onto Firebase.
+     */
     public void load (AppCompatActivity activity){
         String json1 = null;
         try{

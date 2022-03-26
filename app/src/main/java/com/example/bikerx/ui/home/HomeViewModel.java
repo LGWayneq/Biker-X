@@ -16,12 +16,18 @@ import com.example.bikerx.control.WeatherResult;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**This ViewModel handles the backend and data for the HomeFragment.
+ */
 public class HomeViewModel extends ViewModel {
 
     private WeatherApiService mVolleyService;
     private WeatherResult mResultCallback;
     private MutableLiveData<Drawable> res = new MutableLiveData<Drawable>();
 
+    /**Retrieves current weather data from Data.gov API, and allocates appropriate drawable based on weather.
+     * @param context App context for method to retrieve drawables.
+     * @return Drawable to be displayed in HomeFragment.
+     */
     public MutableLiveData<Drawable> getWeatherData(Context context) {
         mResultCallback = new WeatherResult() {
             @SuppressLint("UseCompatLoadingForDrawables")

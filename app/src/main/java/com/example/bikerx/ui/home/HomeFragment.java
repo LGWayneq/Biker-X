@@ -24,12 +24,18 @@ import com.example.bikerx.ui.session.ModelClass;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Displays UI for the app landing page.
+ * Contains weather data, recommended routes, and navigation buttons to other app features.
+ */
 public class HomeFragment extends Fragment implements HomeRecommendationsAdapter.MyViewHolder.HomeRouteListener{
     private String TAG = "HOME_FRAGMENT";
     private FragmentHomeBinding mBinding;
     private List<ModelClass> routeList;
     private HomeViewModel viewModel;
 
+    /**Initialises HomeFragment. The HomeViewModel and FragmentHomeBinding is instantiated here.
+     */
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -49,6 +55,8 @@ public class HomeFragment extends Fragment implements HomeRecommendationsAdapter
         return root;
     }
 
+    /**Initiates behaviour required of HomeFragment. This method is called after onCreateView.
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -58,6 +66,9 @@ public class HomeFragment extends Fragment implements HomeRecommendationsAdapter
 
     }
 
+    /**
+     * Displays weather data using data fetched from viewModel.
+     */
     private void displayWeather() {
         viewModel.getWeatherData(getContext()).observe(this, new Observer<Drawable>() {
             @Override
@@ -68,14 +79,9 @@ public class HomeFragment extends Fragment implements HomeRecommendationsAdapter
 
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        mBinding = null;
-    }
-
-
-
+    /**
+     * This method sets the logic of the buttons in the UI.
+     */
     private void bindButtons() {
         mBinding.recommendedRouteSeeAll.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
