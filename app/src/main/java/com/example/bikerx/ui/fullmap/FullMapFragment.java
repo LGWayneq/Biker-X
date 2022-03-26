@@ -23,6 +23,9 @@ import com.example.bikerx.control.ApiManager;
 import com.example.bikerx.databinding.FragmentFullMapBinding;
 import com.example.bikerx.map.AmenitiesMapFragment;
 
+/**
+ * Displays full map. Users can view, filter and search for amenities
+ */
 public class FullMapFragment extends Fragment {
 
     private FullMapViewModel fullMapViewModel;
@@ -31,6 +34,9 @@ public class FullMapFragment extends Fragment {
     private AppCompatActivity activity;
     private ApiManager apiManager;
 
+    /**
+     * Initialises FullMapFragment. The FullMapViewModel is instantiated here.
+     */
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         fullMapViewModel =
@@ -43,11 +49,20 @@ public class FullMapFragment extends Fragment {
     }
 
 
+    /**
+     * Initialises map markers.
+     */
     public void initialiseMarkers(){
         fullMapViewModel.initialiseMarkers(this);
 
     }
 
+    /**
+     * Initialises behaviour required of FullMapFragment. This method is called after onCreateView.
+     * Initialises markers upon map ready.
+     * Clicking the toggle icon would display/hide the filter list.
+     * Checking the checkboxes of the respective amenities filters would cause the corresponding map markers to appear on map & change colour of checkbox text
+     */
     public void onViewCreated(View view, Bundle savedInstance){
         super.onViewCreated(view, savedInstance);
 
@@ -77,11 +92,8 @@ public class FullMapFragment extends Fragment {
 
             @Override
             public void onClick(View view) {
-
-
                 visible = !visible;
                 mVisibleCheckBoxes.setVisibility(visible ? View.VISIBLE: View.GONE);
-
             }
         });
 
@@ -227,6 +239,10 @@ public class FullMapFragment extends Fragment {
         });
     }
 
+    /**
+     * Checks if map is loaded
+     * @return amenitiesMapFragment.getMapReady() - returns true if map is ready
+     */
     public MutableLiveData<Boolean> getMapReady() {
         AmenitiesMapFragment amenitiesMapFragment = (AmenitiesMapFragment) getChildFragmentManager().getFragments().get(0);
         return amenitiesMapFragment.getMapReady();

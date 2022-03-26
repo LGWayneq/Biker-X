@@ -14,6 +14,9 @@ import com.google.android.gms.maps.model.Marker;
 
 import java.util.ArrayList;
 
+/**
+ * FullMapViewModel handles the backend and data fetching for the FullMapFragment.
+ */
 public class FullMapViewModel extends ViewModel {
 
     protected ArrayList<Marker> AccessPointMarkerList = null;
@@ -29,14 +32,16 @@ public class FullMapViewModel extends ViewModel {
 
     private GoogleMap map;
     private ApiManager apiManager;
-   // private AppCompatActivity activity;
+    //private AppCompatActivity activity;
 
-
-
+    /**
+     *This method initialises map markers by fetching data of the respective amenities from firebase and storing them in ArrayLists of Markers for the respective amenities
+     * @param fragment This is the FullMapFragment.
+     */
     public void initialiseMarkers(FullMapFragment fragment){
         this.apiManager = new ApiManager();
-     //   this.activity = (AppCompatActivity) fragment.getActivity();
-       // apiManager.loadBicycleRacksIntoAmenities(activity);
+        //this.activity = (AppCompatActivity) fragment.getActivity();
+        //apiManager.loadBicycleRacksIntoAmenities(activity);
 
         if (PlaygroundMarkerList == null){
             AmenitiesMapFragment amenitiesMapFragment = (AmenitiesMapFragment) fragment.getChildFragmentManager().getFragments().get(0);
@@ -118,6 +123,11 @@ public class FullMapViewModel extends ViewModel {
         }
     }
 
+    /**
+     * This method sets the visibility of markers to visible when checked=true, and invisible when checked=false
+     * @param markerList The ArrayList of markers for a specific amenity
+     * @param checked The state of the checkbox (whether it is checked/unchecked)
+     */
     public void setMarkerVisibility(ArrayList<Marker> markerList, boolean checked){
         for (Marker m : markerList){
             m.setVisible(checked); }
