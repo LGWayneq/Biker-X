@@ -12,13 +12,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.bikerx.R;
 import com.example.bikerx.databinding.RecommendationsFragmentBinding;
 import com.example.bikerx.databinding.RecommendationsRowBinding;
+import com.example.bikerx.ui.history.CyclingHistory;
 import com.example.bikerx.ui.session.ModelClass;
 
 import java.util.List;
 
 public class HomeRecommendationsAdapter extends RecyclerView.Adapter<HomeRecommendationsAdapter.MyViewHolder>{
 
-    private List<ModelClass> routeList;
+    private List<Routee> routeList;
     private MyViewHolder.HomeRouteListener mHomeRouteListener;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -42,7 +43,7 @@ public class HomeRecommendationsAdapter extends RecyclerView.Adapter<HomeRecomme
         }
     }
 
-    public HomeRecommendationsAdapter(List<ModelClass> routeList, MyViewHolder.HomeRouteListener homeRouteListener) {
+    public HomeRecommendationsAdapter(List<Routee> routeList, MyViewHolder.HomeRouteListener homeRouteListener) {
         this.routeList = routeList;
         this.mHomeRouteListener = homeRouteListener;
     }
@@ -56,13 +57,18 @@ public class HomeRecommendationsAdapter extends RecyclerView.Adapter<HomeRecomme
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        int resource = routeList.get(position).getImageView();
-        String name = routeList.get(position).getRouteName();
-        String routeRate = routeList.get(position).getRouteRating();
+        Routee r = routeList.get(position);
+        holder.binding.routeRating.setText(r.getRating());
+        holder.binding.routeName.setText(r.getName());
+        holder.binding.routeImg.setImageResource(R.drawable.common_google_signin_btn_icon_dark);
+//        int resource = routeList.get(position).getImageView();
+//        String name = routeList.get(position).getRouteName();
+//        String routeRate = routeList.get(position).getRouteRating();
+//
+//        holder.binding.routeImg.setImageResource(resource);
+//        holder.binding.routeName.setText(name);
+//        holder.binding.routeRating.setText(routeRate);
 
-        holder.binding.routeImg.setImageResource(resource);
-        holder.binding.routeName.setText(name);
-        holder.binding.routeRating.setText(routeRate);
 
     }
 

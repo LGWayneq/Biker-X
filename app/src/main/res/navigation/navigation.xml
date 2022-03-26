@@ -18,6 +18,7 @@
         <action
             android:id="@+id/action_navigation_home_to_goalsFragment"
             app:destination="@id/goalsFragment" />
+
     </fragment>
 
     <fragment
@@ -60,6 +61,9 @@
         <action
             android:id="@+id/action_startCyclingFragment_to_sessionSummaryFragment"
             app:destination="@id/sessionSummaryFragment" />
+        <argument
+            android:name="routeName"
+            app:argType="string"/>
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"

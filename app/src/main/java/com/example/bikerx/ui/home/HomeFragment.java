@@ -19,6 +19,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bikerx.R;
 import com.example.bikerx.databinding.FragmentHomeBinding;
+import com.example.bikerx.ui.history.CyclingHistory;
+import com.example.bikerx.ui.history.CyclingHistoryAdapter;
 import com.example.bikerx.ui.session.ModelClass;
 
 import java.util.ArrayList;
@@ -32,6 +34,9 @@ public class HomeFragment extends Fragment implements HomeRecommendationsAdapter
     private String TAG = "HOME_FRAGMENT";
     private FragmentHomeBinding mBinding;
     private List<ModelClass> routeList;
+    private HomeRecommendationsAdapter adapter;
+    private RecyclerView.LayoutManager layoutManager;
+
     private HomeViewModel viewModel;
 
     /**Initialises HomeFragment. The HomeViewModel and FragmentHomeBinding is instantiated here.
@@ -42,14 +47,14 @@ public class HomeFragment extends Fragment implements HomeRecommendationsAdapter
         viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
 
         mBinding = FragmentHomeBinding.inflate(inflater, container, false);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(mBinding.getRoot().getContext());
-        mBinding.HomeRecyclerView.setLayoutManager(layoutManager);
-        routeList = new ArrayList<>();
-        routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Round Island", "5.0"));
-        routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Mandai Loop", "5.0"));
-        routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Seletar Loop", "3.0"));
-        routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Sentosa Bike Trail", "4.0"));
-        mBinding.HomeRecyclerView.setAdapter(new HomeRecommendationsAdapter(routeList, this));
+//        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(mBinding.getRoot().getContext());
+//        mBinding.HomeRecyclerView.setLayoutManager(layoutManager);
+//        routeList = new ArrayList<>();
+//        routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Round Island", "5.0"));
+//        routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Mandai Loop", "5.0"));
+//        routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Seletar Loop", "3.0"));
+//        routeList.add(new ModelClass(R.drawable.common_google_signin_btn_icon_dark, "Sentosa Bike Trail", "4.0"));
+//        mBinding.HomeRecyclerView.setAdapter(new HomeRecommendationsAdapter(routeList, this));
         View root = mBinding.getRoot();
 
         return root;
@@ -62,8 +67,9 @@ public class HomeFragment extends Fragment implements HomeRecommendationsAdapter
         super.onViewCreated(view, savedInstanceState);
 
         bindButtons();
+        getWeatherData();
+        displayHomeRoutes();
         displayWeather();
-
     }
 
     /**
@@ -121,7 +127,25 @@ public class HomeFragment extends Fragment implements HomeRecommendationsAdapter
     public void homeRouteClick(int position) {
         int p = position;
         Log.i("routeName", "routeName: " + routeList.get(p).getRouteName());
-        NavDirections action = HomeFragmentDirections.actionNavigationHomeToStartCyclingFragment();
+        NavDirections action = HomeFragmentDirections.actionNavigationHomeToStartCyclingFragment(routeList.get(p).getRouteName());
         Navigation.findNavController(this.getView()).navigate(action);
+    }
+
+
+    private void displayHomeRoutes() {
+        homeViewModel.fetchHomeRoutes();
+        homeViewModel.getHomeRoutes().observe(getViewLifecycleOwner(), new Observer<ArrayList<Routee>>() {
+            @Override
+            public void onChanged(ArrayList<Routee> homeRoutes) {
+                if (homeRoutes != null) {
+                    adapter = new HomeRecommendationsAdapter(homeRoutes, HomeFragment.this);
+                    layoutManager = new LinearLayoutManager(getActivity());
+                    mBinding.HomeRecyclerView.setLayoutManager(layoutManager);
+                    mBinding.HomeRecyclerView.setAdapter(adapter);
+                } else {
+//                    mBinding.noHistoryAlert.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 }

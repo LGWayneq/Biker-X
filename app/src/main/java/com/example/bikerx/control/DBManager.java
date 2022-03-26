@@ -262,6 +262,54 @@ public class DBManager {
     }
 
 
+
+//    public MutableLiveData<ArrayList<Route1>> getRoute(String routeName) {
+//        MutableLiveData<ArrayList<Route1>> r = new MutableLiveData<ArrayList<Route1>>();
+//    }
+//    public Route1 getRoute(String routeName) {
+//        ArrayList<Route1> r = new ArrayList<>();
+//        db.collection("PCN").whereEqualTo("name", routeName).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    ArrayList<Route1> inner = new ArrayList<Route1>();
+//                    for (DocumentSnapshot document : task.getResult()) {
+//                        inner.add(document.toObject(Route1.class));
+//                        r.setValue(inner);
+//                    }
+//                } else {
+//                    Log.d("getRoute", "Error getting route: ", task.getException());
+//                }
+//            }
+//        });
+//        return r;
+////    }
+//public MutableLiveData<ArrayList<CyclingHistory>> getCyclingHistory(String userId) {
+//    MutableLiveData<ArrayList<CyclingHistory>> history = new MutableLiveData<ArrayList<CyclingHistory>>();
+//    history.setValue(new ArrayList<CyclingHistory>());
+//    db.collection("users").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//        @Override
+//        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//            Map<String, Object> data = task.getResult().getData();
+//            if (data == null) {
+//                history.setValue(null);
+//            } else {
+//                List<HashMap<String, Object>> historyData = (List<HashMap<String, Object>>) data.get("history");
+//                for (HashMap<String, Object> session: historyData) {
+//                    CyclingHistory newHistory = new CyclingHistory(
+//                            (String) session.get("date"),
+//                            (String) session.get("formattedDistance"),
+//                            (long) session.get("duration"));
+//                    ArrayList<CyclingHistory> newHistoryArray = history.getValue();
+//                    newHistoryArray.add(newHistory);
+//                    history.setValue(newHistoryArray);
+//                }
+//            }
+//        }
+//    });
+//    return history;
+//}
+//
     public ArrayList<Route1> getRoute(String routeName) {
         ArrayList<Route1> r = new ArrayList<>();
         db.collection("PCN").whereEqualTo("name", routeName).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -281,26 +329,28 @@ public class DBManager {
         return r;
     }
 
-    public MutableLiveData<ArrayList<ModelClass>> getRecommendedRoutes() {
-        MutableLiveData<ArrayList<ModelClass>> routeList = new MutableLiveData<>();
-        routeList.setValue(new ArrayList<ModelClass>());
+    public MutableLiveData<ArrayList<Routee>> getHomeRoutes() {
+        MutableLiveData<ArrayList<Routee>> routeList = new MutableLiveData<ArrayList<Routee>>();
+        routeList.setValue(new ArrayList<Routee>());
         db.collection("routes1").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        Map<String, Object> data = document.getData();
-                        ModelClass m = new ModelClass(R.drawable.common_google_signin_btn_icon_dark, (String) data.get("name"), "5.0");
-                        ArrayList<ModelClass> newArray = routeList.getValue();
-                        newArray.add(m);
-                        Log.d("db", m.getRouteName());
-                        routeList.setValue(newArray);
+                        String name = document.getData().get("name").toString();
+                        String rating = document.getData().get("rating").toString();
+
+                        Routee r = new Routee(name, rating);
+                        ArrayList<Routee> newRouteeArray = routeList.getValue();
+                        newRouteeArray.add(r);
+                        routeList.setValue(newRouteeArray);
                     }
+                    Log.d("DBtest", "test: " + routeList.getValue().size());
                 }
             }
         });
+        Log.d("DBtest", "test: " + routeList.getValue().size());
         return routeList;
-
     }
 
 
