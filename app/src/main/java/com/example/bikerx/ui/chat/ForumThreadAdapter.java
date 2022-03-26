@@ -1,7 +1,6 @@
 package com.example.bikerx.ui.chat;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,17 +15,45 @@ import com.example.bikerx.R;
 
 import java.util.ArrayList;
 
+/**
+ * A recyclerview adapter class that inherits the built-in RecyclerView.Adapter class (of type ForumThreadAdapter.ViewHolder) to support recyclerview operations relating to ForumThread objects.
+ * This class mainly offers functionalities for the Chat/Forum component of the application.
+ *
+ * @author Xuan Hua
+ * @version 1.0, 25/03/2022
+ * @since 17.0.2
+ *
+ */
 public class ForumThreadAdapter extends RecyclerView.Adapter<ForumThreadAdapter.ViewHolder>{
-    private static final String TAG = "ForumThreadAdapter";
+    /**
+     * The forum thread array list of this ForumThreadAdapter object.
+     */
     private ArrayList<ForumThread> forumThreadMutableList;
+    /**
+     * The context of this ForumThreadAdapter object.
+     */
     private Context cContext;
+    /**
+     * The fragment communication interface used to connect this adapter to the chat fragment.
+     */
     private FragmentCommunication cCommunicator;
 
+    /**
+     * Constructs a new ForumThreadAdapter object with the specified forum thread array list and fragment communication interface.
+     * @param forumThreadMutableList the forum thread array list of this ForumThreadAdapter object
+     * @param cCommunicator the fragment communication interface of this ForumThreadAdapter object
+     */
     public ForumThreadAdapter(ArrayList<ForumThread> forumThreadMutableList, FragmentCommunication cCommunicator) {
         this.forumThreadMutableList = forumThreadMutableList;
         this.cCommunicator = cCommunicator;
     }
 
+    /**
+     * Overrides the original onCreateViewHolder to assign the view and context
+     * @param parent
+     * @param viewType
+     * @return the viewholder for the view and fragment communication interface of this ForumThreadAdapter object
+     */
     @NonNull
     @Override
     public ForumThreadAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -35,6 +62,11 @@ public class ForumThreadAdapter extends RecyclerView.Adapter<ForumThreadAdapter.
         return new ViewHolder(view, cCommunicator);
     }
 
+    /**
+     * Overrides the original onBindViewHolder to assign the data from the forum thread array list to the recyclerview rows
+     * @param holder
+     * @param position
+     */
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String threadId = forumThreadMutableList.get(position).getThreadId();
@@ -44,9 +76,18 @@ public class ForumThreadAdapter extends RecyclerView.Adapter<ForumThreadAdapter.
         holder.setData(position, threadId, threadName, messageArrayList);
     }
 
+    /**
+     * Overrides the original getItemCount to obtain the size of the forum thread array list
+     * @return the length of the array list for forum thread, specified as integer
+     */
     @Override
     public int getItemCount() {return forumThreadMutableList.size();}
 
+    /**
+     * A ViewHolder class that inherits the built-in RecyclerView.ViewHolder and implements the View.OnClickListerner interface
+     * This class sets up and displays the data obtained to the User Interface
+     * Alternating forum threads are set with alternating background colours
+     */
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private TextView forumThreadName;
         private TextView forumThreadDescription;
