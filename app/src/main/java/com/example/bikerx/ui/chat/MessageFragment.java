@@ -126,29 +126,28 @@ public class MessageFragment extends Fragment {
     /**
      * Calls the fetchMessages and getMessages method from the view model, and set up a recycler view for Message objects
      * Recycler view layout is defined to set stack from end
-     * Displays an error message if there is no data fetched
+     * Displays an error message if there is no data fetched (TO-DO)
      * @param view
      */
     private void displayMessageList(View view) {
         mViewModel.fetchMessages(threadId);
-        if (mViewModel.mutableMessageArrayList.getValue().isEmpty()) {
-            Toast.makeText(getActivity().getApplicationContext(), "Error Getting Data", Toast.LENGTH_LONG).show();
-        } else {
-            mViewModel.getMessages().observe(this, new Observer<ArrayList<Message>>() {
-                @Override
-                public void onChanged(ArrayList<Message> messageArray) {
-                    mRecyclerView = view.findViewById(R.id.messageRecycleView);
-                    mRecyclerView.setHasFixedSize(true);
-                    LinearLayoutManager mLayoutManager = new LinearLayoutManager(view.getContext());
+//        if (mViewModel.mutableMessageArrayList.getValue().isEmpty()) {
+//            Toast.makeText(getActivity().getApplicationContext(), "Error Getting Data", Toast.LENGTH_LONG).show();
+//        }
+        mViewModel.getMessages().observe(this, new Observer<ArrayList<Message>>() {
+            @Override
+            public void onChanged(ArrayList<Message> messageArray) {
+                mRecyclerView = view.findViewById(R.id.messageRecycleView);
+                mRecyclerView.setHasFixedSize(true);
+                LinearLayoutManager mLayoutManager = new LinearLayoutManager(view.getContext());
 //                mLayoutManager.setReverseLayout(true);
-                    mLayoutManager.setStackFromEnd(true);
-                    mRecyclerView.setLayoutManager(mLayoutManager);
+                mLayoutManager.setStackFromEnd(true);
+                mRecyclerView.setLayoutManager(mLayoutManager);
 
-                    mAdapter = new MessageAdapter(messageArray);
-                    mRecyclerView.setAdapter(mAdapter);
-                }
-            });
-        }
+                mAdapter = new MessageAdapter(messageArray);
+                mRecyclerView.setAdapter(mAdapter);
+            };
+        });
     }
 
     /**
