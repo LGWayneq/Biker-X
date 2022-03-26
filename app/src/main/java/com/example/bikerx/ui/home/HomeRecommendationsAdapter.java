@@ -17,12 +17,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Adapter class that inherits RecyclerView.Adapter and implements Filterable
+ * This adapter is used to display routes and search routes in HomeFragment
+ */
 public class HomeRecommendationsAdapter extends RecyclerView.Adapter<HomeRecommendationsAdapter.MyViewHolder> implements Filterable {
 
     private List<Route> routeList;
     private List<Route> filteredRouteList;
     private MyViewHolder.HomeRouteListener mHomeRouteListener;
 
+    /**
+     * Class for UI elements in routes
+     * Implements onClickListener to listen for clicks
+     */
     public static class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         RecommendationsRowBinding binding;
         HomeRouteListener homeRouteListener;
@@ -44,11 +52,17 @@ public class HomeRecommendationsAdapter extends RecyclerView.Adapter<HomeRecomme
         }
     }
 
+    /**
+     * Constructor for adapter
+     * @param routeList List of Route class to be displayed
+     * @param homeRouteListener listener to listen for clicks
+     */
     public HomeRecommendationsAdapter(List<Route> routeList, MyViewHolder.HomeRouteListener homeRouteListener) {
         this.routeList = routeList;
         this.filteredRouteList = routeList;
         this.mHomeRouteListener = homeRouteListener;
     }
+
 
     @NonNull
     @Override
@@ -57,6 +71,11 @@ public class HomeRecommendationsAdapter extends RecyclerView.Adapter<HomeRecomme
         return new MyViewHolder(RecommendationsRowBinding.inflate(LayoutInflater.from(parent.getContext())), mHomeRouteListener);
     }
 
+    /**
+     * Override onBindViewHolder and binds UI elements to recycler view
+     * @param holder
+     * @param position
+     */
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Route r = filteredRouteList.get(position);
@@ -66,11 +85,20 @@ public class HomeRecommendationsAdapter extends RecyclerView.Adapter<HomeRecomme
         holder.binding.routeImg.setImageResource(R.drawable.common_google_signin_btn_icon_dark);
     }
 
+    /**
+     * Get the size of list of routes
+     * @return the size of the list of routes
+     */
     @Override
     public int getItemCount() {
         return filteredRouteList.size();
     }
 
+    /**
+     * Calculate the average rating of a route
+     * @param ratings Complete list of ratings submitted for this route
+     * @return the calculation for average rating
+     */
     private Double getAverageRating(ArrayList<HashMap<String, Object>> ratings) {
         Double total = 0.0;
         if (ratings != null) {
@@ -82,6 +110,10 @@ public class HomeRecommendationsAdapter extends RecyclerView.Adapter<HomeRecomme
         return 0.0;
     }
 
+    /**
+     * Override getFilter and filters routes based on input query
+     * @return list of routes that corresponds to input query
+     */
     @Override
     public Filter getFilter() {
         return new Filter() {

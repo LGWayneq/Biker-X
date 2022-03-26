@@ -38,6 +38,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Displays all routes and allows for searching of routes
+ */
 public class RecommendationsFragment extends Fragment implements HomeRecommendationsAdapter.MyViewHolder.HomeRouteListener {
     private RecommendationsFragmentBinding binding;
     private HomeRecommendationsAdapter adapter;
@@ -47,6 +50,13 @@ public class RecommendationsFragment extends Fragment implements HomeRecommendat
 
     boolean isKeyboardShowing = false;
 
+    /**
+     * onCreateView initialize viewModel and RecommendationsFragmentBinding
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -56,6 +66,11 @@ public class RecommendationsFragment extends Fragment implements HomeRecommendat
         return binding.getRoot();
     }
 
+    /**
+     * Call functions required for fragment functionality
+     * @param view
+     * @param savedInstanceState
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -74,6 +89,9 @@ public class RecommendationsFragment extends Fragment implements HomeRecommendat
         });
     }
 
+    /**
+     * Fetch routes and display routes in recycler view
+     */
     private void displayRoutes() {
         viewModel.fetchRoutes();
         viewModel.getRoutes().observe(this, new Observer<ArrayList<Route>>() {
@@ -91,12 +109,19 @@ public class RecommendationsFragment extends Fragment implements HomeRecommendat
         });
     }
 
+    /**
+     * Navigate to start cycling fragment and pass route ID to fragment after click
+     * @param position value of click position
+     */
     @Override
     public void homeRouteClick(int position) {
         NavDirections action = RecommendationsFragmentDirections.actionRecommendationsFragmentToStartCyclingFragment(routeList.get(position).getRouteId());
         Navigation.findNavController(this.getView()).navigate(action);
     }
 
+    /**
+     * Bind the search bar
+     */
     private void bindSearchBar() {
         binding.searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
             @Override

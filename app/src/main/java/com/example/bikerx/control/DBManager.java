@@ -244,6 +244,10 @@ public class DBManager {
         });
     }
 
+    /**
+     * Get the routes stored in database
+     * @return ArrayList of Route to be displayed in HomeFragment and RecommendationsFragment
+     */
     public MutableLiveData<ArrayList<Route>> getHomeRoutes() {
         MutableLiveData<ArrayList<Route>> routeList = new MutableLiveData<ArrayList<Route>>();
         routeList.setValue(new ArrayList<Route>());
@@ -263,6 +267,11 @@ public class DBManager {
         return routeList;
     }
 
+    /**
+     * Retrieves the route chosen by user. This route is used to draw path of chosen route
+     * @param routeId id of the route selected
+     * @return Route selected by user
+     */
     public MutableLiveData<Route> getRecommendedRoute(String routeId) {
         MutableLiveData<Route> route = new MutableLiveData<Route>();
         db.collection("PCN").document(routeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -279,6 +288,11 @@ public class DBManager {
         return route;
     }
 
+    /**
+     * Function to parse document that contains route data into route
+     * @param document that contains data of route
+     * @return
+     */
     private Route parseRouteData(DocumentSnapshot document) {
         Map<String, Object> data = document.getData();
         Route route = new Route(null, document.getId(),null, null, null);
