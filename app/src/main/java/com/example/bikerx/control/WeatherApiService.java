@@ -11,6 +11,7 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONObject;
 
+
 public class WeatherApiService {
 
     WeatherResult mResultCallback = null;
@@ -21,6 +22,11 @@ public class WeatherApiService {
         mContext = context;
     }
 
+    /**
+     * Request weather data from weather API via a JsonObject
+     *
+     * @param url url of the data.gov website which leads to the weather API website to retrieve the weather from
+     */
     public void getDataVolley(final String requestType, String url){
         try {
             RequestQueue queue = Volley.newRequestQueue(mContext);

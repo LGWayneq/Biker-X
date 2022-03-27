@@ -322,6 +322,10 @@ public class DBManager {
         return route;
     }
 
+    /**Retrieve all goals set by a particular user from the database.
+     * @param userId The ID of the user.
+     * @return A MutableLiveData object, containing ArrayList of goal (monthly distance and monthly time) objects.
+     */
     public MutableLiveData<Goal> getGoal(String userId) {
         MutableLiveData<Goal> goal = new MutableLiveData<Goal>();
         db.collection("users").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -350,6 +354,12 @@ public class DBManager {
         return goal;
     }
 
+    /**
+     * Adds a Goals object to the database
+     * @param userId The ID of the user
+     * @param monthlyDistanceInKm monthly distance goals set by user in km
+     *
+     */
     public void setMonthlyDistanceGoal(String userId, int monthlyDistanceInKm) {
         db.collection("users").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -378,6 +388,12 @@ public class DBManager {
         });
     }
 
+    /**
+     * Adds a Goals object to the database
+     * @param userId The ID of the user
+     * @param monthlyTimeInHours monthly time goals set by user in Hours
+     *
+     */
     public void setMonthlyTimeGoal(String userId, int monthlyTimeInHours) {
         db.collection("users").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
