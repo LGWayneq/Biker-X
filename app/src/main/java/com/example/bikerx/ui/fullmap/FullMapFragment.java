@@ -12,6 +12,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -235,9 +236,13 @@ public class FullMapFragment extends Fragment {
                         e.printStackTrace();
                     }
                 }
-                Address address = addressList.get(0);
-                LatLng latlng = new LatLng(address.getLatitude(), address.getLongitude());
-                marker = fullMapViewModel.moveCamera(latlng, location);
+                if (addressList.size() > 0) {
+                    Address address = addressList.get(0);
+                    LatLng latlng = new LatLng(address.getLatitude(), address.getLongitude());
+                    marker = fullMapViewModel.moveCamera(latlng, location);
+                } else {
+                    Toast.makeText(getContext(), "Location does not exist.", Toast.LENGTH_LONG).show();
+                }
 
                 return false;
             }
