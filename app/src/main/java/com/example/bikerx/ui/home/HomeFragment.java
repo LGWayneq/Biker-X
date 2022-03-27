@@ -100,13 +100,19 @@ public class HomeFragment extends Fragment implements HomeRecommendationsAdapter
         });
     }
 
+    /**
+     * Navigate to start cycling fragment and pass route ID to fragment after click
+     * @param position Value to indicate position of click
+     */
     @Override
     public void homeRouteClick(int position) {
         NavDirections action = HomeFragmentDirections.actionNavigationHomeToStartCyclingFragment(routeList.get(position).getRouteId());
         Navigation.findNavController(this.getView()).navigate(action);
     }
 
-
+    /**
+     * Fetch routes and display routes in recycler view
+     */
     private void displayHomeRoutes() {
         viewModel.fetchHomeRoutes();
         viewModel.getHomeRoutes().observe(this, new Observer<ArrayList<Route>>() {
