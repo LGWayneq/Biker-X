@@ -2,6 +2,8 @@ package com.example.bikerx.ui.fullmap;
 
 
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
@@ -22,6 +25,12 @@ import com.example.bikerx.R;
 import com.example.bikerx.control.ApiManager;
 import com.example.bikerx.databinding.FragmentFullMapBinding;
 import com.example.bikerx.map.AmenitiesMapFragment;
+import com.example.bikerx.map.Amenity;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * Displays full map. Users can view, filter and search for amenities
@@ -48,23 +57,39 @@ public class FullMapFragment extends Fragment {
         return root;
     }
 
+    /**
+     * Initialises behaviour required of FullMapFragment. This method is called after onCreateView.
+     * Initialises markers upon map ready.
+     */
+    public void onViewCreated(View view, Bundle savedInstance) {
+        super.onViewCreated(view, savedInstance);
+
+        getMapReady().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean mapReady) {
+                if (mapReady) initialiseMarkers();
+            }
+        });
+
+        filterAmenities(view);
+        searchAmenities(view);
+    }
 
     /**
      * Initialises map markers.
      */
     public void initialiseMarkers(){
         fullMapViewModel.initialiseMarkers(this);
-
     }
 
+
     /**
-     * Initialises behaviour required of FullMapFragment. This method is called after onCreateView.
-     * Initialises markers upon map ready.
+     * Filters amenities map markers
      * Clicking the toggle icon would display/hide the filter list.
      * Checking the checkboxes of the respective amenities filters would cause the corresponding map markers to appear on map & change colour of checkbox text
+     * @param view View
      */
-    public void onViewCreated(View view, Bundle savedInstance){
-        super.onViewCreated(view, savedInstance);
+    private void filterAmenities(View view){
 
         ImageView mToggleButton = (ImageView) view.findViewById(R.id.toggleButton);
         LinearLayout mVisibleCheckBoxes = view.findViewById(R.id.checkBoxLayout);
@@ -80,20 +105,13 @@ public class FullMapFragment extends Fragment {
         CheckBox mCheckToilet = view.findViewById(R.id.checkBox_toilet);
         CheckBox mCheckWaterCooler = view.findViewById(R.id.checkBox_watercooler);
 
-        getMapReady().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean mapReady) {
-                if (mapReady) initialiseMarkers();
-            }
-        });
-
         mToggleButton.setOnClickListener(new View.OnClickListener() {
             boolean visible;
 
             @Override
             public void onClick(View view) {
                 visible = !visible;
-                mVisibleCheckBoxes.setVisibility(visible ? View.VISIBLE: View.GONE);
+                mVisibleCheckBoxes.setVisibility(visible ? View.VISIBLE : View.GONE);
             }
         });
 
@@ -102,12 +120,7 @@ public class FullMapFragment extends Fragment {
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
 
                 fullMapViewModel.setMarkerVisibility(fullMapViewModel.AccessPointMarkerList, isChecked);
-                if (isChecked){
-                    mCheckAccessPoint.setTextColor(Color.parseColor("#3361A6"));
-                }
-                else{
-                    mCheckAccessPoint.setTextColor(Color.parseColor("#6C757D"));
-                }
+                changeCheckTextColour(mCheckAccessPoint, isChecked);
             }
         });
 
@@ -116,12 +129,7 @@ public class FullMapFragment extends Fragment {
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
 
                 fullMapViewModel.setMarkerVisibility(fullMapViewModel.BicycleRacksMarkerList, isChecked);
-                if (isChecked){
-                    mCheckBicycleRacks.setTextColor(Color.parseColor("#3361A6"));
-                }
-                else{
-                    mCheckBicycleRacks.setTextColor(Color.parseColor("#6C757D"));
-                }
+                changeCheckTextColour(mCheckBicycleRacks, isChecked);
             }
         });
 
@@ -130,12 +138,7 @@ public class FullMapFragment extends Fragment {
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
 
                 fullMapViewModel.setMarkerVisibility(fullMapViewModel.BicycleRentalShopMarkerList, isChecked);
-                if (isChecked){
-                    mCheckBicycleRentalShop.setTextColor(Color.parseColor("#3361A6"));
-                }
-                else{
-                    mCheckBicycleRentalShop.setTextColor(Color.parseColor("#6C757D"));
-                }
+                changeCheckTextColour(mCheckBicycleRentalShop, isChecked);
             }
         });
 
@@ -144,12 +147,7 @@ public class FullMapFragment extends Fragment {
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
 
                 fullMapViewModel.setMarkerVisibility(fullMapViewModel.FitnessAreaMarkerList, isChecked);
-                if (isChecked){
-                    mCheckFitnessArea.setTextColor(Color.parseColor("#3361A6"));
-                }
-                else{
-                    mCheckFitnessArea.setTextColor(Color.parseColor("#6C757D"));
-                }
+                changeCheckTextColour(mCheckFitnessArea, isChecked);
             }
         });
 
@@ -159,12 +157,7 @@ public class FullMapFragment extends Fragment {
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
 
                 fullMapViewModel.setMarkerVisibility(fullMapViewModel.FNBEateryMarkerList, isChecked);
-                if (isChecked){
-                    mCheckFNBEatery.setTextColor(Color.parseColor("#3361A6"));
-                }
-                else{
-                    mCheckFNBEatery.setTextColor(Color.parseColor("#6C757D"));
-                }
+                changeCheckTextColour(mCheckFNBEatery, isChecked);
             }
         });
 
@@ -173,12 +166,7 @@ public class FullMapFragment extends Fragment {
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
 
                 fullMapViewModel.setMarkerVisibility(fullMapViewModel.HawkerCentreMarkerList, isChecked);
-                if (isChecked){
-                    mCheckHawkerCentre.setTextColor(Color.parseColor("#3361A6"));
-                }
-                else{
-                    mCheckHawkerCentre.setTextColor(Color.parseColor("#6C757D"));
-                }
+                changeCheckTextColour(mCheckHawkerCentre, isChecked);
             }
         });
 
@@ -187,12 +175,7 @@ public class FullMapFragment extends Fragment {
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
 
                 fullMapViewModel.setMarkerVisibility(fullMapViewModel.PlaygroundMarkerList, isChecked);
-                if (isChecked){
-                    mCheckPlayground.setTextColor(Color.parseColor("#3361A6"));
-                }
-                else{
-                    mCheckPlayground.setTextColor(Color.parseColor("#6C757D"));
-                }
+                changeCheckTextColour(mCheckPlayground, isChecked);
             }
         });
 
@@ -201,12 +184,7 @@ public class FullMapFragment extends Fragment {
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
 
                 fullMapViewModel.setMarkerVisibility(fullMapViewModel.ShelterMarkerList, isChecked);
-                if (isChecked){
-                    mCheckShelter.setTextColor(Color.parseColor("#3361A6"));
-                }
-                else{
-                    mCheckShelter.setTextColor(Color.parseColor("#6C757D"));
-                }
+                changeCheckTextColour(mCheckShelter, isChecked);
             }
         });
 
@@ -215,12 +193,7 @@ public class FullMapFragment extends Fragment {
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
 
                 fullMapViewModel.setMarkerVisibility(fullMapViewModel.ToiletMarkerList, isChecked);
-                if (isChecked){
-                    mCheckToilet.setTextColor(Color.parseColor("#3361A6"));
-                }
-                else{
-                    mCheckToilet.setTextColor(Color.parseColor("#6C757D"));
-                }
+                changeCheckTextColour(mCheckToilet, isChecked);
             }
         });
 
@@ -229,14 +202,65 @@ public class FullMapFragment extends Fragment {
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
 
                 fullMapViewModel.setMarkerVisibility(fullMapViewModel.WaterCoolerMarkerList, isChecked);
-                if (isChecked){
-                    mCheckWaterCooler.setTextColor(Color.parseColor("#3361A6"));
-                }
-                else{
-                    mCheckWaterCooler.setTextColor(Color.parseColor("#6C757D"));
-                }
+                changeCheckTextColour(mCheckWaterCooler, isChecked);
             }
         });
+    }
+
+    /**
+     * Search map function. User can search a location, and map camera will move to re-focus to that location.
+     */
+    private void searchAmenities(View view){
+        SearchView searchView = view.findViewById(R.id.searchViewAmenities);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            Marker marker;
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                String location = searchView.getQuery().toString();
+
+                List<Address> addressList = null;
+                if (marker != null){
+                    marker.remove();
+                }
+                else{
+                    marker = null;
+                }
+
+                if (location != null || !location.equals("")){
+                    Geocoder geocoder = new Geocoder(getActivity());
+                    try{
+                        addressList = geocoder.getFromLocationName(location, 1);
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                }
+                Address address = addressList.get(0);
+                LatLng latlng = new LatLng(address.getLatitude(), address.getLongitude());
+                marker = fullMapViewModel.moveCamera(latlng, location);
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+    }
+
+    /**
+     * Change colour of checkbox text upon check/uncheck
+     * @param mCheck Checkbox of amenity filter
+     * @param isChecked state of checkbox (checked/unchecked)
+     */
+    private void changeCheckTextColour(CheckBox mCheck, boolean isChecked){
+        if (isChecked) {
+            mCheck.setTextColor(Color.parseColor("#3361A6"));
+        } else {
+            mCheck.setTextColor(Color.parseColor("#6C757D"));
+        }
     }
 
     /**
@@ -248,9 +272,4 @@ public class FullMapFragment extends Fragment {
         return amenitiesMapFragment.getMapReady();
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
 }
