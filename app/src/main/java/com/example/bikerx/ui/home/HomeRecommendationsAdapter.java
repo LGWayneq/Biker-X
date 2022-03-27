@@ -61,9 +61,11 @@ public class HomeRecommendationsAdapter extends RecyclerView.Adapter<HomeRecomme
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Route r = filteredRouteList.get(position);
         Double avgRatings = getAverageRating(r.getRatings());
-        holder.binding.routeRating.setText(avgRatings.toString());
+        holder.binding.routeRating.setText(String.format("(%s)", avgRatings.toString()));
+        holder.binding.ratingBar.setRating(avgRatings.floatValue());
         holder.binding.routeName.setText(r.getRouteName());
-        holder.binding.routeImg.setImageResource(R.drawable.common_google_signin_btn_icon_dark);
+        if ((Integer) r.getImageId() != null) holder.binding.routeImg.setImageResource(r.getImageId());
+        else holder.binding.routeImg.setImageResource(R.drawable.sgroundislandloop);
     }
 
     @Override

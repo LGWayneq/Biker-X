@@ -285,7 +285,8 @@ public class DBManager {
         Object imageIdObj = data.get("imageId");
 
         if (imageIdObj != null) {
-            route.setImageId((Integer) imageIdObj);
+            long imageIdLong = (Long) imageIdObj;
+            route.setImageId( (int) imageIdLong);
         }
 
         String name = data.get("name").toString();
