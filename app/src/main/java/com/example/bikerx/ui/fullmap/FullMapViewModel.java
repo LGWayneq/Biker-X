@@ -9,12 +9,23 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.bikerx.control.ApiManager;
 import com.example.bikerx.map.AmenitiesMapFragment;
+import com.example.bikerx.map.Amenity;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
+/**
+ * FullMapViewModel handles the backend and data fetching for the FullMapFragment.
+ */
 public class FullMapViewModel extends ViewModel {
+
+    protected ArrayList<Amenity> FullAmenitiesList = null;
 
     protected ArrayList<Marker> AccessPointMarkerList = null;
     protected ArrayList<Marker> BicycleRacksMarkerList = null;
@@ -28,15 +39,35 @@ public class FullMapViewModel extends ViewModel {
     protected ArrayList<Marker> WaterCoolerMarkerList = null;
 
     private GoogleMap map;
-    private ApiManager apiManager;
-   // private AppCompatActivity activity;
+    private ApiManager apiManager = new ApiManager();
 
+    /**
+     * This method sets the visibility of markers to visible when checked=true, and invisible when checked=false
+     * @param markerList The ArrayList of markers for a specific amenity
+     * @param checked The state of the checkbox (whether it is checked/unchecked)
+     */
+    public void setMarkerVisibility(ArrayList<Marker> markerList, boolean checked){
+        for (Marker m : markerList){
+            m.setVisible(checked); }
+    }
 
+    /**
+     * This method moves map camera to re-focus on searched location
+     * @param latlng Latitude & longtitude of searched location
+     */
+    public Marker moveCamera(LatLng latlng, String location){
+        Marker marker;
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 14));
+        marker = map.addMarker(new MarkerOptions().position(latlng).title(location).icon(BitmapDescriptorFactory
+                .defaultMarker(BitmapDescriptorFactory.HUE_ROSE)));
+        return marker;
+    }
 
+    /**
+     *This method initialises map markers by fetching data of the respective amenities from firebase and storing them in ArrayLists of Markers for the respective amenities
+     * @param fragment This is the FullMapFragment.
+     */
     public void initialiseMarkers(FullMapFragment fragment){
-        this.apiManager = new ApiManager();
-     //   this.activity = (AppCompatActivity) fragment.getActivity();
-       // apiManager.loadBicycleRacksIntoAmenities(activity);
 
         if (PlaygroundMarkerList == null){
             AmenitiesMapFragment amenitiesMapFragment = (AmenitiesMapFragment) fragment.getChildFragmentManager().getFragments().get(0);
@@ -116,11 +147,6 @@ public class FullMapViewModel extends ViewModel {
             });
 
         }
-    }
-
-    public void setMarkerVisibility(ArrayList<Marker> markerList, boolean checked){
-        for (Marker m : markerList){
-            m.setVisible(checked); }
     }
 
 }
