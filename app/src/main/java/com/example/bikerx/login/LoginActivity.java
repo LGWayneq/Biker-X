@@ -69,8 +69,11 @@ public class LoginActivity extends AppCompatActivity {
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
+    /**
+     * when user click emailSignInButton,lead user to EmailLogin Activity
+     */
     private void signInEmail() {
-        //once click emailSignInButton,lead user to EmailLogin Activity
+
         startActivity(new Intent(this, EmailLoginActivity.class));
     }
 

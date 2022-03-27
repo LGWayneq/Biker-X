@@ -16,9 +16,15 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
+/**
+ * Register user info into firebase for first time users of the app
+ */
 public class RegisterUserActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ActivityRegisterUserBinding mBinding;
+    /**
+     * declares an instance of FireBaseAuth
+     */
     private FirebaseAuth mAuth;
     private ProgressDialog dialog;
 
@@ -42,39 +48,54 @@ public class RegisterUserActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
+    /**
+     * validate if user inputs to register an account in the app is valid
+     */
     private void verifyDetails() {
-        //convert inputs in the register page to strings
+
         String email = mBinding.email.getText().toString().trim();
         String password = mBinding.password.getText().toString().trim();
         String fullName = mBinding.fullName.getText().toString().trim();
 
-        //validate inputs
+        /**
+         * check if name entered by user is empty
+         */
         if (fullName.isEmpty()) {
             mBinding.fullName.setError("Please enter your full name.");
             mBinding.fullName.requestFocus();
             return;
         }
 
+        /**
+         * check that user does not enter empty email address
+         */
         if (email.isEmpty()) {
             mBinding.email.setError("Please enter your email.");
             mBinding.email.requestFocus();
 
         }
 
-        //check if email is a valid one. if email does not match, throw an error.
+        /**
+         * check if email input is a valid one.
+         */
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             mBinding.email.setError("Please enter a valid email.");
             mBinding.email.requestFocus();
             return;
         }
 
+        /**
+         * check if user did not input a password
+         */
         if (password.isEmpty()) {
             mBinding.password.setError("Password required");
             mBinding.password.requestFocus();
             return;
         }
 
-        //check if password valid. firebase itself dont allow password that is <6 characters
+        /**
+         * check if password valid. firebase dooes not allow password that is <6 characters
+         */
         if (password.length() < 6) {
             mBinding.password.setError("Minimum password length is 6 characters.");
             mBinding.password.requestFocus();
@@ -94,8 +115,14 @@ public class RegisterUserActivity extends AppCompatActivity implements View.OnCl
         dialog.show();
     }
 
+    /**
+     * register user information into firebase
+     * @param email email address of user
+     * @param password password set by user
+     * @param fullName fullname of user
+     */
     private void registerWithFirebase(String email, String password, String fullName) {
-        //push user info to firebase
+
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -122,6 +149,11 @@ public class RegisterUserActivity extends AppCompatActivity implements View.OnCl
                 });
     }
 
+    /**
+     * register full name of user into firebase database
+     * @param fullName
+     * @param user
+     */
     private void registerDisplayName(String fullName, FirebaseUser user) {
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(fullName).build();
         user.updateProfile(profileUpdates);

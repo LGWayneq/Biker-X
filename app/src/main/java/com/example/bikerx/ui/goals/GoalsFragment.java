@@ -39,6 +39,10 @@ public class GoalsFragment extends Fragment {
         return new GoalsFragment();
     }
 
+    /**
+     *
+     * Initialises goals fragment
+     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -50,13 +54,18 @@ public class GoalsFragment extends Fragment {
         // initializing our object class variable.
         goalsInfo = new GoalsInfo();
 
+        /**
+         * update monthlydistance goals to database and reflect the updated value on the UI
+         */
         mBinding.MonthlyDistanceGoalButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // getting text from our edittext fields.
+
                 String monthlyDistanceInKm = mBinding.InputMonthlyDistanceGoal.getText().toString();
 
-                // below line is for checking weather edittext fields are empty or not.
+                /**
+                 * check if user did not enter monthly distance goals.
+                 */
 
                 if (monthlyDistanceInKm.isEmpty()) {
                     Toast.makeText(getActivity(), "Error: Monthly distance goal not set.", Toast.LENGTH_LONG).show();
@@ -71,6 +80,9 @@ public class GoalsFragment extends Fragment {
                 }
             }
         });
+        /**
+         * update MonthlyTime goals to database and reflect the updated value on the UI
+         */
         mBinding.MonthlyTimeGoalButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -102,6 +114,10 @@ public class GoalsFragment extends Fragment {
     }
 
 
+    /**Helper function to format time (in milliseconds) to Chronometer display.
+     * @param monthDuration Time to be formatted.
+     * @return Returns a String, representing time formatted as "HHh MMm".
+     */
     private String getChronometerDisplay(Long monthDuration) {
         int h = (int) ((monthDuration) / 3600000);
         int m = (int) (((monthDuration) / 60) % 60);
@@ -110,7 +126,11 @@ public class GoalsFragment extends Fragment {
         return String.format("%dh %sm", h, mString);
     }
 
-    private void displayGoalsData() {//temp
+    /**
+     * update and display MonthlyDistanceGoal and MonthlyTimeGoal achieved data on the chronometer display
+     * update and display MonthlyDistanceGoal achieved data on the progress bar
+     */
+    private void displayGoalsData() {
         mBinding.chronometer.setText(getChronometerDisplay(0L));
         mViewModel.fetchGoals(userId);
         mViewModel.getGoals().observe(getViewLifecycleOwner(), new Observer<Goal>() {
@@ -156,6 +176,12 @@ public class GoalsFragment extends Fragment {
 
     }
 
+    /**
+     * Helper function to calculate percentage of goals (for distance) achieved by the user
+     * @param progress distance cycled
+     * @param max goal (in distance) set by user
+     * @return percentage of goals (for distance) achieved by the user
+     */
     private String calPercentage(int progress, int max){
 
         return Float.toString(Math.round(((float)progress/(float)max)*100));
