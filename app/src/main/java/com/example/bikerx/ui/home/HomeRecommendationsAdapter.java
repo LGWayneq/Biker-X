@@ -1,5 +1,6 @@
 package com.example.bikerx.ui.home;
 
+import android.content.res.TypedArray;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -83,8 +84,8 @@ public class HomeRecommendationsAdapter extends RecyclerView.Adapter<HomeRecomme
         holder.binding.routeRating.setText(String.format("(%s)", avgRatings.toString()));
         holder.binding.ratingBar.setRating(avgRatings.floatValue());
         holder.binding.routeName.setText(r.getRouteName());
-        if ((Integer) r.getImageId() != null) holder.binding.routeImg.setImageResource(r.getImageId());
-        else holder.binding.routeImg.setImageResource(R.drawable.sgroundislandloop);
+        TypedArray routeFlags = holder.binding.getRoot().getResources().obtainTypedArray(R.array.route_flags);
+        holder.binding.routeImg.setImageResource(routeFlags.getResourceId(r.getImageId(), 0));
     }
 
     /**
