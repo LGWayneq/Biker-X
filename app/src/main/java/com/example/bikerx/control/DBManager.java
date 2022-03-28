@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -248,22 +249,39 @@ public class DBManager {
      * Get the routes stored in database
      * @return ArrayList of Route to be displayed in HomeFragment and RecommendationsFragment
      */
-    public MutableLiveData<ArrayList<Route>> getHomeRoutes() {
+    public MutableLiveData<ArrayList<Route>> getHomeRoutes(String caller) {
         MutableLiveData<ArrayList<Route>> routeList = new MutableLiveData<ArrayList<Route>>();
         routeList.setValue(new ArrayList<Route>());
-        db.collection("PCN").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        Route route = parseRouteData(document);
-                        ArrayList<Route> currentRouteArray = routeList.getValue();
-                        currentRouteArray.add(route);
-                        routeList.setValue(currentRouteArray);
+        if(caller.equals("homeFragment")) {
+            db.collection("PCN").orderBy("ratings", Query.Direction.DESCENDING).limit(5).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Route route = parseRouteData(document);
+                            ArrayList<Route> currentRouteArray = routeList.getValue();
+                            currentRouteArray.add(route);
+                            routeList.setValue(currentRouteArray);
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
+        else{
+            db.collection("PCN").orderBy("name", Query.Direction.ASCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Route route = parseRouteData(document);
+                            ArrayList<Route> currentRouteArray = routeList.getValue();
+                            currentRouteArray.add(route);
+                            routeList.setValue(currentRouteArray);
+                        }
+                    }
+                }
+            });
+        }
         return routeList;
     }
 

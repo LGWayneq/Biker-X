@@ -26,6 +26,7 @@
     <string name="own_route_button">Cycling on my own route today!</string>
     <string name="recommended_routes_text">Recommended Routes</string>
     <string name="see_all">See all</string>
+    <string name="all_routes">All routes</string>
     <string name="cycling_profile">Cycling Profile</string>
     <string name="date_time_placeholder">01 Jan 2022 - 8:00 AM</string>
     <string name="distance_placeholder">0.00</string>
