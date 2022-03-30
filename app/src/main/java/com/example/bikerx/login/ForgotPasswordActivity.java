@@ -16,6 +16,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
+/**
+ * let user reset password via email by keying in their email address
+ *
+ */
 public class ForgotPasswordActivity extends AppCompatActivity {
 
     private EditText emailEditText;
@@ -45,6 +49,9 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * sends an email to email address input by user for user to reset password via email
+     */
     private void resetPassword() {
         String email = emailEditText.getText().toString().trim();
 

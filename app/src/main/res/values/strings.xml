@@ -26,6 +26,7 @@
     <string name="own_route_button">Cycling on my own route today!</string>
     <string name="recommended_routes_text">Recommended Routes</string>
     <string name="see_all">See all</string>
+    <string name="all_routes">All routes</string>
     <string name="cycling_profile">Cycling Profile</string>
     <string name="date_time_placeholder">01 Jan 2022 - 8:00 AM</string>
     <string name="distance_placeholder">0.00</string>
@@ -35,8 +36,7 @@
     <string name="avg_speed_placeholder">0.00</string>
     <string name="avg_speed_unit">km/h</string>
     <string name="start">Start</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
     <string name="confirm_signout_title">Sign Out</string>
@@ -68,4 +68,20 @@
     <string name="recycler_view_message_row_item_messageTime_text">10:45</string>
     <string name="recycler_view_message_row_date_text">28 January 2022</string>
     <string name="continue_with_email">CONTINUE WITH EMAIL</string>
+
+    <string-array name="route_flags">
+        <item>@drawable/bishan</item>
+        <item>@drawable/centralloop</item>
+        <item>@drawable/changiloop</item>
+        <item>@drawable/coneyhalus</item>
+        <item>@drawable/ecpmarina</item>
+        <item>@drawable/godzilla</item>
+        <item>@drawable/hollandloop</item>
+        <item>@drawable/kranjimarshesloop</item>
+        <item>@drawable/mandailoop</item>
+        <item>@drawable/northparks</item>
+        <item>@drawable/selatarloop</item>
+        <item>@drawable/sgroundislandloop</item>
+        <item>@drawable/westloop</item>
+    </string-array>
 </resources>

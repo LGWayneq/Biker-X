@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -244,25 +245,51 @@ public class DBManager {
         });
     }
 
-    public MutableLiveData<ArrayList<Route>> getHomeRoutes() {
+    /**
+     * Get the routes stored in database
+     * @return ArrayList of Route to be displayed in HomeFragment and RecommendationsFragment
+     */
+    public MutableLiveData<ArrayList<Route>> getHomeRoutes(String caller) {
         MutableLiveData<ArrayList<Route>> routeList = new MutableLiveData<ArrayList<Route>>();
         routeList.setValue(new ArrayList<Route>());
-        db.collection("PCN").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        Route route = parseRouteData(document);
-                        ArrayList<Route> currentRouteArray = routeList.getValue();
-                        currentRouteArray.add(route);
-                        routeList.setValue(currentRouteArray);
+        if(caller.equals("homeFragment")) {
+            db.collection("PCN").orderBy("ratings", Query.Direction.DESCENDING).limit(5).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Route route = parseRouteData(document);
+                            ArrayList<Route> currentRouteArray = routeList.getValue();
+                            currentRouteArray.add(route);
+                            routeList.setValue(currentRouteArray);
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
+        else{
+            db.collection("PCN").orderBy("name", Query.Direction.ASCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Route route = parseRouteData(document);
+                            ArrayList<Route> currentRouteArray = routeList.getValue();
+                            currentRouteArray.add(route);
+                            routeList.setValue(currentRouteArray);
+                        }
+                    }
+                }
+            });
+        }
         return routeList;
     }
 
+    /**
+     * Retrieves the route chosen by user. This route is used to draw path of chosen route
+     * @param routeId id of the route selected
+     * @return Route selected by user
+     */
     public MutableLiveData<Route> getRecommendedRoute(String routeId) {
         MutableLiveData<Route> route = new MutableLiveData<Route>();
         db.collection("PCN").document(routeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -279,13 +306,19 @@ public class DBManager {
         return route;
     }
 
+    /**
+     * Function to parse document that contains route data into route
+     * @param document that contains data of route
+     * @return
+     */
     private Route parseRouteData(DocumentSnapshot document) {
         Map<String, Object> data = document.getData();
         Route route = new Route(null, document.getId(),null, null, null);
         Object imageIdObj = data.get("imageId");
 
         if (imageIdObj != null) {
-            route.setImageId((Integer) imageIdObj);
+            long imageIdLong = (Long) imageIdObj;
+            route.setImageId( (int) imageIdLong);
         }
 
         String name = data.get("name").toString();
@@ -308,6 +341,10 @@ public class DBManager {
         return route;
     }
 
+    /**Retrieve all goals set by a particular user from the database.
+     * @param userId The ID of the user.
+     * @return A MutableLiveData object, containing ArrayList of goal (monthly distance and monthly time) objects.
+     */
     public MutableLiveData<Goal> getGoal(String userId) {
         MutableLiveData<Goal> goal = new MutableLiveData<Goal>();
         db.collection("users").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -336,6 +373,12 @@ public class DBManager {
         return goal;
     }
 
+    /**
+     * Adds a Goals object to the database
+     * @param userId The ID of the user
+     * @param monthlyDistanceInKm monthly distance goals set by user in km
+     *
+     */
     public void setMonthlyDistanceGoal(String userId, int monthlyDistanceInKm) {
         db.collection("users").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -364,6 +407,12 @@ public class DBManager {
         });
     }
 
+    /**
+     * Adds a Goals object to the database
+     * @param userId The ID of the user
+     * @param monthlyTimeInHours monthly time goals set by user in Hours
+     *
+     */
     public void setMonthlyTimeGoal(String userId, int monthlyTimeInHours) {
         db.collection("users").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
