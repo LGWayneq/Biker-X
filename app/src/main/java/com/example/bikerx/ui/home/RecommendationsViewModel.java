@@ -18,7 +18,7 @@ public class RecommendationsViewModel extends ViewModel {
      * Calls dbManager to fetch routes and stores result in routes
      */
     public void fetchRoutes() {
-        routes = dbManager.getHomeRoutes();
+        routes = dbManager.getHomeRoutes("recommendationsFragment");
     }
 
     /**

@@ -36,7 +36,7 @@ public class HomeViewModel extends ViewModel {
 
 
     public void fetchHomeRoutes() {
-        homeRoutes = dbManager.getHomeRoutes();
+        homeRoutes = dbManager.getHomeRoutes("homeFragment");
     }
 
     public MutableLiveData<ArrayList<Route>> getHomeRoutes() {
