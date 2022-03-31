@@ -110,6 +110,15 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <ProgressBar
+        android:id="@+id/home_progress_bar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:indeterminateTint="@color/colorPrimary"
+        app:layout_constraintTop_toTopOf="@+id/HomeRecyclerView"
+        app:layout_constraintBottom_toBottomOf="@+id/HomeRecyclerView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/HomeRecyclerView"

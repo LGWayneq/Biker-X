@@ -79,6 +79,9 @@ public class RecommendationsFragment extends Fragment implements HomeRecommendat
         displayRoutes();
     }
 
+    /**
+     * Method to determine logic of the buttons.
+     */
     private void bindButton() {
         binding.ownRouteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,13 +100,14 @@ public class RecommendationsFragment extends Fragment implements HomeRecommendat
         viewModel.getRoutes().observe(this, new Observer<ArrayList<Route>>() {
             @Override
             public void onChanged(ArrayList<Route> homeRoutes) {
-                if (homeRoutes != null) {
+                if (homeRoutes.size() > 0) {
                     routeList = homeRoutes;
                     adapter = new HomeRecommendationsAdapter(homeRoutes, RecommendationsFragment.this);
                     binding.recommendationsRecyclerView.setHasFixedSize(true);
                     RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
                     binding.recommendationsRecyclerView.setLayoutManager(layoutManager);
                     binding.recommendationsRecyclerView.setAdapter(adapter);
+                    binding.recommendationsProgressBar.setVisibility(View.GONE);
                 }
             }
         });

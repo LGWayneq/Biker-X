@@ -118,12 +118,13 @@ public class HomeFragment extends Fragment implements HomeRecommendationsAdapter
         viewModel.getHomeRoutes().observe(this, new Observer<ArrayList<Route>>() {
             @Override
             public void onChanged(ArrayList<Route> homeRoutes) {
-                if (homeRoutes != null) {
+                if (homeRoutes.size() > 0) {
                     routeList = homeRoutes;
                     adapter = new HomeRecommendationsAdapter(homeRoutes, HomeFragment.this);
                     layoutManager = new LinearLayoutManager(getActivity());
                     mBinding.HomeRecyclerView.setLayoutManager(layoutManager);
                     mBinding.HomeRecyclerView.setAdapter(adapter);
+                    mBinding.homeProgressBar.setVisibility(View.GONE);
                 }
             }
         });

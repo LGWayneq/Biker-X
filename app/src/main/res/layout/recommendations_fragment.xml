@@ -33,6 +33,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/search_view" />
 
+    <ProgressBar
+        android:id="@+id/recommendations_progress_bar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:indeterminateTint="@color/colorPrimary"
+        app:layout_constraintTop_toTopOf="@+id/recommendationsRecyclerView"
+        app:layout_constraintBottom_toBottomOf="@+id/recommendationsRecyclerView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recommendationsRecyclerView"
         android:layout_width="match_parent"
