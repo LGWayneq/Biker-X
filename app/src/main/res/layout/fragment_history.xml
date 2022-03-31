@@ -6,17 +6,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.history.CyclingHistoryFragment">
+
     <TextView
         android:id="@+id/cycling_history_title"
-        android:text="@string/cycling_history_title"
-        android:textSize="@dimen/title_size"
-        android:textStyle="bold"
+        android:layout_width="390dp"
+        android:layout_height="39dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        android:text="@string/cycling_history_title"
+        android:textColor="#47599B"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
     <TextView
         android:id="@+id/cycling_history_goal"
         android:text="@string/cycling_history_goal"
@@ -64,8 +66,10 @@
                 android:layout_height="wrap_content"
                 android:indeterminate="false"
                 android:progressDrawable="@drawable/circular_progress_bar"
-                app:layout_heightPercent="100%"
-                app:layout_widthPercent="50%" />
+                app:layout_heightPercent="95%"
+                app:layout_marginLeftPercent="4%"
+                app:layout_marginTopPercent="2%"
+                app:layout_widthPercent="45%" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/distance_details"
@@ -91,49 +95,49 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/distance_details_image">
 
-                        <TextView
-                            android:id="@+id/distance_details_float"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/distance_placeholder"
-                            android:textColor="@color/white"
-                            android:textSize="20dp"
-                            android:textStyle="bold"
-                            android:layout_marginStart="@dimen/card_margin"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                    <TextView
+                        android:id="@+id/distance_details_float"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/card_margin"
+                        android:text="@string/distance_placeholder"
+                        android:textColor="@color/white"
+                        android:textSize="20dp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                        <TextView
-                            android:id="@+id/distance_details_text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="4dp"
-                            android:text="@string/distance_km_with_slash"
-                            android:textColor="@color/white"
-                            android:textSize="16dp"
-                            app:layout_constraintBottom_toBottomOf="@+id/distance_details_float"
-                            app:layout_constraintStart_toEndOf="@+id/distance_details_float" />
+                    <TextView
+                        android:id="@+id/distance_details_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:text="@string/distance_km_with_slash"
+                        android:textColor="@color/white"
+                        android:textSize="16dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/distance_details_float"
+                        app:layout_constraintStart_toEndOf="@+id/distance_details_float" />
 
-                        <TextView
-                            android:id="@+id/distance_goals_float"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/distance_placeholder"
-                            android:textColor="@color/white"
-                            android:textSize="20dp"
-                            android:textStyle="bold"
-                            app:layout_constraintEnd_toEndOf="@+id/distance_details_float"
-                            app:layout_constraintTop_toBottomOf="@+id/distance_details_float" />
+                    <TextView
+                        android:id="@+id/distance_goals_float"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/distance_placeholder"
+                        android:textColor="@color/white"
+                        android:textSize="20dp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="@+id/distance_details_float"
+                        app:layout_constraintTop_toBottomOf="@+id/distance_details_float" />
 
-                        <TextView
-                            android:id="@+id/distance_goals_text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/distance_km"
-                            android:textColor="@color/white"
-                            android:textSize="16dp"
-                            app:layout_constraintBottom_toBottomOf="@+id/distance_goals_float"
-                            app:layout_constraintStart_toStartOf="@+id/distance_details_text" />
+                    <TextView
+                        android:id="@+id/distance_goals_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/distance_km"
+                        android:textColor="@color/white"
+                        android:textSize="16dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/distance_goals_float"
+                        app:layout_constraintStart_toStartOf="@+id/distance_details_text" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -144,9 +148,10 @@
                 android:layout_height="wrap_content"
                 android:indeterminate="false"
                 android:progressDrawable="@drawable/circular_progress_bar"
-                app:layout_marginStartPercent="50%"
-                app:layout_heightPercent="100%"
-                app:layout_widthPercent="50%" />
+                app:layout_heightPercent="95%"
+                app:layout_marginLeftPercent="52%"
+                app:layout_marginTopPercent="2%"
+                app:layout_widthPercent="45%" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/time_details"

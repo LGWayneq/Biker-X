@@ -17,17 +17,22 @@
 
         <TextView
             android:id="@+id/cycling_profile_text_view"
-            android:text="@string/cycling_profile"
-            android:textStyle="bold"
-            android:textSize="@dimen/title_size"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:font="@font/inter_extrabold"
+            android:fontFamily="@font/inter_black"
+            android:text="@string/cycling_profile"
+            android:textColor="#47599B"
+            android:textSize="25sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/date_text_view"
             android:text="@string/date_time_placeholder"
             android:textSize="18dp"
+            android:textStyle="bold"
+            android:textColor="#3361A6"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -50,19 +55,41 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/distance_details"
+            <ImageView
+                android:id="@+id/progress_bar1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:indeterminate="false"
+                android:src="@drawable/circular_progress_bar"
+                app:layout_heightPercent="88%"
+                app:layout_marginLeftPercent="8.5%"
+                app:layout_widthPercent="33%"
+                />
+
+            <ImageView
+                android:id="@+id/progress_bar2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminate="false"
+                android:src="@drawable/circular_progress_bar"
+                app:layout_heightPercent="88%"
+                app:layout_marginLeftPercent="58.5%"
+                app:layout_widthPercent="33%"
+                />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/distance_details"
+                android:layout_width="190dp"
+                android:layout_height="74dp"
                 app:layout_heightPercent="50%"
                 app:layout_marginTopPercent="20%"
                 app:layout_widthPercent="50%">
 
                 <ImageView
                     android:id="@+id/distance_details_image"
-                    android:src="@drawable/ic_cycling"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:src="@drawable/ic_cycling"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -89,6 +116,13 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/distance_details_float" />
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="0dp"
+                    android:layout_height="2dp"
+                    android:src="@drawable/circular_progress_bar"
+                    tools:layout_editor_absoluteX="43dp" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -174,7 +208,9 @@
     <androidx.percentlayout.widget.PercentRelativeLayout
         android:id="@+id/map_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp">
 
         <fragment
             android:id="@+id/map_fragment"
@@ -189,6 +225,7 @@
             android:id="@+id/start_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="#208090"
             android:text="@string/start"
             app:layout_marginLeftPercent="20%"
             app:layout_marginRightPercent="20%"
@@ -197,36 +234,38 @@
 
         <Button
             android:id="@+id/pause_button"
-            android:text="@string/pause"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="#FEBB04"
+            android:text="@string/pause"
             android:visibility="gone"
-            app:layout_widthPercent="30%"
             app:layout_marginLeftPercent="3%"
-            app:layout_marginTopPercent="80%"/>
+            app:layout_marginTopPercent="80%"
+            app:layout_widthPercent="30%" />
 
         <Button
             android:id="@+id/resume_button"
-            android:text="@string/resume"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="#208090"
+            android:text="@string/resume"
             android:visibility="gone"
 
-            app:layout_widthPercent="30%"
             app:layout_marginLeftPercent="3%"
-            app:layout_marginTopPercent="80%"/>
+            app:layout_marginTopPercent="80%"
+            app:layout_widthPercent="30%" />
 
         <Button
             android:id="@+id/stop_button"
-            android:text="@string/stop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="#B42C34"
+            android:text="@string/stop"
             android:visibility="gone"
-            app:layout_widthPercent="30%"
             app:layout_marginLeftPercent="67%"
-            app:layout_marginTopPercent="80%"/>
+            app:layout_marginTopPercent="80%"
+            app:layout_widthPercent="30%" />
     </androidx.percentlayout.widget.PercentRelativeLayout>
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

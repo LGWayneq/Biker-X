@@ -80,7 +80,8 @@ public class ApiManager {
                                 Map<String, Object> data = document.getData();
                                 MarkerOptions marker = new MarkerOptions();
                                 LatLng latLng = new LatLng((Double) data.get("latitude"), (Double) data.get("longitude"));
-                                map.addMarker(marker.position(latLng).title("BICYCLE RACK"));
+                                map.addMarker(marker.position(latLng).title("BICYCLE RACK").icon(BitmapDescriptorFactory
+                                        .defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
                             }
                         }
                     }
