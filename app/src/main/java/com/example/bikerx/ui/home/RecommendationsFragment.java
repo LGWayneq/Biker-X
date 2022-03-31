@@ -48,7 +48,7 @@ public class RecommendationsFragment extends Fragment implements HomeRecommendat
 
     private List<Route> routeList;
 
-    boolean isKeyboardShowing = false;
+    private boolean isKeyboardShowing = false;
 
     /**
      * onCreateView initialize viewModel and RecommendationsFragmentBinding

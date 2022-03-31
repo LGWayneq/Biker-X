@@ -35,6 +35,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Control class used to track live location of the user.
+ */
 public class LocationManager {
     private AppCompatActivity activity;
     private FusedLocationProviderClient fusedLocationProviderClient;
@@ -55,6 +58,9 @@ public class LocationManager {
         this.context = context;
     }
 
+    /**
+     * Callback used to update location data whenever location of the user changes.
+     */
     private class locationCallback extends LocationCallback {
         @Override
         public void onLocationResult(@NonNull LocationResult locationResult) {
@@ -73,6 +79,9 @@ public class LocationManager {
         }
     }
 
+    /**
+     * Method to initiate tracking of the user.
+     */
     public void trackUser() {
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -84,20 +93,33 @@ public class LocationManager {
         fusedLocationProviderClient.requestLocationUpdates(locationRequest, callback, Looper.getMainLooper());
     }
 
+    /**
+     * Method to pause tracking of the user.
+     */
     public void pauseTracking() {
         fusedLocationProviderClient.removeLocationUpdates(callback);
     }
 
+    /**
+     * Method to resume tracking of the user.
+     */
     @SuppressLint("MissingPermission")
     public void resumeTracking() {
         fusedLocationProviderClient.requestLocationUpdates(locationRequest, callback, Looper.getMainLooper());
     }
 
+    /**
+     * Method to stop tracking of the user.
+     */
     public void stopTracking() {
         fusedLocationProviderClient.removeLocationUpdates(callback);
         resetData();
     }
 
+    /**
+     * Clears all past location data of the user.
+     * Called before locationManager starts tracking the user's location, and after locationManager stops tracking the user's location.
+     */
     private void resetData() {
         liveLocations = new MutableLiveData<ArrayList<LatLng>>();
         liveDistance = new MutableLiveData<Double>();
@@ -105,6 +127,9 @@ public class LocationManager {
         distance = 0.0;
     }
 
+    /**
+     * Method to request permission from the user for location tracking.
+     */
     public void getLocationPermission() {
         ActivityResultLauncher<String[]> locationPermissionRequest =
                 activity.registerForActivityResult(new ActivityResultContracts
@@ -132,6 +157,9 @@ public class LocationManager {
         });
     }
 
+    /**
+     * Retrieves last location of the user.
+     */
     public void getLastLocation() {
         this.fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
         if (checkLocationPermission()) {
@@ -152,6 +180,9 @@ public class LocationManager {
         }
     }
 
+    /**
+     * Method to check if user has given the app permission to track his/her location.
+     */
     public boolean checkLocationPermission() {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             return true;
@@ -159,6 +190,10 @@ public class LocationManager {
         return false;
     }
 
+    /**Checks if user has granted permission for the app to track his/her location.
+     * If true, the method will call getLastLocation() to get user's last location.
+     * @param locationPermissionGranted Boolean to check if user has granted permission for the app to track his/her location.
+     */
     public void getDeviceLocation(boolean locationPermissionGranted) {
         if (locationPermissionGranted) {
             getLastLocation();

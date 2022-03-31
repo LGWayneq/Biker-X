@@ -95,7 +95,7 @@ public class CyclingSessionFragment extends Fragment {
             public void onChanged(Session session) {
                 float distance = Float.parseFloat(session.getFormattedDistance());
                 float timeElapsed = (SystemClock.elapsedRealtime() - chronometer.getBase())/1000;
-                float speed = timeElapsed == 0 ? 0 : 60*60*distance/timeElapsed;
+                float speed = calculateSpeed(distance, timeElapsed);
                 String formattedSpeed = String.format("%.2f", speed);
                 mBinding.distanceDetailsFloat.setText(session.getFormattedDistance());
                 if (state != SessionState.PAUSED) mBinding.avgSpeedFloat.setText(formattedSpeed);
@@ -193,5 +193,18 @@ public class CyclingSessionFragment extends Fragment {
         NavDirections action = CyclingSessionFragmentDirections
                 .actionStartCyclingFragmentToSessionSummaryFragment(formattedDistance, timeElapsed, routeId);
         NavHostFragment.findNavController(this).navigate(action);
+    }
+
+    /**Helper method to calculate speed based on distance and time.
+     * @param distance The distance travelled by the user during the cycling session. Stored in kilometres.
+     * @param timeElapsed The duration of the cycling session. Stored in seconds.
+     * @return Average speed the user is travelling at, in km/h units.
+     */
+    private float calculateSpeed(float distance, float timeElapsed) {
+        if (timeElapsed == 0) {
+            return 0F;
+        } else {
+            return 60 * 60 * distance/timeElapsed;
+        }
     }
 }

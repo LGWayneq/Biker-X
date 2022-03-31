@@ -118,6 +118,10 @@ public class CyclingSessionViewModel extends ViewModel {
         locationManager.stopTracking();
     }
 
+    /**Prompts DBManager to retrieve route data from Firebase, based on routeId.
+     * @param routeId The route ID of the desired route.
+     * @return MutableLiveData of Route object.
+     */
     public MutableLiveData<Route> getRecommendedRoute(String routeId) {
         return dbManager.getRecommendedRoute(routeId);
     }
