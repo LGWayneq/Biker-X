@@ -173,6 +173,7 @@
             android:progressBackgroundTint="#3361A6"
             android:progressTint="#BFDCFF"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -326,8 +327,10 @@
                 android:layout_height="wrap_content"
                 android:indeterminate="false"
                 android:progressDrawable="@drawable/circular_progress_bar"
-                app:layout_heightPercent="100%"
-                app:layout_widthPercent="50%" />
+                app:layout_heightPercent="95%"
+                app:layout_marginLeftPercent="4%"
+                app:layout_marginTopPercent="2%"
+                app:layout_widthPercent="45%" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/distance_details"
@@ -406,9 +409,10 @@
                 android:layout_height="wrap_content"
                 android:indeterminate="false"
                 android:progressDrawable="@drawable/circular_progress_bar"
-                app:layout_heightPercent="100%"
-                app:layout_marginStartPercent="50%"
-                app:layout_widthPercent="50%" />
+                app:layout_heightPercent="95%"
+                app:layout_marginLeftPercent="52%"
+                app:layout_marginTopPercent="2%"
+                app:layout_widthPercent="45%" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/time_details"
