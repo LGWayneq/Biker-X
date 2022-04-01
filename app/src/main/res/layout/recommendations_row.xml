@@ -6,8 +6,8 @@
     android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="95dp"
+        android:layout_width="wrap_content"
+        android:layout_height="105dp"
         android:background="#DFEAF6"
         android:layout_marginTop="@dimen/fragment_vertical_margin"
         android:layout_marginLeft="@dimen/fragment_horizontal_margin"
@@ -16,17 +16,18 @@
         app:layout_constraintEnd_toEndOf="parent">
         <ImageView
             android:id="@+id/routeImg"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:srcCompat="@drawable/sgroundislandloop" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toEndOf="@+id/routeImg"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
 
