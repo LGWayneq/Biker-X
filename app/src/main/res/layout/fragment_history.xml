@@ -69,15 +69,16 @@
                 app:layout_heightPercent="95%"
                 app:layout_marginLeftPercent="4%"
                 app:layout_marginTopPercent="2%"
-                app:layout_widthPercent="45%" />
+                app:layout_widthPercent="48%" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/distance_details"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                app:layout_marginStartPercent="5%"
                 app:layout_heightPercent="50%"
                 app:layout_marginTopPercent="25%"
-                app:layout_widthPercent="50%">
+                app:layout_widthPercent="45%">
 
                 <ImageView
                     android:id="@+id/distance_details_image"
@@ -91,6 +92,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/card_margin"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/distance_details_image">
@@ -99,7 +101,7 @@
                         android:id="@+id/distance_details_float"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/card_margin"
+                        android:layout_marginStart="24dp"
                         android:text="@string/distance_placeholder"
                         android:textColor="@color/white"
                         android:textSize="20dp"
@@ -149,9 +151,9 @@
                 android:indeterminate="false"
                 android:progressDrawable="@drawable/circular_progress_bar"
                 app:layout_heightPercent="95%"
-                app:layout_marginLeftPercent="52%"
+                app:layout_marginLeftPercent="50%"
                 app:layout_marginTopPercent="2%"
-                app:layout_widthPercent="45%" />
+                app:layout_widthPercent="48%" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/time_details"

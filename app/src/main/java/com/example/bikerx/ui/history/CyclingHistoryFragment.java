@@ -65,7 +65,7 @@ public class CyclingHistoryFragment extends Fragment {
             @Override
             public void onChanged(Goal goal) {
                 if (goal != null) {
-                    mBinding.distanceGoalsFloat.setText(String.format("%.2f", goal.getDistance()));
+                    mBinding.distanceGoalsFloat.setText(String.format("%.1f", goal.getDistance()));
                     mBinding.distanceProgressBar.setMax((int) goal.getDistance());
 
                     mBinding.goalsChronometer.setText(getChronometerDisplay(goal.getDuration()));
@@ -85,7 +85,7 @@ public class CyclingHistoryFragment extends Fragment {
             public void onChanged(HashMap<String, Object> hashMap) {
                 if (hashMap != null) {
                     Double monthDistance = (Double)hashMap.get("monthDistance");
-                    mBinding.distanceDetailsFloat.setText(String.format("%.2f", monthDistance));
+                    mBinding.distanceDetailsFloat.setText(String.format("%.1f", monthDistance));
                     mBinding.distanceProgressBar.setProgress(monthDistance.intValue());
 
                     long monthDuration = (Long) hashMap.get("monthDuration");
