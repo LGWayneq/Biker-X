@@ -212,6 +212,9 @@ public class LocationManager {
         return liveDistance;
     }
 
+    /**
+     * Helper method to get retrieve data or return default value if data is not found.
+     */
     private <K, V> V getOrDefault(@NonNull Map<K, V> map, K key, V defaultValue) {
         V v;
         return (((v = map.get(key)) != null) || map.containsKey(key))

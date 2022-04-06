@@ -27,92 +27,34 @@ import java.util.HashMap;
 
 
 public class GoalsFragment extends Fragment {
-    private View myView;
 
-    // creating a variable for our object class
     GoalsInfo goalsInfo;
-    private GoalsFragmentBinding mBinding;
-    private GoalsViewModel mViewModel;
+    private GoalsFragmentBinding binding;
+    private GoalsViewModel viewModel;
     private String userId;
 
-    public static GoalsFragment newInstance() {
-        return new GoalsFragment();
-    }
-
     /**
-     *
      * Initialises goals fragment
      */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        mBinding = GoalsFragmentBinding.inflate(inflater, container, false);
-        mViewModel = new ViewModelProvider(this).get(GoalsViewModel.class);
+        binding = GoalsFragmentBinding.inflate(inflater, container, false);
+        viewModel = new ViewModelProvider(this).get(GoalsViewModel.class);
 
-        myView = inflater.inflate(R.layout.goals_fragment, container, false);
-
-        // initializing our object class variable.
-        goalsInfo = new GoalsInfo();
-
-        /**
-         * update monthlydistance goals to database and reflect the updated value on the UI
-         */
-        mBinding.MonthlyDistanceGoalButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                String monthlyDistanceInKm = mBinding.InputMonthlyDistanceGoal.getText().toString();
-
-                /**
-                 * check if user did not enter monthly distance goals.
-                 */
-
-                if (monthlyDistanceInKm.isEmpty()) {
-                    Toast.makeText(getActivity(), "Error: Monthly distance goal not set.", Toast.LENGTH_LONG).show();
-                } else {
-                    mViewModel.updateDistanceGoal(userId, Integer.parseInt(monthlyDistanceInKm));
-                    //update textview
-                    mBinding.MonthlyGoalsProgressBar.setMax(Integer.parseInt(monthlyDistanceInKm));
-                    String percentage = calPercentage(mBinding.MonthlyGoalsProgressBar.getProgress(),mBinding.MonthlyGoalsProgressBar.getMax());
-                    mBinding.GoalsPercentage.setText(percentage + "%");
-//                    mBinding.MonthlyDistanceGoal.setText(Integer.parseInt(monthlyDistanceInKm));
-                    mBinding.MonthlyDistanceGoal.setText(monthlyDistanceInKm);
-                }
-            }
-        });
-        /**
-         * update MonthlyTime goals to database and reflect the updated value on the UI
-         */
-        mBinding.MonthlyTimeGoalButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                // getting text from our edittext fields.
-                String monthlyTimeInHours = mBinding.InputMonthlyTimeGoal.getText().toString();
-
-                // below line is for checking weather edittext fields are empty or not.
-
-                if (monthlyTimeInHours.isEmpty()) {
-                    Toast.makeText(getActivity(), "Error: Monthly time goal not set.", Toast.LENGTH_LONG).show();
-                } else {
-                    mViewModel.updateTimeGoal(userId, Integer.parseInt(monthlyTimeInHours));
-                    //update text view
-                    mBinding.MonthlyTimeGoal.setText(monthlyTimeInHours);
-
-                }
-            }
-        });
-        return mBinding.getRoot();
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        // initializing our object class variable.
+        goalsInfo = new GoalsInfo();
+        bindButtons();
         userId = ((MainActivity)getActivity()).getUserId();
-        mViewModel.getCyclingHistory(userId);
+        viewModel.getCyclingHistory(userId);
         displayGoalsData();
     }
-
 
     /**Helper function to format time (in milliseconds) to Chronometer display.
      * @param monthDuration Time to be formatted.
@@ -126,48 +68,118 @@ public class GoalsFragment extends Fragment {
         return String.format("%dh %sm", h, mString);
     }
 
+
+    /**
+     * This method dictates the logic of the buttons in the fragment.
+     */
+    private void bindButtons() {
+        /**
+         * update monthlydistance goals to database and reflect the updated value on the UI
+         */
+        binding.MonthlyDistanceGoalButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String monthlyDistanceInKm = binding.InputMonthlyDistanceGoal.getText().toString();
+
+                /**
+                 * check if user did not enter monthly distance goals.
+                 */
+
+                if (!isValidInput(monthlyDistanceInKm)) {
+                    Toast.makeText(getActivity(), "Error: Please provide numeric input.", Toast.LENGTH_LONG).show();
+                } else {
+                    float inputFloat = Float.parseFloat(monthlyDistanceInKm);
+                    int roundedInput = Math.round(inputFloat);
+
+                    viewModel.updateDistanceGoal(userId, roundedInput);
+                    binding.MonthlyGoalsProgressBar.setMax(roundedInput);
+                    String percentage = calPercentage(binding.MonthlyGoalsProgressBar.getProgress(),binding.MonthlyGoalsProgressBar.getMax());
+                    binding.GoalsPercentage.setText(percentage + "%");
+                    binding.MonthlyDistanceGoal.setText(String.valueOf(roundedInput));
+                }
+            }
+        });
+        /**
+         * update MonthlyTime goals to database and reflect the updated value on the UI
+         */
+        binding.MonthlyTimeGoalButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                // getting text from our edittext fields.
+                String monthlyTimeInHours = binding.InputMonthlyTimeGoal.getText().toString();
+
+                // below line is for checking weather edittext fields are empty or not.
+
+                if (!isValidInput(monthlyTimeInHours)) {
+                    Toast.makeText(getActivity(), "Error: Please provide numeric input.", Toast.LENGTH_LONG).show();
+                } else {
+                    Float inputFloat = Float.parseFloat(monthlyTimeInHours);
+                    int roundedInput = Math.round(inputFloat);
+
+                    viewModel.updateTimeGoal(userId, roundedInput);
+                    binding.MonthlyTimeGoal.setText(String.valueOf(roundedInput));
+                }
+            }
+        });
+    }
+
+    /**Helper method to check if user input for goals is valid.
+     * @param input The user's input in String format.
+     * @return Returns a boolean based on whether the input is valid.
+     */
+    private boolean isValidInput(String input) {
+        try {
+            Float inputFloat = Float.parseFloat(input);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     /**
      * update and display MonthlyDistanceGoal and MonthlyTimeGoal achieved data on the chronometer display
      * update and display MonthlyDistanceGoal achieved data on the progress bar
      */
     private void displayGoalsData() {
-        mBinding.chronometer.setText(getChronometerDisplay(0L));
-        mViewModel.fetchGoals(userId);
-        mViewModel.getGoals().observe(getViewLifecycleOwner(), new Observer<Goal>() {
+        binding.chronometer.setText(getChronometerDisplay(0L));
+        viewModel.fetchGoals(userId);
+        viewModel.getGoals().observe(getViewLifecycleOwner(), new Observer<Goal>() {
             @Override
             public void onChanged(Goal goal) {
                 if (goal != null) {
                     //
-                    mBinding.MonthlyDistanceGoal.setText(String.format("%d", (int)goal.getDistance()));
-                    mBinding.MonthlyTimeGoal.setText(String.format("%d",(int) (goal.getDuration() / 3600000)));
+                    binding.MonthlyDistanceGoal.setText(String.format("%d", (int)goal.getDistance()));
+                    binding.MonthlyTimeGoal.setText(String.format("%d",(int) (goal.getDuration() / 3600000)));
 
-                    mBinding.goalsChronometer.setText(getChronometerDisplay(goal.getDuration()));
-                    mBinding.timeProgressBar.setMax((int) (goal.getDuration()/3600000));
+                    binding.goalsChronometer.setText(getChronometerDisplay(goal.getDuration()));
+                    binding.timeProgressBar.setMax((int) (goal.getDuration()/3600000));
 
 
-                    mBinding.distanceGoalsFloat.setText(String.format("%.2f", goal.getDistance()));
-                    mBinding.distanceProgressBar.setMax((int) goal.getDistance());
-                    mBinding.MonthlyGoalsProgressBar.setMax((int) goal.getDistance());
-                    String percentage = calPercentage(mBinding.MonthlyGoalsProgressBar.getProgress(),mBinding.MonthlyGoalsProgressBar.getMax());
-                    mBinding.GoalsPercentage.setText(percentage + "%");
+                    binding.distanceGoalsFloat.setText(String.format("%.2f", goal.getDistance()));
+                    binding.distanceProgressBar.setMax((int) goal.getDistance());
+                    binding.MonthlyGoalsProgressBar.setMax((int) goal.getDistance());
+                    String percentage = calPercentage(binding.MonthlyGoalsProgressBar.getProgress(),binding.MonthlyGoalsProgressBar.getMax());
+                    binding.GoalsPercentage.setText(percentage + "%");
                 }
             }
         });
 
-        mViewModel.calculateMonthlyData(this).observe(getViewLifecycleOwner(), new Observer<HashMap<String, Object>>() {
+        viewModel.calculateMonthlyData(this).observe(getViewLifecycleOwner(), new Observer<HashMap<String, Object>>() {
             @Override
             public void onChanged(HashMap<String, Object> hashMap) {
 
                 if (hashMap != null) {
                     Double monthDistance = (Double)hashMap.get("monthDistance");
-                    mBinding.distanceDetailsFloat.setText(String.format("%.2f", monthDistance));
-                    mBinding.distanceProgressBar.setProgress(monthDistance.intValue());
+                    binding.distanceDetailsFloat.setText(String.format("%.2f", monthDistance));
+                    binding.distanceProgressBar.setProgress(monthDistance.intValue());
 
                     long monthDuration = (Long) hashMap.get("monthDuration");
-                    mBinding.chronometer.setText(getChronometerDisplay(monthDuration));
-                    mBinding.timeProgressBar.setProgress((int) monthDuration);
+                    binding.chronometer.setText(getChronometerDisplay(monthDuration));
+                    binding.timeProgressBar.setProgress((int) monthDuration);
 
-                    mBinding.MonthlyGoalsProgressBar.setProgress(monthDistance.intValue());
+                    binding.MonthlyGoalsProgressBar.setProgress(monthDistance.intValue());
                 }
 
 

@@ -79,7 +79,6 @@ public class RouteMapFragment extends MapFragment{
         else {
             polylineOptions = new PolylineOptions().color(getResources().getColor(R.color.purple_700));
         }
-        //super.getMap().clear();
         List<LatLng> points = polylineOptions.getPoints();
         points.addAll(path);
         super.getMap().addPolyline(polylineOptions);

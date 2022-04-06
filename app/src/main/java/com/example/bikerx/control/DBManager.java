@@ -33,8 +33,14 @@ import java.util.Map;
  * A control class to retrieve and store user data through Firebase.
  */
 public class DBManager {
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseFirestore db;
     public static final String TAG = "DBManager";
+
+    public DBManager() {
+        db = FirebaseFirestore.getInstance();
+    }
+
+
 
     /**Add/Update the ratings given by a user for a recommended route.
      * @param routeId The ID of the recommended route,
