@@ -34,7 +34,11 @@ public class GoalManager extends DBManager{
                     } else {
                         Goal newGoal = new Goal();
                         if (goalData.get("distance") != null) {
-                            newGoal.setDistance((double)(goalData.get("distance")));
+                            try {
+                                newGoal.setDistance((double)(long) (goalData.get("distance")));
+                            } catch (ClassCastException e) {
+                                newGoal.setDistance((double)(goalData.get("distance")));
+                            }
                         }
                         if (goalData.get("duration") != null) {
                             newGoal.setDuration((long)goalData.get("duration"));
