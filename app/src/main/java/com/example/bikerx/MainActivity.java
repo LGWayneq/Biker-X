@@ -90,9 +90,6 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.signout) {
             signOut();
         }
-        if (id == R.id.settings) {
-            navController.navigate(R.id.settingsFragment);
-        }
         return super.onOptionsItemSelected(item);
     }
 

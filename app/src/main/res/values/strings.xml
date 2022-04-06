@@ -68,6 +68,8 @@
     <string name="recycler_view_message_row_item_messageTime_text">10:45</string>
     <string name="recycler_view_message_row_date_text">28 January 2022</string>
     <string name="continue_with_email">CONTINUE WITH EMAIL</string>
+    <string name="report_bug_label">Report Bug</string>
+    <string name="submit">Submit</string>
 
     <string-array name="route_flags">
         <item>@drawable/bishan</item>
