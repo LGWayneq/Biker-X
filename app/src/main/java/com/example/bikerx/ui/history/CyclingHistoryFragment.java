@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavDirections;
@@ -58,55 +59,17 @@ public class CyclingHistoryFragment extends Fragment {
     /**
      * Fetch and display user Goal data from the viewModel.
      */
-    private void displayGoalsData() {//temp
+    private void displayGoalsData() {
         mBinding.goalsChronometer.setText(getChronometerDisplay(0L));
-        viewModel.fetchGoals(userId);
-        viewModel.getGoals().observe(getViewLifecycleOwner(), new Observer<Goal>() {
+        MutableLiveData<Goal> goal = viewModel.fetchGoals(userId);
+        goal.observe(getViewLifecycleOwner(), new Observer<Goal>() {
             @Override
             public void onChanged(Goal goal) {
                 if (goal != null) {
-                    mBinding.distanceGoalsFloat.setText(String.format("%.1f", goal.getDistance()));
-                    mBinding.distanceProgressBar.setMax((int) goal.getDistance());
-
-                    mBinding.goalsChronometer.setText(getChronometerDisplay(goal.getDuration()));
-                    mBinding.timeProgressBar.setMax((int) goal.getDuration());
+                    updateGoalsUi(goal);
                 }
             }
         });
-
-    }
-
-    /**
-     * Fetch and display user monthly history data from the viewModel.
-     */
-    private void displayMonthlyData() {
-        viewModel.calculateMonthlyData(this).observe(getViewLifecycleOwner(), new Observer<HashMap<String, Object>>() {
-            @Override
-            public void onChanged(HashMap<String, Object> hashMap) {
-                if (hashMap != null) {
-                    Double monthDistance = (Double)hashMap.get("monthDistance");
-                    mBinding.distanceDetailsFloat.setText(String.format("%.1f", monthDistance));
-                    mBinding.distanceProgressBar.setProgress(monthDistance.intValue());
-
-                    long monthDuration = (Long) hashMap.get("monthDuration");
-                    mBinding.chronometer.setText(getChronometerDisplay(monthDuration));
-                    mBinding.timeProgressBar.setProgress((int) monthDuration);
-                }
-
-            }
-        });
-    }
-
-    /**Helper function to format time (in milliseconds) to Chronometer display.
-     * @param monthDuration Time to be formatted.
-     * @return Returns a String, representing time formatted as "HHh MMm".
-     */
-    private String getChronometerDisplay(Long monthDuration) {
-        int h = (int) ((monthDuration / 1000) / 3600);
-        int m = (int) (((monthDuration / 1000) / 60) % 60);
-
-        String mString = m >= 10 ? Integer.toString(m) : "0"+Integer.toString(m);
-        return String.format("%dh %sm", h, mString);
     }
 
     /**
@@ -114,18 +77,24 @@ public class CyclingHistoryFragment extends Fragment {
      * CyclingHistoryAdapter is used to convert ArrayList into a UI element.
      */
     private void displayCyclingHistory() {
-        viewModel.fetchCyclingHistory(userId);
-        viewModel.getCyclingHistory().observe(getViewLifecycleOwner(), new Observer<ArrayList<CyclingHistory>>() {
+        MutableLiveData<ArrayList<CyclingHistory>> cyclingHistory = viewModel.fetchCyclingHistory(userId);
+        cyclingHistory.observe(getViewLifecycleOwner(), new Observer<ArrayList<CyclingHistory>>() {
             @Override
             public void onChanged(ArrayList<CyclingHistory> cyclingHistory) {
-                if (cyclingHistory != null) {
-                    adapter = new CyclingHistoryAdapter(cyclingHistory);
-                    layoutManager = new LinearLayoutManager(getActivity());
-                    mBinding.recyclerView.setLayoutManager(layoutManager);
-                    mBinding.recyclerView.setAdapter(adapter);
-                } else {
-                    mBinding.noHistoryAlert.setVisibility(View.VISIBLE);
-                }
+                updateHistoryUi(cyclingHistory);
+            }
+        });
+    }
+
+    /**
+     * Fetch and display user monthly history data from the viewModel.
+     */
+    private void displayMonthlyData() {
+        MutableLiveData<HashMap<String, Object>> monthlyData = viewModel.calculateMonthlyData(this);
+        monthlyData.observe(getViewLifecycleOwner(), new Observer<HashMap<String, Object>>() {
+            @Override
+            public void onChanged(HashMap<String, Object> monthlyData) {
+                updateMonthlyDataUi(monthlyData);
             }
         });
     }
@@ -141,5 +110,56 @@ public class CyclingHistoryFragment extends Fragment {
                 Navigation.findNavController(v).navigate(action);
             }
         });
+    }
+
+    /**
+     * Helper method to update UI based on goals data.
+     * @param goal Object containing goal data.
+     */
+    private void updateGoalsUi(Goal goal) {
+        mBinding.distanceGoalsFloat.setText(String.format("%.1f", goal.getDistance()));
+        mBinding.distanceProgressBar.setMax((int) goal.getDistance());
+
+        mBinding.goalsChronometer.setText(getChronometerDisplay(goal.getDuration()));
+        mBinding.timeProgressBar.setMax((int) goal.getDuration());
+    }
+
+    /**
+     * Helper method to update UI based on cycling history data.
+     * @param cyclingHistory ArrayList containing cycling history data.
+     */
+    private void updateHistoryUi(ArrayList<CyclingHistory> cyclingHistory) {
+        if (cyclingHistory != null) {
+            adapter = new CyclingHistoryAdapter(cyclingHistory);
+            layoutManager = new LinearLayoutManager(getActivity());
+            mBinding.recyclerView.setLayoutManager(layoutManager);
+            mBinding.recyclerView.setAdapter(adapter);
+        } else {
+            mBinding.noHistoryAlert.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void updateMonthlyDataUi(HashMap<String, Object> hashMap) {
+        if (hashMap != null) {
+            Double monthDistance = (Double)hashMap.get("monthDistance");
+            mBinding.distanceDetailsFloat.setText(String.format("%.1f", monthDistance));
+            mBinding.distanceProgressBar.setProgress(monthDistance.intValue());
+
+            long monthDuration = (Long) hashMap.get("monthDuration");
+            mBinding.chronometer.setText(getChronometerDisplay(monthDuration));
+            mBinding.timeProgressBar.setProgress((int) monthDuration);
+        }
+    }
+
+    /**Helper function to format time (in milliseconds) to Chronometer display.
+     * @param monthDuration Time to be formatted.
+     * @return Returns a String, representing time formatted as "HHh MMm".
+     */
+    private String getChronometerDisplay(Long monthDuration) {
+        int h = (int) ((monthDuration / 1000) / 3600);
+        int m = (int) (((monthDuration / 1000) / 60) % 60);
+
+        String mString = m >= 10 ? Integer.toString(m) : "0"+Integer.toString(m);
+        return String.format("%dh %sm", h, mString);
     }
 }

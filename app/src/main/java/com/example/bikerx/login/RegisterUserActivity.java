@@ -19,7 +19,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 /**
  * Register user info into firebase for first time users of the app
  */
-public class RegisterUserActivity extends AppCompatActivity implements View.OnClickListener {
+public class RegisterUserActivity extends AppCompatActivity {
 
     private ActivityRegisterUserBinding mBinding;
     /**
@@ -35,28 +35,22 @@ public class RegisterUserActivity extends AppCompatActivity implements View.OnCl
         setContentView(mBinding.getRoot());
 
         mAuth = FirebaseAuth.getInstance();
-        mBinding.registerUser.setOnClickListener(view -> verifyDetails());
+        mBinding.registerUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String email = mBinding.email.getText().toString().trim();
+                String password = mBinding.password.getText().toString().trim();
+                String fullName = mBinding.fullName.getText().toString().trim();
+                verifyDetails(email, password, fullName);
+            }
+        });
         dialog = new ProgressDialog(this);
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.registerUser:
-                verifyDetails();
-                break;
-        }
     }
 
     /**
      * validate if user inputs to register an account in the app is valid
      */
-    private void verifyDetails() {
-
-        String email = mBinding.email.getText().toString().trim();
-        String password = mBinding.password.getText().toString().trim();
-        String fullName = mBinding.fullName.getText().toString().trim();
-
+    private void verifyDetails(String email, String password, String fullName) {
         /**
          * check if name entered by user is empty
          */

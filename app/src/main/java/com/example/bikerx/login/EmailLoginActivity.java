@@ -20,9 +20,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 /**
- *
+ * Displays UI for users to sign in using Email.
  */
-public class EmailLoginActivity extends AppCompatActivity implements View.OnClickListener {
+public class EmailLoginActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private ActivityEmailLoginBinding mBinding;
@@ -39,38 +39,36 @@ public class EmailLoginActivity extends AppCompatActivity implements View.OnClic
         mBinding = ActivityEmailLoginBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
 
-        mBinding.register.setOnClickListener(this);
-        mBinding.signIn.setOnClickListener(this);
-        mBinding.forgotPassword.setOnClickListener(this);
+        bindButtons();
+
         mAuth = FirebaseAuth.getInstance();
     }
 
     /**
-     * brings user to different activities depending on which button user clicks on in the login page
-     *
-     * @param v
+     * Sets logic for buttons.
+     * if user click on register button, bring user to Register user activity.
+     * if user click on signIn button, call userLogin() method to log user into account.
+     * if user clicks forgotpassword button, bring user to forgotpassword page to reset password via email.
      */
-    @Override
-    public void onClick(View v) {
-        /**
-         * if user click on register button, bring user to Register user activity
-         * if user click on signIn button, call userLogin() method to log user into account
-         * if user clicks forgotpassword button, bring user to forgotpassword page to reset password via email
-         */
-        switch (v.getId()) {
-            //take user to RegisterUser page when click register on Email Login
-            case R.id.register:
+    private void bindButtons() {
+        mBinding.register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 startActivity(new Intent(EmailLoginActivity.this, RegisterUserActivity.class));
-                break;
-            //if user clicks login button on EmailLogin page, call userLogin() function below
-            case R.id.signIn:
+            }
+        });
+        mBinding.signIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 userLogin();
-                break;
-            //if user clicks "forgotPassword" TextView on Email login page, lead user to ForgotPassword Page to reset password
-            case R.id.forgotPassword:
+            }
+        });
+        mBinding.forgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 startActivity(new Intent(EmailLoginActivity.this, ForgotPasswordActivity.class));
-                break;
-        }
+            }
+        });
     }
 
     /**
@@ -174,10 +172,8 @@ public class EmailLoginActivity extends AppCompatActivity implements View.OnClic
                 } else {
                     dialog.dismiss();
                     Toast.makeText(EmailLoginActivity.this, "Failed to login. check credentials", Toast.LENGTH_LONG).show();
-
                 }
             }
         });
-
     }
 }

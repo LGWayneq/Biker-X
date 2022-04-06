@@ -21,9 +21,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+/**
+ * Displays UI for users to sign in using Google account or Email.
+ */
 public class LoginActivity extends AppCompatActivity {
 
-    private static final String TAG = "SignInActivity";
     private static final int RC_SIGN_IN = 1234;
 
     private ActivityLoginBinding mBinding;
@@ -43,8 +45,7 @@ public class LoginActivity extends AppCompatActivity {
         mBinding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
 
-        mBinding.signInButton.setOnClickListener(view -> signInGoogle());
-        mBinding.emailSignInButton.setOnClickListener(view -> signInEmail());
+        bindButtons();
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -55,6 +56,17 @@ public class LoginActivity extends AppCompatActivity {
         checkIfSignedIn();
     }
 
+    /**
+     * Assign logic to buttons.
+     */
+    private void bindButtons() {
+        mBinding.signInButton.setOnClickListener(view -> signInGoogle());
+        mBinding.emailSignInButton.setOnClickListener(view -> navigateToEmailSignIn());
+    }
+
+    /**
+     * Check if user is already signed in.
+     */
     private void checkIfSignedIn() {
         FirebaseUser user = mFirebaseAuth.getCurrentUser();
         if (user != null) {
@@ -64,16 +76,18 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Prompt Google Sign In popup.
+     */
     private void signInGoogle() {
         Intent signInIntent = mSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
     /**
-     * when user click emailSignInButton,lead user to EmailLogin Activity
+     * when user click emailSignInButton, navigate app to EmailLoginActivity
      */
-    private void signInEmail() {
-
+    private void navigateToEmailSignIn() {
         startActivity(new Intent(this, EmailLoginActivity.class));
     }
 
@@ -86,11 +100,15 @@ public class LoginActivity extends AppCompatActivity {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 authWithGoogle(account);
             } catch (ApiException e) {
-                Log.w(TAG, "Google sign in failed", e);
+
             }
         }
     }
 
+    /**
+     * Authenticate user's Google account
+     * @param acct User's Google account
+     */
     private void authWithGoogle(GoogleSignInAccount acct) {
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mFirebaseAuth.signInWithCredential(credential)
