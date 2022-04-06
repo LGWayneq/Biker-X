@@ -169,7 +169,7 @@
             style="@android:style/Widget.ProgressBar.Horizontal"
             android:layout_width="300dp"
             android:layout_height="50dp"
-            android:progress="72"
+            android:progress="0"
             android:progressBackgroundTint="#3361A6"
             android:progressTint="#BFDCFF"
             app:layout_constraintEnd_toEndOf="parent"

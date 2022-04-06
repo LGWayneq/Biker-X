@@ -1,7 +1,6 @@
 package com.example.bikerx.ui.goals;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,26 +8,19 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.bikerx.MainActivity;
-import com.example.bikerx.R;
 import com.example.bikerx.entities.Goal;
-import com.example.bikerx.entities.GoalsInfo;
 
 import com.example.bikerx.databinding.GoalsFragmentBinding;
-import com.example.bikerx.ui.session.CyclingSessionViewModel;
-import com.example.bikerx.ui.session.CyclingSessionViewModelFactory;
 
 import java.util.HashMap;
 
 
 public class GoalsFragment extends Fragment {
-
-    GoalsInfo goalsInfo;
     private GoalsFragmentBinding binding;
     private GoalsViewModel viewModel;
     private String userId;
@@ -49,7 +41,6 @@ public class GoalsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // initializing our object class variable.
-        goalsInfo = new GoalsInfo();
         bindButtons();
         userId = ((MainActivity)getActivity()).getUserId();
         viewModel.getCyclingHistory(userId);
@@ -73,53 +64,50 @@ public class GoalsFragment extends Fragment {
      * This method dictates the logic of the buttons in the fragment.
      */
     private void bindButtons() {
-        /**
-         * update monthlydistance goals to database and reflect the updated value on the UI
-         */
+        //update monthlydistance goals to database and reflect the updated value on the UI
         binding.MonthlyDistanceGoalButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 String monthlyDistanceInKm = binding.InputMonthlyDistanceGoal.getText().toString();
 
-                /**
-                 * check if user did not enter monthly distance goals.
-                 */
-
+                //check for valid input
                 if (!isValidInput(monthlyDistanceInKm)) {
                     Toast.makeText(getActivity(), "Error: Please provide numeric input.", Toast.LENGTH_LONG).show();
                 } else {
                     float inputFloat = Float.parseFloat(monthlyDistanceInKm);
                     int roundedInput = Math.round(inputFloat);
 
-                    viewModel.updateDistanceGoal(userId, roundedInput);
                     binding.MonthlyGoalsProgressBar.setMax(roundedInput);
                     String percentage = calPercentage(binding.MonthlyGoalsProgressBar.getProgress(),binding.MonthlyGoalsProgressBar.getMax());
                     binding.GoalsPercentage.setText(percentage + "%");
                     binding.MonthlyDistanceGoal.setText(String.valueOf(roundedInput));
+
+                    long duration = Long.parseLong(binding.MonthlyTimeGoal.getText().toString())* 3600 * 1000;
+                    Goal newGoal = new Goal((double) roundedInput, duration);
+                    viewModel.updateGoal(userId, newGoal);
                 }
             }
         });
-        /**
-         * update MonthlyTime goals to database and reflect the updated value on the UI
-         */
+
+        //update MonthlyTime goals to database and reflect the updated value on the UI
         binding.MonthlyTimeGoalButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                // getting text from our edittext fields.
                 String monthlyTimeInHours = binding.InputMonthlyTimeGoal.getText().toString();
 
-                // below line is for checking weather edittext fields are empty or not.
-
+                //check for valid input
                 if (!isValidInput(monthlyTimeInHours)) {
                     Toast.makeText(getActivity(), "Error: Please provide numeric input.", Toast.LENGTH_LONG).show();
                 } else {
-                    Float inputFloat = Float.parseFloat(monthlyTimeInHours);
-                    int roundedInput = Math.round(inputFloat);
+                    Float timeFloat = Float.parseFloat(monthlyTimeInHours);
+                    int roundedTime = Math.round(timeFloat);
 
-                    viewModel.updateTimeGoal(userId, roundedInput);
-                    binding.MonthlyTimeGoal.setText(String.valueOf(roundedInput));
+                    binding.MonthlyTimeGoal.setText(String.valueOf(roundedTime));
+
+                    long duration = (long) roundedTime * 3600 * 1000;
+                    Goal newGoal = new Goal(Double.parseDouble(binding.MonthlyDistanceGoal.getText().toString()), duration);
+                    viewModel.updateGoal(userId, newGoal);
                 }
             }
         });

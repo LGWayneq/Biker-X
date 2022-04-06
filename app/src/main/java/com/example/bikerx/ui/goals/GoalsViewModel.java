@@ -45,19 +45,10 @@ public class GoalsViewModel extends ViewModel {
     /**
      * prompts DBManager to update the goals set by user to the database
      * @param userId The userId of the user
-     * @param monthlyDistanceInKm MonthlyDistance in km set by the user
+     * @param goal Goal object which stores goal data in terms of distance and duration.
      */
-    public void updateDistanceGoal(String userId, int monthlyDistanceInKm){
-        goalManager.setMonthlyDistanceGoal(userId, monthlyDistanceInKm);
-    }
-
-    /**
-     * prompts DBManager to update the goals set by user to the database
-     * @param userId The userId of the user
-     * @param monthlyTimeInHours MonthlyDistance in hours set by the user
-     */
-    public void updateTimeGoal(String userId, int monthlyTimeInHours){
-        goalManager.setMonthlyTimeGoal(userId, monthlyTimeInHours);
+    public void updateGoal(String userId, Goal goal) {
+        goalManager.setGoal(userId, goal);
     }
 
     /**
