@@ -3,40 +3,32 @@ package com.example.bikerx.ui.home;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.android.volley.VolleyError;
 import com.example.bikerx.R;
-import com.example.bikerx.control.DBManager;
+import com.example.bikerx.control.firestore.DBManager;
 import com.example.bikerx.control.WeatherApiService;
 import com.example.bikerx.control.WeatherResult;
-import com.example.bikerx.ui.history.CyclingHistory;
+import com.example.bikerx.control.firestore.RouteManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import com.android.volley.VolleyError;
-import com.example.bikerx.R;
-import com.example.bikerx.control.WeatherApiService;
-import com.example.bikerx.control.WeatherResult;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**This ViewModel handles the backend and data for the HomeFragment.
  */
 public class HomeViewModel extends ViewModel {
-    private DBManager dbManager = new DBManager();
+    private RouteManager routeManager = new RouteManager();
     private MutableLiveData<String> userName = new MutableLiveData<String>();
     private MutableLiveData<ArrayList<Route>> homeRoutes;
 
 
     public void fetchHomeRoutes() {
-        homeRoutes = dbManager.getHomeRoutes("homeFragment");
+        homeRoutes = routeManager.getHomeRoutes("homeFragment");
     }
 
     public MutableLiveData<ArrayList<Route>> getHomeRoutes() {

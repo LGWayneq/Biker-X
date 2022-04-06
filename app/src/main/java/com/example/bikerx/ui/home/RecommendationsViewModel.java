@@ -3,7 +3,8 @@ package com.example.bikerx.ui.home;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.bikerx.control.DBManager;
+import com.example.bikerx.control.firestore.DBManager;
+import com.example.bikerx.control.firestore.RouteManager;
 
 import java.util.ArrayList;
 
@@ -11,14 +12,14 @@ import java.util.ArrayList;
  * Class to hold and manage data required for RecommendationsFragment
  */
 public class RecommendationsViewModel extends ViewModel {
-    private DBManager dbManager = new DBManager();
+    private RouteManager routeManager = new RouteManager();
     private MutableLiveData<ArrayList<Route>> routes;
 
     /**
      * Calls dbManager to fetch routes and stores result in routes
      */
     public void fetchRoutes() {
-        routes = dbManager.getHomeRoutes("recommendationsFragment");
+        routes = routeManager.getHomeRoutes("recommendationsFragment");
     }
 
     /**

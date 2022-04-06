@@ -1,10 +1,10 @@
 package com.example.bikerx.ui.chat;
 
-import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.bikerx.control.DBManager;
+import com.example.bikerx.control.firestore.DBManager;
+import com.example.bikerx.control.firestore.ForumManager;
 
 import java.util.ArrayList;
 
@@ -22,7 +22,7 @@ public class ChatViewModel extends ViewModel {
      * Starts a new instance of DBManager
      * @see DBManager
      */
-    private DBManager dbManager = new DBManager();
+    private ForumManager forumManager = new ForumManager();
     /**
      * The mutablelivedata forum thread array list of this ChatViewModel object.
      */
@@ -32,7 +32,7 @@ public class ChatViewModel extends ViewModel {
      * Calls the DBManager to instantiate the forumThreadArrayList of this ChatViewModel object.
      */
     public void fetchForumThread() {
-        forumThreadArrayList = dbManager.getForumThread();
+        forumThreadArrayList = forumManager.getForumThread();
     }
 
     /**

@@ -131,7 +131,7 @@ public class GoalsFragment extends Fragment {
      */
     private boolean isValidInput(String input) {
         try {
-            Float inputFloat = Float.parseFloat(input);
+            Float.parseFloat(input);
             return true;
         } catch (Exception e) {
             return false;

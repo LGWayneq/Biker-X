@@ -5,7 +5,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.bikerx.MainActivity;
-import com.example.bikerx.control.DBManager;
+import com.example.bikerx.control.firestore.DBManager;
+import com.example.bikerx.control.firestore.ForumManager;
 import com.google.firebase.Timestamp;
 
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class MessageViewModel extends ViewModel {
      * Starts a new instance of DBManager
      * @see DBManager
      */
-    DBManager dbManager = new DBManager();
+    ForumManager forumManager = new ForumManager();
     /**
      * The mutablelivedata message array list of this MessageViewModel object.
      */
@@ -34,7 +35,7 @@ public class MessageViewModel extends ViewModel {
      * Calls the DBManager to instantiate the mutableMessageArrayList of this MessageViewModel object.
      */
     public void fetchMessages(String threadId) {
-        mutableMessageArrayList = dbManager.getForumMessage(threadId);
+        mutableMessageArrayList = forumManager.getForumMessage(threadId);
     }
 
     /**
@@ -57,9 +58,10 @@ public class MessageViewModel extends ViewModel {
         String messageId = threadId + Integer.toString(mutableMessageArrayList.getValue().size());
         Timestamp currentTimestamp = Timestamp.now();
 
-        dbManager.addForumMessage(activity, threadId, ((MainActivity)activity).getUserId(), userName, messageId, currentTimestamp, messageContent);
+        Message newMessage = new Message(threadId, ((MainActivity)activity).getUserId(), userName, messageId, currentTimestamp, messageContent);
+        forumManager.addForumMessage(activity, newMessage);
 
-        Message addedMessage = new Message(((MainActivity)activity).getUserId(), userName, messageId, currentTimestamp, messageContent);
+        Message addedMessage = new Message(threadId, ((MainActivity)activity).getUserId(), userName, messageId, currentTimestamp, messageContent);
         ArrayList<Message> messageArrayList = mutableMessageArrayList.getValue();
         messageArrayList.add(addedMessage);
         mutableMessageArrayList.setValue(messageArrayList);

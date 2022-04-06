@@ -81,7 +81,7 @@ public class HomeRecommendationsAdapter extends RecyclerView.Adapter<HomeRecomme
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Route r = filteredRouteList.get(position);
         Double avgRatings = getAverageRating(r.getRatings());
-        holder.binding.routeRating.setText(String.format("(%s)", avgRatings.toString()));
+        holder.binding.routeRating.setText(String.format("(%.1f)", avgRatings));
         holder.binding.ratingBar.setRating(avgRatings.floatValue());
         holder.binding.routeName.setText(r.getRouteName());
         TypedArray routeFlags = holder.binding.getRoot().getResources().obtainTypedArray(R.array.route_flags);

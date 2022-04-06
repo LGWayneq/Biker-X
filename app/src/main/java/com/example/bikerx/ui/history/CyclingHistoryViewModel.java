@@ -5,7 +5,9 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
-import com.example.bikerx.control.DBManager;
+import com.example.bikerx.control.firestore.DBManager;
+import com.example.bikerx.control.firestore.GoalManager;
+import com.example.bikerx.control.firestore.SessionManager;
 import com.example.bikerx.entities.Goal;
 
 import java.text.SimpleDateFormat;
@@ -19,7 +21,8 @@ import java.util.TimeZone;
 /**This ViewModel handles the backend and data for the CyclingHistoryFragment.
  */
 public class CyclingHistoryViewModel extends ViewModel {
-    private DBManager dbManager = new DBManager();
+    private SessionManager sessionManager = new SessionManager();
+    private GoalManager goalManager = new GoalManager();
     private MutableLiveData<ArrayList<CyclingHistory>> cyclingHistory;
     private MutableLiveData<Goal> goals;
 
@@ -27,14 +30,14 @@ public class CyclingHistoryViewModel extends ViewModel {
      * @param userId The userId of the user.
      */
     public void fetchCyclingHistory(String userId) {
-        cyclingHistory = dbManager.getCyclingHistory(userId);
+        cyclingHistory = sessionManager.getCyclingHistory(userId);
     }
 
     /**Prompts the DBManager to start fetching goal data of the user.
      * @param userId The userId of the user.
      */
     public void fetchGoals(String userId) {
-        goals = dbManager.getGoal(userId);
+        goals = goalManager.getGoal(userId);
     }
 
     /**Helper method to filter cycling history by month, and aggregate cycling history into monthly distance and duration.

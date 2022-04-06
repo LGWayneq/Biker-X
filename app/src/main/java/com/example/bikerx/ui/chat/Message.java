@@ -12,6 +12,10 @@ import com.google.firebase.Timestamp;
  */
 public class Message {
     /**
+     * The thread id of the thread this Message object belongs to.
+     */
+    private String threadId;
+    /**
      * The user id of this Message object.
      */
     private String userId;
@@ -42,7 +46,8 @@ public class Message {
      * @param time the timestamp of this Message object
      * @param messageContent the message content of this Message object
      */
-    public Message(String userId, String userName, String messageId, Timestamp time, String messageContent) {
+    public Message(String threadId, String userId, String userName, String messageId, Timestamp time, String messageContent) {
+        this.threadId = threadId;
         this.userId = userId;
         this.userName = userName;
         this.messageId = messageId;
@@ -104,4 +109,12 @@ public class Message {
      * @param messageContent the updated message content of this Message object
      */
     public void setMessageContent(String messageContent) { this.messageContent = messageContent; }
+
+    public String getThreadId() {
+        return threadId;
+    }
+
+    public void setThreadId(String threadId) {
+        this.threadId = threadId;
+    }
 }

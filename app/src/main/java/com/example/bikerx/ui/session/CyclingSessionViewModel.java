@@ -1,20 +1,18 @@
 package com.example.bikerx.ui.session;
 
 import android.content.Context;
-import android.location.Location;
-import android.util.Log;
-import android.widget.Chronometer;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.example.bikerx.MainActivity;
 import com.example.bikerx.R;
-import com.example.bikerx.control.DBManager;
+import com.example.bikerx.control.firestore.DBManager;
 import com.example.bikerx.control.LocationManager;
+import com.example.bikerx.control.firestore.RouteManager;
+import com.example.bikerx.control.firestore.SessionManager;
 import com.example.bikerx.ui.home.Route;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -23,7 +21,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -35,14 +32,16 @@ public class CyclingSessionViewModel extends ViewModel {
     private boolean locationPermissionGranted;
     private final Session EMPTY = new Session("0.00", null, new ArrayList<LatLng>());
     private MutableLiveData<Session> session = new MutableLiveData<Session>(EMPTY);
-    private DBManager dbManager;
+    private SessionManager sessionManager;
+    private RouteManager routeManager;
     private AppCompatActivity activity;
 
     public CyclingSessionViewModel(Context context, AppCompatActivity activity) {
         this.activity = activity;
         this.locationManager = new LocationManager(context);
         this.locationPermissionGranted = locationManager.checkLocationPermission();
-        this.dbManager = new DBManager();
+        this.sessionManager = new SessionManager();
+        this.routeManager = new RouteManager();
     }
 
     /**Initialises a cycling session. This method is only called when the user clicks on the start button in CyclingSessionFragment.
@@ -112,7 +111,7 @@ public class CyclingSessionViewModel extends ViewModel {
         Session session = this.session.getValue();
         Date date = Calendar.getInstance(TimeZone.getTimeZone("Asia/Singapore")).getTime();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy - h:mm a", Locale.getDefault());
-        dbManager.addCyclingSession(((MainActivity)activity).getUserId(), dateFormat.format(date), session.getFormattedDistance(), duration);
+        sessionManager.addCyclingSession(((MainActivity)activity).getUserId(), dateFormat.format(date), session.getFormattedDistance(), duration);
 
         this.session.setValue(new Session("0.00", null, new ArrayList<LatLng>()));
         locationManager.stopTracking();
@@ -123,7 +122,7 @@ public class CyclingSessionViewModel extends ViewModel {
      * @return MutableLiveData of Route object.
      */
     public MutableLiveData<Route> getRecommendedRoute(String routeId) {
-        return dbManager.getRecommendedRoute(routeId);
+        return routeManager.getRecommendedRoute(routeId);
     }
 
     public MutableLiveData<Session> getSession() {

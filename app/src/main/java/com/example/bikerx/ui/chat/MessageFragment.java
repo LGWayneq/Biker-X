@@ -67,14 +67,6 @@ public class MessageFragment extends Fragment {
     private TextView messageTextbox;
 
     /**
-     * Starts a new instance of the MessageFragment class
-     * @return a new instance of MessageFragment class
-     */
-    public static MessageFragment newInstance() {
-        return new MessageFragment();
-    }
-
-    /**
      * Overrides the original onCreate to assign the arguments obtained from the navigation to MessageFragment attributes
      * @param savedInstanceState
      */
@@ -166,13 +158,5 @@ public class MessageFragment extends Fragment {
                 messageTextbox.setText("");
             }
         });
-    }
-
-    /**
-     * Overrides the original onDestroyView
-     */
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
     }
 }

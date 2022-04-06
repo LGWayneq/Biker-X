@@ -13,22 +13,18 @@ import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Chronometer;
 
-import com.example.bikerx.control.DBManager;
 import com.example.bikerx.databinding.CyclingSessionFragmentBinding;
 import com.example.bikerx.map.RouteMapFragment;
 import com.example.bikerx.ui.home.Route;
-import com.google.android.gms.maps.model.LatLng;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
