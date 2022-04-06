@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -19,7 +20,9 @@ import com.example.bikerx.databinding.GoalsFragmentBinding;
 
 import java.util.HashMap;
 
-
+/**
+ * Displays UI for user to track and set their cycling goals. Uses GoalsViewModel for backend management.
+ */
 public class GoalsFragment extends Fragment {
     private GoalsFragmentBinding binding;
     private GoalsViewModel viewModel;
@@ -40,74 +43,44 @@ public class GoalsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        // initializing our object class variable.
-        bindButtons();
         userId = ((MainActivity)getActivity()).getUserId();
-        viewModel.getCyclingHistory(userId);
         displayGoalsData();
+        displayHistoryData();
+        bindButtons();
     }
-
-    /**Helper function to format time (in milliseconds) to Chronometer display.
-     * @param monthDuration Time to be formatted.
-     * @return Returns a String, representing time formatted as "HHh MMm".
-     */
-    private String getChronometerDisplay(Long monthDuration) {
-        int h = (int) ((monthDuration) / 3600000);
-        int m = (int) (((monthDuration) / 60) % 60);
-
-        String mString = m >= 10 ? Integer.toString(m) : "0"+Integer.toString(m);
-        return String.format("%dh %sm", h, mString);
-    }
-
 
     /**
      * This method dictates the logic of the buttons in the fragment.
      */
     private void bindButtons() {
         //update monthlydistance goals to database and reflect the updated value on the UI
-        binding.MonthlyDistanceGoalButton.setOnClickListener(new View.OnClickListener() {
+        binding.SubmitDistanceGoalButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String monthlyDistanceInKm = binding.InputMonthlyDistanceGoal.getText().toString();
+                String distanceInKm = binding.distanceGoalInput.getText().toString();
 
                 //check for valid input
-                if (!isValidInput(monthlyDistanceInKm)) {
-                    Toast.makeText(getActivity(), "Error: Please provide numeric input.", Toast.LENGTH_LONG).show();
+                boolean valid = isValidInput(distanceInKm);
+                if (!valid) {
+                    showInvalidInputWarning();
                 } else {
-                    float inputFloat = Float.parseFloat(monthlyDistanceInKm);
-                    int roundedInput = Math.round(inputFloat);
-
-                    binding.MonthlyGoalsProgressBar.setMax(roundedInput);
-                    String percentage = calPercentage(binding.MonthlyGoalsProgressBar.getProgress(),binding.MonthlyGoalsProgressBar.getMax());
-                    binding.GoalsPercentage.setText(percentage + "%");
-                    binding.MonthlyDistanceGoal.setText(String.valueOf(roundedInput));
-
-                    long duration = Long.parseLong(binding.MonthlyTimeGoal.getText().toString())* 3600 * 1000;
-                    Goal newGoal = new Goal((double) roundedInput, duration);
-                    viewModel.updateGoal(userId, newGoal);
+                    submitNewDistance(distanceInKm);
                 }
             }
         });
 
         //update MonthlyTime goals to database and reflect the updated value on the UI
-        binding.MonthlyTimeGoalButton.setOnClickListener(new View.OnClickListener() {
-
+        binding.SubmitTimeGoalButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String monthlyTimeInHours = binding.InputMonthlyTimeGoal.getText().toString();
+                String timeInHours = binding.timeGoalInput.getText().toString();
 
                 //check for valid input
-                if (!isValidInput(monthlyTimeInHours)) {
-                    Toast.makeText(getActivity(), "Error: Please provide numeric input.", Toast.LENGTH_LONG).show();
+                boolean valid = isValidInput(timeInHours);
+                if (!valid) {
+                    showInvalidInputWarning();
                 } else {
-                    Float timeFloat = Float.parseFloat(monthlyTimeInHours);
-                    int roundedTime = Math.round(timeFloat);
-
-                    binding.MonthlyTimeGoal.setText(String.valueOf(roundedTime));
-
-                    long duration = (long) roundedTime * 3600 * 1000;
-                    Goal newGoal = new Goal(Double.parseDouble(binding.MonthlyDistanceGoal.getText().toString()), duration);
-                    viewModel.updateGoal(userId, newGoal);
+                    submitNewTime(timeInHours);
                 }
             }
         });
@@ -127,54 +100,109 @@ public class GoalsFragment extends Fragment {
     }
 
     /**
-     * update and display MonthlyDistanceGoal and MonthlyTimeGoal achieved data on the chronometer display
-     * update and display MonthlyDistanceGoal achieved data on the progress bar
+     * Updates UI and Firestore with new distance goal data.
+     * @param distanceInKm New distance goal. Represented in kilometres.
+     */
+    private void submitNewDistance(String distanceInKm) {
+        float inputFloat = Float.parseFloat(distanceInKm);
+        int roundedInput = Math.round(inputFloat);
+
+        binding.MonthlyGoalsProgressBar.setMax(roundedInput);
+        String percentage = calPercentage(binding.MonthlyGoalsProgressBar.getProgress(),binding.MonthlyGoalsProgressBar.getMax());
+        binding.GoalsPercentage.setText(percentage + "%");
+        binding.MonthlyDistanceGoal.setText(String.valueOf(roundedInput));
+
+        long duration = Long.parseLong(binding.MonthlyTimeGoal.getText().toString())* 3600 * 1000;
+        Goal newGoal = new Goal((double) roundedInput, duration);
+        viewModel.updateGoal(userId, newGoal);
+    }
+
+    /**
+     * Updates UI and Firestore with new time goal data.
+     * @param timeInHours New time goal. Represented in hours.
+     */
+    private void submitNewTime(String timeInHours) {
+        Float timeFloat = Float.parseFloat(timeInHours);
+        int roundedTime = Math.round(timeFloat);
+
+        binding.MonthlyTimeGoal.setText(String.valueOf(roundedTime));
+
+        long duration = (long) roundedTime * 3600 * 1000;
+        Goal newGoal = new Goal(Double.parseDouble(binding.MonthlyDistanceGoal.getText().toString()), duration);
+        viewModel.updateGoal(userId, newGoal);
+    }
+
+    private void showInvalidInputWarning() {
+        Toast.makeText(getActivity(), "Error: Please provide numeric input.", Toast.LENGTH_LONG).show();
+    }
+
+    /**
+     * update and display MonthlyDistanceGoal and MonthlyTimeGoal data on the UI
+     * update and display MonthlyDistanceGoal data on the progress bar
      */
     private void displayGoalsData() {
-        binding.chronometer.setText(getChronometerDisplay(0L));
-        viewModel.fetchGoals(userId);
-        viewModel.getGoals().observe(getViewLifecycleOwner(), new Observer<Goal>() {
+        MutableLiveData<Goal> goal = viewModel.fetchGoals(userId);
+        goal.observe(getViewLifecycleOwner(), new Observer<Goal>() {
             @Override
             public void onChanged(Goal goal) {
                 if (goal != null) {
-                    //
-                    binding.MonthlyDistanceGoal.setText(String.format("%d", (int)goal.getDistance()));
-                    binding.MonthlyTimeGoal.setText(String.format("%d",(int) (goal.getDuration() / 3600000)));
-
-                    binding.goalsChronometer.setText(getChronometerDisplay(goal.getDuration()));
-                    binding.timeProgressBar.setMax((int) (goal.getDuration()/3600000));
-
-
-                    binding.distanceGoalsFloat.setText(String.format("%.2f", goal.getDistance()));
-                    binding.distanceProgressBar.setMax((int) goal.getDistance());
-                    binding.MonthlyGoalsProgressBar.setMax((int) goal.getDistance());
-                    String percentage = calPercentage(binding.MonthlyGoalsProgressBar.getProgress(),binding.MonthlyGoalsProgressBar.getMax());
-                    binding.GoalsPercentage.setText(percentage + "%");
+                    updateGoalsUi(goal);
                 }
             }
         });
+    }
 
-        viewModel.calculateMonthlyData(this).observe(getViewLifecycleOwner(), new Observer<HashMap<String, Object>>() {
+    /**
+     * Helper method to update UI based on new goals data.
+     * @param goal Object containing goal data.
+     */
+    private void updateGoalsUi(Goal goal) {
+        binding.MonthlyDistanceGoal.setText(String.format("%d", (int)goal.getDistance()));
+        binding.MonthlyTimeGoal.setText(String.format("%d",(int) (goal.getDuration() / 3600000)));
+
+        binding.goalsChronometer.setText(getChronometerDisplay(goal.getDuration()));
+        binding.timeProgressBar.setMax((int) (goal.getDuration()/3600000));
+
+        binding.distanceGoalsFloat.setText(String.format("%.2f", goal.getDistance()));
+        binding.distanceProgressBar.setMax((int) goal.getDistance());
+        binding.MonthlyGoalsProgressBar.setMax((int) goal.getDistance());
+        String percentage = calPercentage(binding.MonthlyGoalsProgressBar.getProgress(),binding.MonthlyGoalsProgressBar.getMax());
+        binding.GoalsPercentage.setText(percentage + "%");
+    }
+
+    /**
+     * update and display progress bar based on Cycling History data
+     */
+    private void displayHistoryData() {
+        binding.chronometer.setText(getChronometerDisplay(0L));
+        viewModel.fetchCyclingHistory(userId);
+        MutableLiveData<HashMap<String, Object>> cyclingHistory = viewModel.calculateMonthlyData(this);
+        cyclingHistory.observe(getViewLifecycleOwner(), new Observer<HashMap<String, Object>>() {
             @Override
             public void onChanged(HashMap<String, Object> hashMap) {
-
                 if (hashMap != null) {
-                    Double monthDistance = (Double)hashMap.get("monthDistance");
-                    binding.distanceDetailsFloat.setText(String.format("%.2f", monthDistance));
-                    binding.distanceProgressBar.setProgress(monthDistance.intValue());
-
-                    long monthDuration = (Long) hashMap.get("monthDuration");
-                    binding.chronometer.setText(getChronometerDisplay(monthDuration));
-                    binding.timeProgressBar.setProgress((int) monthDuration);
-
-                    binding.MonthlyGoalsProgressBar.setProgress(monthDistance.intValue());
+                    updateHistoryUi(hashMap);
                 }
-
-
             }
         });
-
     }
+
+    /**
+     * Helper method to update UI based on new history data.
+     * @param history Object containing history data.
+     */
+    private void updateHistoryUi(HashMap<String, Object> history) {
+        Double monthDistance = (Double)history.get("monthDistance");
+        binding.distanceDetailsFloat.setText(String.format("%.2f", monthDistance));
+        binding.distanceProgressBar.setProgress(monthDistance.intValue());
+
+        long monthDuration = (Long) history.get("monthDuration");
+        binding.chronometer.setText(getChronometerDisplay(monthDuration));
+        binding.timeProgressBar.setProgress((int) monthDuration);
+
+        binding.MonthlyGoalsProgressBar.setProgress(monthDistance.intValue());
+    }
+
 
     /**
      * Helper function to calculate percentage of goals (for distance) achieved by the user
@@ -183,8 +211,19 @@ public class GoalsFragment extends Fragment {
      * @return percentage of goals (for distance) achieved by the user
      */
     private String calPercentage(int progress, int max){
-
         return Float.toString(Math.round(((float)progress/(float)max)*100));
+    }
 
+
+    /**Helper function to format time (in milliseconds) to Chronometer display.
+     * @param monthDuration Time to be formatted.
+     * @return Returns a String, representing time formatted as "HHh MMm".
+     */
+    private String getChronometerDisplay(Long monthDuration) {
+        int h = (int) ((monthDuration) / 3600000);
+        int m = (int) (((monthDuration) / 60) % 60);
+
+        String mString = m >= 10 ? Integer.toString(m) : "0"+Integer.toString(m);
+        return String.format("%dh %sm", h, mString);
     }
 }

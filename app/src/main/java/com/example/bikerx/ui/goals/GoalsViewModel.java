@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
-import com.example.bikerx.control.firestore.DBManager;
 import com.example.bikerx.control.firestore.GoalManager;
 import com.example.bikerx.control.firestore.SessionManager;
 import com.example.bikerx.entities.Goal;
@@ -24,22 +23,16 @@ import java.util.TimeZone;
 public class GoalsViewModel extends ViewModel {
     private SessionManager sessionManager = new SessionManager();
     private GoalManager goalManager = new GoalManager();
-    private MutableLiveData<Goal> goals;
+    private MutableLiveData<Goal> goal;
     private MutableLiveData<ArrayList<CyclingHistory>> cyclingHistory;
 
     /**Prompts the DBManager to start fetching goals data of the user.
      * @param userId The userId of the user.
+     * @return Goals object which can be observed when its updated.
      */
-    public void fetchGoals(String userId) {
-        goals = goalManager.getGoal(userId);
-    }
-
-    /**
-     * get goals from the database
-     * @return
-     */
-    public MutableLiveData<Goal> getGoals() {
-        return goals;
+    public MutableLiveData<Goal> fetchGoals(String userId) {
+        goal = goalManager.getGoal(userId);
+        return goal;
     }
 
     /**
@@ -55,7 +48,7 @@ public class GoalsViewModel extends ViewModel {
      * prompts DBManager to get cycling history data from the database
      * @param userId The userId of the user
      */
-    public void getCyclingHistory(String userId){
+    public void fetchCyclingHistory(String userId){
         cyclingHistory = sessionManager.getCyclingHistory(userId);
     }
 

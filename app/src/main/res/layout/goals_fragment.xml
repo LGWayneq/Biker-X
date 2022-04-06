@@ -225,7 +225,7 @@
         app:layout_constraintTop_toBottomOf="@id/ProgressBarLayout">
 
         <EditText
-            android:id="@+id/InputMonthlyDistanceGoal"
+            android:id="@+id/distanceGoalInput"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -233,12 +233,12 @@
             android:inputType="numberDecimal"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/MonthlyDistanceGoalButton"
+            app:layout_constraintEnd_toStartOf="@id/SubmitDistanceGoalButton"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/MonthlyDistanceGoalButton"
+            android:id="@+id/SubmitDistanceGoalButton"
             android:layout_width="80dp"
             android:layout_height="35dp"
             android:background="@drawable/rounded_corner"
@@ -247,7 +247,7 @@
             android:theme="@style/Button.Blue"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/InputMonthlyDistanceGoal"
+            app:layout_constraintStart_toEndOf="@id/distanceGoalInput"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -262,7 +262,7 @@
         app:layout_constraintTop_toBottomOf="@id/MonthlyDistanceStackView">
 
         <EditText
-            android:id="@+id/InputMonthlyTimeGoal"
+            android:id="@+id/timeGoalInput"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -270,12 +270,12 @@
             android:inputType="numberDecimal"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/MonthlyTimeGoalButton"
+            app:layout_constraintEnd_toStartOf="@id/SubmitTimeGoalButton"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/MonthlyTimeGoalButton"
+            android:id="@+id/SubmitTimeGoalButton"
             android:layout_width="80dp"
             android:layout_height="35dp"
             android:layout_marginTop="8dp"
@@ -285,7 +285,7 @@
             android:theme="@style/Button.Blue"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/InputMonthlyTimeGoal"
+            app:layout_constraintStart_toEndOf="@id/timeGoalInput"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
