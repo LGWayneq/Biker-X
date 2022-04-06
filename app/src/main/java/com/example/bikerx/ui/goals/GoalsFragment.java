@@ -14,9 +14,8 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.bikerx.MainActivity;
-import com.example.bikerx.entities.Goal;
-
 import com.example.bikerx.databinding.GoalsFragmentBinding;
+import com.example.bikerx.entities.Goal;
 
 import java.util.HashMap;
 
@@ -81,6 +80,7 @@ public class GoalsFragment extends Fragment {
                     showInvalidInputWarning();
                 } else {
                     submitNewTime(timeInHours);
+
                 }
             }
         });
@@ -107,11 +107,11 @@ public class GoalsFragment extends Fragment {
         float inputFloat = Float.parseFloat(distanceInKm);
         int roundedInput = Math.round(inputFloat);
 
-        binding.MonthlyGoalsProgressBar.setMax(roundedInput);
+        //binding.MonthlyGoalsProgressBar.setProgress(Integer.parseInt(binding.distanceDetailsFloat.getText().toString()));
         String percentage = calPercentage(binding.MonthlyGoalsProgressBar.getProgress(),binding.MonthlyGoalsProgressBar.getMax());
         binding.GoalsPercentage.setText(percentage + "%");
         binding.MonthlyDistanceGoal.setText(String.valueOf(roundedInput));
-
+        binding.distanceGoalsFloat.setText(roundedInput + "km");
         long duration = Long.parseLong(binding.MonthlyTimeGoal.getText().toString())* 3600 * 1000;
         Goal newGoal = new Goal((double) roundedInput, duration);
         viewModel.updateGoal(userId, newGoal);
@@ -125,7 +125,9 @@ public class GoalsFragment extends Fragment {
         Float timeFloat = Float.parseFloat(timeInHours);
         int roundedTime = Math.round(timeFloat);
 
+        //binding.timeProgressBar.setProgress(Integer.parseInt(binding.chronometer.getText().toString()));
         binding.MonthlyTimeGoal.setText(String.valueOf(roundedTime));
+        binding.goalsChronometer.setText(roundedTime + "h 00m");
 
         long duration = (long) roundedTime * 3600 * 1000;
         Goal newGoal = new Goal(Double.parseDouble(binding.MonthlyDistanceGoal.getText().toString()), duration);
@@ -168,6 +170,7 @@ public class GoalsFragment extends Fragment {
         binding.MonthlyGoalsProgressBar.setMax((int) goal.getDistance());
         String percentage = calPercentage(binding.MonthlyGoalsProgressBar.getProgress(),binding.MonthlyGoalsProgressBar.getMax());
         binding.GoalsPercentage.setText(percentage + "%");
+
     }
 
     /**
