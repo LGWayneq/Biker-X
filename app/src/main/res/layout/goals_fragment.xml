@@ -186,7 +186,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/GoalsPercentage"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/MonthlyGoalsProgressBar"></TextView>
+            app:layout_constraintTop_toBottomOf="@id/MonthlyGoalsProgressBar"/>
 
         <TextView
             android:id="@+id/GoalsPercentage"
@@ -199,7 +199,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/OfYourMonthlyGoal"
             app:layout_constraintStart_toEndOf="@id/YouHaveReached"
-            app:layout_constraintTop_toBottomOf="@id/MonthlyGoalsProgressBar"></TextView>
+            app:layout_constraintTop_toBottomOf="@id/MonthlyGoalsProgressBar"/>
 
         <TextView
             android:id="@+id/OfYourMonthlyGoal"
@@ -210,7 +210,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/GoalsPercentage"
-            app:layout_constraintTop_toBottomOf="@id/MonthlyGoalsProgressBar"></TextView>
+            app:layout_constraintTop_toBottomOf="@id/MonthlyGoalsProgressBar"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -229,7 +229,7 @@
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="Enter monthly distance goal"
+            android:hint="Enter monthly distance goal (km)"
             android:inputType="numberDecimal"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -266,8 +266,8 @@
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="Enter monthly time goal"
-            android:inputType="numberDecimal"
+            android:hint="Enter monthly time goal (hrs)"
+            android:inputType="numberSigned"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/SubmitTimeGoalButton"

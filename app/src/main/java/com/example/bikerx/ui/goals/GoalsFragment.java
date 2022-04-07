@@ -59,7 +59,7 @@ public class GoalsFragment extends Fragment {
                 String distanceInKm = binding.distanceGoalInput.getText().toString();
 
                 //check for valid input
-                boolean valid = isValidInput(distanceInKm);
+                boolean valid = isValidDistance(distanceInKm);
                 if (!valid) {
                     showInvalidInputWarning();
                 } else {
@@ -75,7 +75,7 @@ public class GoalsFragment extends Fragment {
                 String timeInHours = binding.timeGoalInput.getText().toString();
 
                 //check for valid input
-                boolean valid = isValidInput(timeInHours);
+                boolean valid = isValidTime(timeInHours);
                 if (!valid) {
                     showInvalidInputWarning();
                 } else {
@@ -86,11 +86,35 @@ public class GoalsFragment extends Fragment {
         });
     }
 
-    /**Helper method to check if user input for goals is valid.
-     * @param input The user's input in String format.
-     * @return Returns a boolean based on whether the input is valid.
+    /**Checks to see if user's distance input is valid.
+     * @param input input The user's input in String format.
+     * @return Returns a boolean based on whether the input is a valid distance.
      */
-    private boolean isValidInput(String input) {
+    private boolean isValidDistance(String input) {
+        if (isValidNumber(input)) {
+            float inputFloat = Float.parseFloat(input);
+            if (inputFloat <= 9999) return true;
+        }
+        return false;
+    }
+
+    /**Checks to see if user's time input is valid.
+     * @param input input The user's input in String format.
+     * @return Returns a boolean based on whether the input is a valid time.
+     */
+    private boolean isValidTime(String input) {
+        if (isValidNumber(input)) {
+            float inputFloat = Float.parseFloat(input);
+            if (inputFloat <= 744) return true;
+        }
+        return false;
+    }
+
+    /**Helper method to check if user input for goals is a valid number.
+     * @param input The user's input in String format.
+     * @return Returns a boolean based on whether the input is a valid number.
+     */
+    private boolean isValidNumber(String input) {
         try {
             Float.parseFloat(input);
             return true;
@@ -134,8 +158,11 @@ public class GoalsFragment extends Fragment {
         viewModel.updateGoal(userId, newGoal);
     }
 
+    /**
+     * Helper method to display warning when user submits invalid input.
+     */
     private void showInvalidInputWarning() {
-        Toast.makeText(getActivity(), "Error: Please provide numeric input.", Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), "Error: Please use values between 0 - 9999 for distance, and between 0 - 724 for time.", Toast.LENGTH_LONG).show();
     }
 
     /**
