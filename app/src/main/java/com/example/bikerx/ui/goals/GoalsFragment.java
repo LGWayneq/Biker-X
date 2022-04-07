@@ -162,7 +162,7 @@ public class GoalsFragment extends Fragment {
      * Helper method to display warning when user submits invalid input.
      */
     private void showInvalidInputWarning() {
-        Toast.makeText(getActivity(), "Error: Please use values between 0 - 9999 for distance, and between 0 - 724 for time.", Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), "Error: Please use values between 0 - 9999 for distance, and between 0 - 744 for time.", Toast.LENGTH_LONG).show();
     }
 
     /**
