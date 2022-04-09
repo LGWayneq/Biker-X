@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.bikerx.control.firestore.GoalManager;
 import com.example.bikerx.control.firestore.SessionManager;
-import com.example.bikerx.entities.Goal;
 import com.example.bikerx.ui.history.CyclingHistory;
 
 import java.text.SimpleDateFormat;

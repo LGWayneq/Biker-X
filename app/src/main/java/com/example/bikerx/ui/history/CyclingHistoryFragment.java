@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bikerx.MainActivity;
 import com.example.bikerx.databinding.FragmentHistoryBinding;
-import com.example.bikerx.entities.Goal;
+import com.example.bikerx.ui.goals.Goal;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -15,7 +15,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.bikerx.MainActivity;
 import com.example.bikerx.databinding.GoalsFragmentBinding;
-import com.example.bikerx.entities.Goal;
 
 import java.util.HashMap;
 
@@ -135,7 +134,6 @@ public class GoalsFragment extends Fragment {
         String percentage = calPercentage(binding.MonthlyGoalsProgressBar.getProgress(),binding.MonthlyGoalsProgressBar.getMax());
         binding.GoalsPercentage.setText(percentage + "%");
         binding.MonthlyDistanceGoal.setText(String.valueOf(roundedInput));
-        binding.distanceGoalsFloat.setText(roundedInput + "km");
         long duration = Long.parseLong(binding.MonthlyTimeGoal.getText().toString())* 3600 * 1000;
         Goal newGoal = new Goal((double) roundedInput, duration);
         viewModel.updateGoal(userId, newGoal);
@@ -151,7 +149,6 @@ public class GoalsFragment extends Fragment {
 
         //binding.timeProgressBar.setProgress(Integer.parseInt(binding.chronometer.getText().toString()));
         binding.MonthlyTimeGoal.setText(String.valueOf(roundedTime));
-        binding.goalsChronometer.setText(roundedTime + "h 00m");
 
         long duration = (long) roundedTime * 3600 * 1000;
         Goal newGoal = new Goal(Double.parseDouble(binding.MonthlyDistanceGoal.getText().toString()), duration);
@@ -189,22 +186,15 @@ public class GoalsFragment extends Fragment {
         binding.MonthlyDistanceGoal.setText(String.format("%d", (int)goal.getDistance()));
         binding.MonthlyTimeGoal.setText(String.format("%d",(int) (goal.getDuration() / 3600000)));
 
-        binding.goalsChronometer.setText(getChronometerDisplay(goal.getDuration()));
-        binding.timeProgressBar.setMax((int) (goal.getDuration()/3600000));
-
-        binding.distanceGoalsFloat.setText(String.format("%.2f", goal.getDistance()));
-        binding.distanceProgressBar.setMax((int) goal.getDistance());
         binding.MonthlyGoalsProgressBar.setMax((int) goal.getDistance());
         String percentage = calPercentage(binding.MonthlyGoalsProgressBar.getProgress(),binding.MonthlyGoalsProgressBar.getMax());
         binding.GoalsPercentage.setText(percentage + "%");
-
     }
 
     /**
      * update and display progress bar based on Cycling History data
      */
     private void displayHistoryData() {
-        binding.chronometer.setText(getChronometerDisplay(0L));
         viewModel.fetchCyclingHistory(userId);
         MutableLiveData<HashMap<String, Object>> cyclingHistory = viewModel.calculateMonthlyData(this);
         cyclingHistory.observe(getViewLifecycleOwner(), new Observer<HashMap<String, Object>>() {
@@ -223,13 +213,6 @@ public class GoalsFragment extends Fragment {
      */
     private void updateHistoryUi(HashMap<String, Object> history) {
         Double monthDistance = (Double)history.get("monthDistance");
-        binding.distanceDetailsFloat.setText(String.format("%.2f", monthDistance));
-        binding.distanceProgressBar.setProgress(monthDistance.intValue());
-
-        long monthDuration = (Long) history.get("monthDuration");
-        binding.chronometer.setText(getChronometerDisplay(monthDuration));
-        binding.timeProgressBar.setProgress((int) monthDuration);
-
         binding.MonthlyGoalsProgressBar.setProgress(monthDistance.intValue());
     }
 
@@ -242,18 +225,5 @@ public class GoalsFragment extends Fragment {
      */
     private String calPercentage(int progress, int max){
         return Float.toString(Math.round(((float)progress/(float)max)*100));
-    }
-
-
-    /**Helper function to format time (in milliseconds) to Chronometer display.
-     * @param monthDuration Time to be formatted.
-     * @return Returns a String, representing time formatted as "HHh MMm".
-     */
-    private String getChronometerDisplay(Long monthDuration) {
-        int h = (int) ((monthDuration) / 3600000);
-        int m = (int) (((monthDuration) / 60) % 60);
-
-        String mString = m >= 10 ? Integer.toString(m) : "0"+Integer.toString(m);
-        return String.format("%dh %sm", h, mString);
     }
 }

@@ -1,4 +1,4 @@
-package com.example.bikerx.entities;
+package com.example.bikerx.ui.goals;
 
 public class Goal {
     private double distance;

@@ -3,7 +3,7 @@ package com.example.bikerx.control.firestore;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.bikerx.entities.Goal;
+import com.example.bikerx.ui.goals.Goal;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
