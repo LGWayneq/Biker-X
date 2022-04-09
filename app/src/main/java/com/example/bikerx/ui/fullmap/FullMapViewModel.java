@@ -32,7 +32,6 @@ public class FullMapViewModel extends ViewModel {
     protected ArrayList<Marker> BicycleRentalShopMarkerList = null;
     protected ArrayList<Marker> FitnessAreaMarkerList = null;
     protected ArrayList<Marker> FNBEateryMarkerList = null;
-    protected ArrayList<Marker> HawkerCentreMarkerList = null;
     protected ArrayList<Marker> PlaygroundMarkerList = null;
     protected ArrayList<Marker> ShelterMarkerList = null;
     protected ArrayList<Marker> ToiletMarkerList = null;
@@ -106,13 +105,6 @@ public class FullMapViewModel extends ViewModel {
                 @Override
                 public void onChanged(ArrayList<Marker> markers) {
                     FNBEateryMarkerList = markers;
-                }
-            });
-
-            apiManager.getAmenitiesData(map,"HAWKER CENTRE").observe(fragment.getViewLifecycleOwner(), new Observer<ArrayList<Marker>>() {
-                @Override
-                public void onChanged(ArrayList<Marker> markers) {
-                    HawkerCentreMarkerList = markers;
                 }
             });
 
