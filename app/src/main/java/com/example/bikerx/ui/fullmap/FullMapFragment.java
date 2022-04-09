@@ -100,7 +100,6 @@ public class FullMapFragment extends Fragment {
         CheckBox mCheckBicycleRentalShop = view.findViewById(R.id.checkBox_bicyclerentalshop);
         CheckBox mCheckFitnessArea = view.findViewById(R.id.checkBox_fitnessarea);
         CheckBox mCheckFNBEatery = view.findViewById(R.id.checkBox_fnbeatery);
-        CheckBox mCheckHawkerCentre = view.findViewById(R.id.checkBox_hawkercentre);
         CheckBox mCheckPlayground = view.findViewById(R.id.checkBox_playground);
         CheckBox mCheckShelter = view.findViewById(R.id.checkBox_shelter);
         CheckBox mCheckToilet = view.findViewById(R.id.checkBox_toilet);
@@ -159,15 +158,6 @@ public class FullMapFragment extends Fragment {
 
                 fullMapViewModel.setMarkerVisibility(fullMapViewModel.FNBEateryMarkerList, isChecked);
                 changeCheckTextColour(mCheckFNBEatery, isChecked);
-            }
-        });
-
-        mCheckHawkerCentre.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-
-                fullMapViewModel.setMarkerVisibility(fullMapViewModel.HawkerCentreMarkerList, isChecked);
-                changeCheckTextColour(mCheckHawkerCentre, isChecked);
             }
         });
 

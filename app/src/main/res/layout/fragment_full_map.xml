@@ -48,11 +48,11 @@
     <LinearLayout
         android:id="@+id/checkBoxLayout"
         android:visibility="gone"
-        android:layout_width="117dp"
-        android:layout_height="404dp"
+        android:layout_width="119dp"
+        android:layout_height="375dp"
         android:layout_marginEnd="16dp"
+        android:background="#FFFFFF"
         android:orientation="vertical"
-        android:background= "#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toggleButton">
 
@@ -60,21 +60,19 @@
             android:id="@+id/checkBox_accesspoint"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
+            android:buttonTint="#3361A6"
             android:checked="true"
             android:text="Access Point"
-            android:textColor="#3361A6"
-            android:buttonTint="#3361A6"
-            />
+            android:textColor="#3361A6" />
 
         <CheckBox
             android:id="@+id/checkBox_bicyclerack"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
+            android:buttonTint="#9ABFF8"
             android:checked="true"
             android:text="Bicycle Rack"
-            android:textColor="#3361A6"
-            android:buttonTint="#9ABFF8"
-            />
+            android:textColor="#3361A6" />
 
         <CheckBox
             android:id="@+id/checkBox_bicyclerentalshop"
@@ -83,11 +81,10 @@
             android:layout_below="@+id/checkBox_bicyclerack"
             android:layout_alignStart="@+id/checkBox_bicyclerack"
             android:layout_marginEnd="96dp"
+            android:buttonTint="#3361A6"
             android:checked="true"
             android:text="Bicycle Rental Shop"
-            android:textColor="#3361A6"
-            android:buttonTint="#3361A6"
-            />
+            android:textColor="#3361A6" />
 
         <CheckBox
             android:id="@+id/checkBox_fitnessarea"
@@ -96,10 +93,10 @@
             android:layout_below="@+id/checkBox_bicyclerentalshop"
             android:layout_alignStart="@+id/checkBox_bicyclerentalshop"
             android:layout_marginEnd="52dp"
+            android:buttonTint="#9ABFF8"
             android:checked="true"
             android:text="Fitness Area"
-            android:textColor="#3361A6"
-            android:buttonTint="#9ABFF8"/>
+            android:textColor="#3361A6" />
 
         <CheckBox
             android:id="@+id/checkBox_fnbeatery"
@@ -107,50 +104,40 @@
             android:layout_height="40dp"
             android:layout_below="@+id/checkBox_fitnessarea"
             android:layout_marginEnd="72dp"
+            android:buttonTint="#3361A6"
             android:checked="true"
             android:text="FNB Eatery"
-            android:textColor="#3361A6"
-            android:buttonTint="#3361A6"/>
-
-        <CheckBox
-            android:id="@+id/checkBox_hawkercentre"
-            android:layout_width="112dp"
-            android:layout_height="40dp"
-            android:layout_marginEnd="72dp"
-            android:checked="true"
-            android:text="Hawker Centre"
-            android:textColor="#3361A6"
-            android:buttonTint="#9ABFF8"/>
+            android:textColor="#3361A6" />
 
         <CheckBox
             android:id="@+id/checkBox_playground"
             android:layout_width="112dp"
             android:layout_height="40dp"
             android:layout_marginEnd="60dp"
+            android:buttonTint="#9ABFF8"
             android:checked="true"
             android:text="Playground"
-            android:textColor="#3361A6"
-            android:buttonTint="#3361A6"/>
+            android:textColor="#3361A6" />
 
         <CheckBox
             android:id="@+id/checkBox_shelter"
             android:layout_width="112dp"
             android:layout_height="40dp"
             android:layout_marginEnd="56dp"
+            android:buttonTint="#3361A6"
             android:checked="true"
             android:text="Shelter"
-            android:textColor="#3361A6"
-            android:buttonTint="#9ABFF8"/>
+            android:textColor="#3361A6" />
 
         <CheckBox
             android:id="@+id/checkBox_toilet"
             android:layout_width="112dp"
             android:layout_height="40dp"
             android:layout_marginEnd="100dp"
+            android:buttonTint="#9ABFF8"
             android:checked="true"
             android:text="Toilet"
-            android:textColor="#3361A6"
-            android:buttonTint="#3361A6"/>
+            android:textColor="#3361A6" />
 
         <CheckBox
             android:id="@+id/checkBox_watercooler"
@@ -158,11 +145,10 @@
             android:layout_height="40dp"
             android:layout_marginTop="0dp"
             android:layout_marginEnd="156dp"
+            android:buttonTint="#3361A6"
             android:checked="true"
             android:text="Water Cooler"
-            android:textColor="#3361A6"
-            android:buttonTint="#9ABFF8"
-            />
+            android:textColor="#3361A6" />
 
 
     </LinearLayout>
