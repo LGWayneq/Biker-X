@@ -247,14 +247,13 @@
 
         <RatingBar
             android:id="@+id/rate_route_rating_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height= "wrap_content"
             android:numStars="5"
             android:visibility="gone"
-            app:layout_marginLeftPercent="20%"
-            app:layout_marginRightPercent="20%"
-            app:layout_marginTopPercent="80%"
-            app:layout_widthPercent="60%" />
+            android:layout_centerHorizontal="true"
+            app:layout_marginTopPercent="80%" />
+
 
 
     </androidx.percentlayout.widget.PercentRelativeLayout>
